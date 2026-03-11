@@ -57,6 +57,16 @@ export default function Header() {
 
   return (
     <>
+      <style>{`
+        @keyframes number-wave {
+          0% { transform: scale(1) translateY(0); color: inherit; }
+          40% { transform: scale(1.4) translateY(-2px); color: #fff; text-shadow: 0 0 12px rgba(59,130,246,0.8); }
+          100% { transform: scale(1) translateY(0); color: inherit; }
+        }
+        .group:hover .wave-char {
+          animation: number-wave 0.8s ease-in-out forwards;
+        }
+      `}</style>
       <header
         className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-500 ${isScrolled || location.pathname !== '/'
           ? 'bg-navy-900/90 backdrop-blur-lg border-b border-white/5'
@@ -64,7 +74,7 @@ export default function Header() {
           }`}
       >
         <div className="w-full px-6 lg:px-12">
-          <div className="flex items-center justify-between h-16 lg:h-20">
+          <div className="flex items-center justify-between h-20 lg:h-32">
             {/* Logo */}
             <Link
               to="/"
@@ -75,7 +85,7 @@ export default function Header() {
                 ref={logoRef}
                 src="/images/logo.png"
                 alt="DELO TRANS INC"
-                className="h-12 lg:h-16 w-auto"
+                className="h-16 lg:h-28 w-auto"
               />
             </Link>
 
@@ -118,14 +128,27 @@ export default function Header() {
             <div className="hidden lg:flex items-center gap-4">
               <a
                 href="tel:+998901234567"
-                className="flex items-center gap-2 text-sm text-gray-light hover:text-white transition-colors"
+                className="flex items-center gap-2 text-sm text-gray-light hover:text-white transition-colors group"
               >
-                <Phone className="w-4 h-4" />
-                <span className="font-mono">+998 90 123 45 67</span>
+                <Phone className="w-4 h-4 group-hover:animate-pulse group-hover:text-blue-400 transition-colors" />
+                <span className="font-mono flex items-center">
+                  {'+998 90 123 45 67'.split('').map((char, index) => (
+                    <span
+                      key={index}
+                      className="wave-char inline-block"
+                      style={{ 
+                        animationDelay: `${index * 0.04}s`,
+                        minWidth: char === ' ' ? '0.3em' : 'auto' 
+                      }}
+                    >
+                      {char}
+                    </span>
+                  ))}
+                </span>
               </a>
               <button
                 onClick={openDriverModal}
-                className="btn-primary text-sm"
+                className="btn-primary text-sm ml-2"
               >
                 Apply now
               </button>

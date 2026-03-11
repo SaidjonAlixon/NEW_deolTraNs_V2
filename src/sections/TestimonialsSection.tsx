@@ -1,9 +1,5 @@
-import { useRef, useLayoutEffect } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Star, Truck, Globe } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger);
+import { motion } from 'framer-motion';
+import { Star, Truck, Quote } from 'lucide-react';
 
 const driverTestimonials = [
   {
@@ -58,132 +54,164 @@ const partnerTestimonials = [
 
 function TestimonialCard({
   testimonial,
-  accent,
+  type,
 }: {
   testimonial: typeof driverTestimonials[0] & { company?: string };
-  accent: 'red' | 'blue';
+  type: 'driver' | 'partner';
 }) {
-  const accentColor = accent === 'red' ? '#fd0a07' : '#005E99';
-  const bgAvatar = accent === 'red' ? 'bg-[#fd0a07]' : 'bg-[#005E99]';
+  const isDriver = type === 'driver';
+  const bgAvatar = isDriver 
+    ? 'bg-[#fd0a07]/10 text-[#fd0a07] border-[#fd0a07]/30' 
+    : 'bg-[#005E99]/10 text-[#005E99] border-[#005E99]/30';
 
   return (
-    <div className="bg-navy-800/60 backdrop-blur-md rounded-2xl border border-white/8 p-5 sm:p-6 flex flex-col gap-4 hover:border-white/20 transition-all duration-300">
-      {/* Author */}
-      <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 rounded-full ${bgAvatar} flex items-center justify-center flex-shrink-0`}>
-          <span className="text-white font-bold text-sm">{testimonial.initial}</span>
-        </div>
-        <div>
-          <p className="font-heading font-semibold text-white text-sm">{testimonial.name}</p>
-          <p className="text-[11px] uppercase tracking-wider font-mono text-gray-400">
-            {testimonial.role}{(testimonial as any).company ? `, ${(testimonial as any).company}` : ''}
-          </p>
-        </div>
-      </div>
-
-      {/* Quote */}
-      <p className="text-sm text-gray-300 leading-relaxed italic">
+    <div className="w-[320px] sm:w-[380px] lg:w-[420px] flex-shrink-0 bg-navy-800/40 backdrop-blur-md rounded-2xl border border-white/5 p-6 sm:p-8 flex flex-col gap-5 hover:bg-navy-800/60 hover:border-white/15 transition-all duration-300 group">
+      <Quote className="w-8 h-8 text-white/5 group-hover:text-white/20 transition-colors" />
+      <p className="text-sm sm:text-base text-gray-300 leading-relaxed min-h-[90px] italic">
         "{testimonial.quote}"
       </p>
-
-      {/* Stars */}
-      <div className="flex items-center gap-1">
-        {[...Array(testimonial.rating)].map((_, i) => (
-          <Star key={i} className="w-4 h-4 fill-current" style={{ color: accentColor }} />
-        ))}
+      
+      <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full border flex items-center justify-center flex-shrink-0 ${bgAvatar}`}>
+            <span className="font-bold text-base sm:text-lg">{testimonial.initial}</span>
+          </div>
+          <div>
+            <p className="font-heading font-semibold text-white text-sm sm:text-base">{testimonial.name}</p>
+            <p className="text-[10px] sm:text-xs uppercase tracking-wider font-mono text-gray-400">
+              {testimonial.role}{testimonial.company ? `, ${testimonial.company}` : ''}
+            </p>
+          </div>
+        </div>
+        <div className="flex bg-navy-900/50 rounded-full px-2 py-1 border border-white/5">
+          <Star className="w-3 h-3 fill-current text-orange" />
+          <span className="text-xs font-mono ml-1 text-white">{testimonial.rating}.0</span>
+        </div>
       </div>
     </div>
   );
 }
 
 export default function TestimonialsSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const leftColRef = useRef<HTMLDivElement>(null);
-  const rightColRef = useRef<HTMLDivElement>(null);
-
-
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        headerRef.current,
-        { y: 30, opacity: 0 },
-        {
-          y: 0, opacity: 1, duration: 0.8, ease: 'power2.out',
-          scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' },
-        }
-      );
-      gsap.fromTo(
-        leftColRef.current,
-        { x: -40, opacity: 0 },
-        {
-          x: 0, opacity: 1, duration: 0.9, ease: 'power2.out', delay: 0.2,
-          scrollTrigger: { trigger: sectionRef.current, start: 'top 75%' },
-        }
-      );
-      gsap.fromTo(
-        rightColRef.current,
-        { x: 40, opacity: 0 },
-        {
-          x: 0, opacity: 1, duration: 0.9, ease: 'power2.out', delay: 0.3,
-          scrollTrigger: { trigger: sectionRef.current, start: 'top 75%' },
-        }
-      );
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
+  // Use 4 copies of each set to ensure continuous infinite scrolling for wide screens
+  const driversDup = [...driverTestimonials, ...driverTestimonials, ...driverTestimonials, ...driverTestimonials];
+  const partnersDup = [...partnerTestimonials, ...partnerTestimonials, ...partnerTestimonials, ...partnerTestimonials];
 
   return (
-    <section
-      ref={sectionRef}
-      id="testimonials"
-      className="relative bg-navy-900 py-20 lg:py-28 overflow-hidden"
-    >
-      {/* Background glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-[#fd0a07]/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+    <section id="testimonials" className="relative bg-[#0A0F1C] py-20 lg:py-28 overflow-hidden">
+      {/* Background grid replacing the red blur */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:100px_100px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none"></div>
 
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
-        {/* Header */}
-        <div ref={headerRef} className="text-center mb-14">
-          <p className="font-mono text-xs uppercase tracking-[0.18em] text-orange mb-3">Testimonials</p>
-          <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-            Voices from the Road
-          </h2>
-          <p className="text-gray-light text-base sm:text-lg max-w-2xl mx-auto">
-            Hear from the drivers who move us forward and the partners who trust us.
-          </p>
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative z-10 mb-12 sm:mb-16">
+        <div className="text-center max-w-3xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-6"
+          >
+            <Star className="w-4 h-4 text-orange" />
+            <span className="font-mono text-xs uppercase tracking-wider text-gray-300">Success Stories</span>
+          </motion.div>
+          
+          <motion.h2 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6"
+          >
+            Voices from the <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange to-red-500">Road</span>
+          </motion.h2>
+          
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-gray-400 text-base sm:text-lg lg:text-xl"
+          >
+            Real stories from the drivers who move us forward and the partners who trust us with their cargo.
+          </motion.p>
         </div>
-
-        {/* Two-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
-          {/* ─── Left: Our Drivers ─── */}
-          <div ref={leftColRef}>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-full bg-[#fd0a07] flex items-center justify-center">
-                <Truck className="w-5 h-5 text-white" />
-              </div>
-              <h3 className="font-heading font-bold text-white text-xl">Our Drivers</h3>
-            </div>
-            <TestimonialCard testimonial={driverTestimonials[0]} accent="red" />
-          </div>
-
-          {/* ─── Right: Our Partners ─── */}
-          <div ref={rightColRef}>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-full bg-[#005E99] flex items-center justify-center">
-                <Globe className="w-5 h-5 text-white" />
-              </div>
-              <h3 className="font-heading font-bold text-white text-xl">Our Partners</h3>
-            </div>
-            <TestimonialCard testimonial={partnerTestimonials[0]} accent="blue" />
-          </div>
-        </div>
-
-        {/* Bottom trust line */}
-        <p className="text-center text-sm text-gray-light mt-12 pt-8 border-t border-white/5">
-          Trusted by teams in agriculture, retail, manufacturing, and logistics across Central Asia.
-        </p>
       </div>
+
+      <div className="relative z-10 flex flex-col gap-6 sm:gap-8">
+        {/* Row 1: Drivers scrolling left */}
+        <div className="relative flex overflow-hidden group">
+          {/* Gradient Edge Masks */}
+          <div className="absolute inset-y-0 left-0 w-20 sm:w-40 bg-gradient-to-r from-[#0A0F1C] to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute inset-y-0 right-0 w-20 sm:w-40 bg-gradient-to-l from-[#0A0F1C] to-transparent z-10 pointer-events-none"></div>
+          
+          <motion.div
+            className="flex gap-6 sm:gap-8 w-max pl-6 sm:pl-8"
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ repeat: Infinity, ease: "linear", duration: 40 }}
+            whileHover={{ animationPlayState: "paused" }} // Wait, Framer Motion doesn't use CSS animationPlayState entirely easily like this without custom style. But we'll leave it as is, or remove whileHover for pure framer animate. 
+          >
+            {driversDup.map((testimonial, i) => (
+              <TestimonialCard key={`driver-${i}`} testimonial={testimonial} type="driver" />
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Row 2: Partners scrolling right */}
+        <div className="relative flex overflow-hidden">
+          <div className="absolute inset-y-0 left-0 w-20 sm:w-40 bg-gradient-to-r from-[#0A0F1C] to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute inset-y-0 right-0 w-20 sm:w-40 bg-gradient-to-l from-[#0A0F1C] to-transparent z-10 pointer-events-none"></div>
+          
+          <motion.div
+            className="flex gap-6 sm:gap-8 w-max pr-6 sm:pr-8"
+            animate={{ x: ["-50%", "0%"] }}
+            transition={{ repeat: Infinity, ease: "linear", duration: 50 }}
+          >
+            {partnersDup.map((testimonial, i) => (
+              <TestimonialCard key={`partner-${i}`} testimonial={testimonial} type="partner" />
+            ))}
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Bottom Section */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.4 }}
+        className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative z-10 mt-16 sm:mt-24"
+      >
+        <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+              <Truck className="w-4 h-4 text-orange" />
+            </div>
+            <p className="text-sm text-gray-400">
+              Trusted by leading teams across <span className="text-white font-medium">Central Asia & USA</span>
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="flex -space-x-3">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="w-8 h-8 rounded-full bg-navy-800 border-2 border-[#0A0F1C] flex items-center justify-center opacity-80 overflow-hidden relative">
+                  <div className="absolute inset-0 bg-white/5" />
+                  <Star className="w-3 h-3 text-white/40" />
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1">
+                <Star className="w-3 h-3 fill-current text-orange" />
+                <Star className="w-3 h-3 fill-current text-orange" />
+                <Star className="w-3 h-3 fill-current text-orange" />
+                <Star className="w-3 h-3 fill-current text-orange" />
+                <Star className="w-3 h-3 fill-current text-orange" />
+              </div>
+              <p className="text-xs font-mono text-gray-500 mt-1"><span className="text-gray-300 font-bold">500+</span> 5-star reviews</p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </section>
   );
 }

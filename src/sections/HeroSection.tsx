@@ -1,7 +1,7 @@
 import { useEffect, useRef, useLayoutEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, Globe, MapPin } from 'lucide-react';
+import { ArrowRight, Globe, MapPin, ChevronDown } from 'lucide-react';
 import { useDriverApplication } from '../context/DriverApplicationContext';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -16,23 +16,23 @@ export default function HeroSection() {
   const ctaRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
 
-  const words = ["GLOBAL TRADE.", "HEAVY INDUSTRY.", "SUPPLY CHAINS.", "THE FUTURE."];
+  const words = ["OWNER OPERATORS.", "HIGH EARNINGS.", "YOUR FUTURE.", "THE ROAD AHEAD."];
   const descriptions = [
-    "Experience pinnacle freight reliability across Uzbekistan, the CIS, and deep into international territories. We integrate high-capacity road and rail networks to guarantee your cargo reaches any destination.",
-    "Gain complete control with our end-to-end supply chain visibility and 24/7 GPS tracking. Our global dedicated support teams monitor your shipments to guarantee absolute peace of mind.",
-    "Our optimized dispatch and routing strategies lower fuel consumption and bypass common bottlenecks. We consistently reduce transit times and streamline your global logistics workflow.",
-    "Navigate complex international trade effortlessly with our comprehensive customs clearance solutions. Our teams handle local regulations and paperwork, ensuring your cargo suffers no border delays.",
-    "Trust our military-grade, temperature-controlled transport systems for your most sensitive goods. We monitor exact climate conditions directly from origin to your warehouse threshold.",
-    "We provide extraordinarily agile logistics that adapt instantaneously to global market shifts. When the unpredictable happens, our proactive crisis-response dynamic rerouting keeps you moving.",
-    "Conquer the industry's toughest infrastructural challenges with our heavy-lift and oversized cargo management. We deliver massive industrial machinery with millimeter-perfect route planning.",
-    "Take a competitive advantage using our interconnected warehousing and rapid distribution networks. Our secure hubs ensure your products are perfectly organized and positioned just-in-time.",
-    "Empower your decisions with predictive freight intelligence and advanced data tracking. We analyze flow patterns to drastically reduce your bottom-line transportation costs.",
-    "Rely entirely on our expansive, privately-owned fleet to deliver uncompromised security. Driven by vetted professionals, our network handles every load with relentless dedication."
+    "Power-Only Carrier built for Owner Operators — 250+ units nationwide and growing. We haul your trailer, you keep more of your money.",
+    "Sign-On Bonuses up to $1,000 for qualified drivers. Join a carrier that puts your profit first, from day one.",
+    "Drive less, stress less, earn more. Our optimized dispatch keeps you moving on the best-paying lanes coast to coast.",
+    "Now hiring Owner Operators & Company Drivers nationwide. Flexible home-time options and top-tier freight every week.",
+    "We handle dispatch, paperwork, and fuel advances — so you can focus on the road and growing your bottom line.",
+    "High-paying freight, consistent miles, and a team that actually picks up the phone. That's the Delo Trans difference.",
+    "No forced dispatch, no hidden fees. Transparent contracts and weekly settlements you can count on.",
+    "Our dedicated support team is available 24/7 to help you stay on schedule and maximize every mile you drive.",
+    "Join 250+ owner operators who chose Delo Trans Inc. for reliable loads, great pay, and a carrier that cares.",
+    "Profit-first operations means every decision we make is designed to put more money in your pocket every week."
   ];
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [activeCard, setActiveCard] = useState(0);
-  
+
   // Counters for the stats bar
   const [stats, setStats] = useState({
     shipments: 0,
@@ -40,6 +40,8 @@ export default function HeroSection() {
     vehicles: 0,
     experience: 0,
   });
+  // Sign-on bonus display
+  const SIGN_ON_BONUS = '$1,000';
 
   useEffect(() => {
     const singleInterval = setInterval(() => {
@@ -124,10 +126,10 @@ export default function HeroSection() {
         tl.to(
           countObj,
           {
-            shipments: 5000,
-            countries: 50,
-            vehicles: 220,
-            experience: 12,
+            shipments: 1000,
+            countries: 48,
+            vehicles: 250,
+            experience: 10,
             duration: 1.5,
             ease: 'power3.out',
             onUpdate: () => {
@@ -210,16 +212,16 @@ export default function HeroSection() {
       {/* ─── MOBILE LAYOUT (hidden on lg+) ─── */}
       <div className="lg:hidden relative z-[3] flex flex-col justify-between h-full px-5 pt-24 pb-6">
         {/* Badge */}
-        <div className="flex items-center gap-3 mb-5">
+        <div className="flex items-center gap-3 mt-4 mb-5">
           <div className="h-[2px] w-8 bg-orange shadow-[0_0_10px_rgba(253,10,7,0.8)]"></div>
           <p className="font-mono text-xs uppercase tracking-[0.18em] font-black text-orange drop-shadow-[0_0_8px_rgba(253,10,7,0.7)]">
-            DELO TRANS INC
+            Welcome DELO TRANS INC
           </p>
         </div>
 
         {/* Headline */}
         <h1 className="font-heading text-[2.4rem] leading-[1.05] font-bold text-white tracking-tight mb-5 uppercase drop-shadow-2xl">
-          DRIVING THE<br />HEAVY WHEELS OF{' '}
+          POWER-ONLY CARRIER<br />BUILT FOR{' '}
           <span className="text-[#fd0a07] font-black" style={{ textShadow: '0 0 25px rgba(253,10,7,0.8)' }}>
             {words[currentWordIndex]}
           </span>
@@ -235,10 +237,10 @@ export default function HeroSection() {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3 mb-7">
           {[
-            { value: `${stats.shipments}+`, label: 'Shipments delivered' },
-            { value: `${stats.countries}+`, label: 'Countries served' },
-            { value: `${stats.vehicles}+`, label: 'Vehicles in fleet' },
-            { value: `${stats.experience}+`, label: 'Years experience' },
+            { value: `${stats.vehicles}+`, label: 'Units Nationwide' },
+            { value: SIGN_ON_BONUS, label: 'Sign-On Bonus' },
+            { value: `${stats.countries}+`, label: 'States Covered' },
+            { value: `${stats.experience}+ yrs`, label: 'In Business' },
           ].map((s) => (
             <div key={s.label} className="bg-white/5 backdrop-blur-sm border border-white/8 rounded-xl px-4 py-3 text-center">
               <p className="font-heading text-2xl font-bold text-white">{s.value}</p>
@@ -253,15 +255,20 @@ export default function HeroSection() {
             onClick={openDriverModal}
             className="btn-primary flex items-center gap-2 flex-1 justify-center"
           >
-            Apply now
+            Apply Now
             <ArrowRight className="w-4 h-4" />
           </button>
           <button
             onClick={() => scrollToSection('#services')}
             className="btn-secondary"
           >
-            Services
+            Learn More
           </button>
+        </div>
+        {/* Scroll Indicator (Mobile) */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-70 animate-bounce pointer-events-none z-[50]">
+          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/80">Scroll</span>
+          <ChevronDown className="w-4 h-4 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]" />
         </div>
       </div>
 
@@ -280,15 +287,15 @@ export default function HeroSection() {
             </p>
           </div>
           <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.05] tracking-tight mb-8 drop-shadow-2xl uppercase">
-            DRIVING THE HEAVY<br />WHEELS OF{' '}
+            POWER-ONLY CARRIER<br />BUILT FOR{' '}
             <span className="text-[#fd0a07] inline-grid align-bottom ml-3 font-black tracking-wide" style={{ textShadow: '0 0 35px rgba(253,10,7,0.8)' }}>
               <span key={currentWordIndex} className="col-start-1 row-start-1 animate-slide-up whitespace-nowrap">
                 {words[currentWordIndex]}
               </span>
-              <span className="col-start-1 row-start-1 opacity-0 pointer-events-none whitespace-nowrap">GLOBAL TRADE.</span>
+              <span className="col-start-1 row-start-1 opacity-0 pointer-events-none whitespace-nowrap">OWNER OPERATORS.</span>
             </span>
           </h1>
-          
+
           <div className="mt-4 border-l-2 border-orange/50 pl-6 py-4 bg-gradient-to-r from-navy-900/60 to-transparent backdrop-blur-sm rounded-r-xl w-full max-w-[600px] min-h-[100px] flex items-center">
             <p key={`desc-${currentDescIndex}`} className="text-base lg:text-lg text-white/95 leading-relaxed drop-shadow-lg font-light animate-fade-in w-full">
               {descriptions[currentDescIndex]}
@@ -313,13 +320,13 @@ export default function HeroSection() {
                     <MapPin className="w-7 h-7 text-orange" />
                   </div>
                   <div>
-                    <p className="font-mono text-[11px] text-orange/80 tracking-[0.2em] mb-1">REGION_01</p>
-                    <h3 className="font-heading font-bold text-2xl text-white drop-shadow-md tracking-wide">Central Asia Focus</h3>
+                    <p className="font-mono text-[11px] text-orange/80 tracking-[0.2em] mb-1">NOW HIRING</p>
+                    <h3 className="font-heading font-bold text-2xl text-white drop-shadow-md tracking-wide">Owner Operators</h3>
                   </div>
                 </div>
               </div>
               <p className="text-sm lg:text-base text-gray-300 leading-relaxed font-light mb-6 drop-shadow">
-                Dominate the Silk Road with our scheduled linehauls, accelerated border crossings, and unrivaled last-mile precision across Uzbekistan and neighboring states.
+                Sign-On Bonuses up to $1,000. High-paying freight, consistent miles, and profit-first operations designed to maximize your earnings every week.
               </p>
               <div className="flex items-center justify-between w-full border-t border-white/10 pt-4">
                 <div className="flex items-center gap-2 cursor-pointer text-orange text-sm font-bold tracking-[0.15em] uppercase hover:text-white transition-colors">
@@ -353,13 +360,13 @@ export default function HeroSection() {
                     <Globe className="w-6 h-6 text-blue-400" />
                   </div>
                   <div>
-                    <p className="font-mono text-[10px] text-blue-400/80 tracking-[0.2em] mb-1">NETWORK_NODE</p>
-                    <h3 className="font-heading font-bold text-xl text-white drop-shadow-md tracking-wide">Global Freight Matrix</h3>
+                    <p className="font-mono text-[10px] text-blue-400/80 tracking-[0.2em] mb-1">COMPANY DRIVERS</p>
+                    <h3 className="font-heading font-bold text-xl text-white drop-shadow-md tracking-wide">Drive Less. Earn More.</h3>
                   </div>
                 </div>
               </div>
               <p className="text-sm text-gray-300 leading-relaxed font-light mb-6 drop-shadow">
-                Synchronize international supply chains. Full container loads and multimodal transit spanning Europe, Türkiye, China, and the CIS network.
+                Now hiring Company Drivers nationwide. Competitive pay packages, home-time flexibility, and a support team that has your back 24/7.
               </p>
               <div className="flex items-center justify-between w-full border-t border-white/10 pt-4">
                 <div className="flex items-center gap-2 cursor-pointer text-blue-400 text-sm font-bold tracking-[0.15em] uppercase hover:text-white transition-colors">
@@ -378,11 +385,11 @@ export default function HeroSection() {
           className="absolute left-[62vw] top-[82vh] flex items-center gap-4 z-20"
         >
           <button onClick={openDriverModal} className="btn-primary flex items-center gap-2">
-            Apply now
+            Apply Now — Get $1,000 Bonus
             <ArrowRight className="w-4 h-4" />
           </button>
           <button onClick={() => scrollToSection('#services')} className="btn-secondary">
-            Explore services
+            Learn More
           </button>
         </div>
 
@@ -391,23 +398,28 @@ export default function HeroSection() {
           <div className="px-6 lg:px-12 py-4 lg:py-6">
             <div ref={statsRef} className="grid grid-cols-4 gap-8">
               <div className="text-left" style={{ opacity: 0 }}>
-                <p className="font-heading text-3xl font-bold text-white drop-shadow-md">{stats.shipments}+</p>
-                <p className="text-xs text-gray-light mt-1">Shipments delivered</p>
+                <p className="font-heading text-3xl font-bold text-white drop-shadow-md">{stats.vehicles}+</p>
+                <p className="text-xs text-gray-light mt-1">Units Nationwide</p>
+              </div>
+              <div className="text-left" style={{ opacity: 0 }}>
+                <p className="font-heading text-3xl font-bold text-white drop-shadow-md">$1,000</p>
+                <p className="text-xs text-gray-light mt-1">Sign-On Bonus</p>
               </div>
               <div className="text-left" style={{ opacity: 0 }}>
                 <p className="font-heading text-3xl font-bold text-white drop-shadow-md">{stats.countries}+</p>
-                <p className="text-xs text-gray-light mt-1">Countries served</p>
+                <p className="text-xs text-gray-light mt-1">States Covered</p>
               </div>
               <div className="text-left" style={{ opacity: 0 }}>
-                <p className="font-heading text-3xl font-bold text-white drop-shadow-md">{stats.vehicles}+</p>
-                <p className="text-xs text-gray-light mt-1">Vehicles in fleet</p>
-              </div>
-              <div className="text-left" style={{ opacity: 0 }}>
-                <p className="font-heading text-3xl font-bold text-white drop-shadow-md">{stats.experience}+</p>
-                <p className="text-xs text-gray-light mt-1">Years experience</p>
+                <p className="font-heading text-3xl font-bold text-white drop-shadow-md">{stats.experience}+ yrs</p>
+                <p className="text-xs text-gray-light mt-1">In Business</p>
               </div>
             </div>
           </div>
+        </div>
+        {/* Scroll Indicator (Desktop) */}
+        <div className="absolute bottom-10 left-[4.5vw] flex flex-col items-center gap-2 opacity-50 animate-bounce cursor-pointer z-[10]" onClick={() => scrollToSection('#services')}>
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/70 [writing-mode:vertical-lr]">Scroll</span>
+          <ChevronDown className="w-5 h-5 text-white" />
         </div>
       </div>
     </section>

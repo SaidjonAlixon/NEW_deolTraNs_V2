@@ -1,15 +1,25 @@
 import { useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, Gauge, Shield, Headphones } from 'lucide-react';
+import { ArrowRight, Truck, DollarSign, Headphones, CheckCircle2, Users, MapPin, Wifi } from 'lucide-react';
 import { useDriverApplication } from '../context/DriverApplicationContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const reasons = [
+  { icon: Truck,       label: '250+ Power-Only Units Nationwide' },
+  { icon: DollarSign,  label: 'High Rate-Per-Mile Freight Only' },
+  { icon: CheckCircle2,label: 'Profit-Focused Operations' },
+  { icon: Users,       label: 'Driver-First Dispatch Model' },
+  { icon: MapPin,      label: 'Dedicated Lane Availability' },
+  { icon: Headphones,  label: '24/7 Professional Support' },
+  { icon: Wifi,        label: 'Fast, Fully Remote Onboarding' },
+];
+
 const stats = [
-  { value: '220+', label: 'Tractors & trailers', icon: Gauge },
-  { value: 'EURO 5-6', label: 'Emission standard', icon: Shield },
-  { value: '24/7', label: 'Telemetry & support', icon: Headphones },
+  { value: '250+', label: 'Power-Only Units' },
+  { value: '48',   label: 'States Covered' },
+  { value: '24/7', label: 'Driver Support' },
 ];
 
 export default function FleetSection() {
@@ -17,7 +27,7 @@ export default function FleetSection() {
   const bgRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLParagraphElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
-  const bodyRef = useRef<HTMLParagraphElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLButtonElement>(null);
   const { openDriverModal } = useDriverApplication();
@@ -34,7 +44,6 @@ export default function FleetSection() {
         },
       });
 
-      // ENTRANCE (0-30%)
       scrollTl.fromTo(
         bgRef.current,
         { scale: 1.10, opacity: 0.6 },
@@ -73,9 +82,7 @@ export default function FleetSection() {
         0.2
       );
 
-      // SETTLE (30-70%): Hold
-
-      // EXIT (70-100%)
+      // EXIT
       scrollTl.fromTo(
         [labelRef.current, headlineRef.current, bodyRef.current],
         { x: 0, opacity: 1 },
@@ -120,37 +127,40 @@ export default function FleetSection() {
       <div ref={bgRef} className="absolute inset-0 z-[1]">
         <img
           src="/images/fleet_truck_detail.png"
-          alt="Modern truck detail"
+          alt="Why Delo Trans"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/70 to-navy-900/50" />
+        <div className="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/75 to-navy-900/50" />
         <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-navy-900/40" />
       </div>
 
       {/* ─── MOBILE LAYOUT ─── */}
       <div className="lg:hidden relative z-[3] flex flex-col justify-between h-full px-5 pt-20 pb-8">
-        <p ref={labelRef} className="font-mono text-xs uppercase tracking-[0.14em] text-orange mb-4">Fleet</p>
+        <p ref={labelRef} className="font-mono text-xs uppercase tracking-[0.14em] text-orange mb-4">Why Delo Trans</p>
 
-        <h2 ref={headlineRef} className="font-heading text-3xl font-bold text-white leading-[1.1] mb-4">
-          Modern equipment. Meticulous maintenance.
+        <h2 ref={headlineRef} className="font-heading text-3xl font-bold text-white leading-[1.1] mb-5">
+          The carrier that works for <span className="text-orange">you.</span>
         </h2>
 
-        <p ref={bodyRef} className="text-sm text-gray-light leading-relaxed mb-6">
-          We invest in reliability—low emissions, high uptime, and strict safety checks on every unit.
-        </p>
+        {/* Reasons list */}
+        <div ref={bodyRef} className="flex flex-col gap-3 mb-6">
+          {reasons.map((r, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <r.icon className="w-4 h-4 text-orange flex-shrink-0" />
+              <span className="text-sm text-white/90">{r.label}</span>
+            </div>
+          ))}
+        </div>
 
         {/* Stat Cards */}
-        <div ref={statsRef} className="grid grid-cols-2 gap-3 mb-7">
+        <div ref={statsRef} className="grid grid-cols-3 gap-2 mb-7">
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="stat-card bg-navy-800/80 backdrop-blur-md rounded-xl p-4 border border-white/10"
+              className="stat-card bg-navy-800/80 backdrop-blur-md rounded-xl p-3 border border-white/10 text-center"
             >
-              <div className="w-9 h-9 rounded-lg bg-orange/10 flex items-center justify-center mb-3">
-                <stat.icon className="w-4 h-4 text-orange" />
-              </div>
-              <p className="font-heading text-2xl font-bold text-white mb-0.5">{stat.value}</p>
-              <p className="text-xs text-gray-light">{stat.label}</p>
+              <p className="font-heading text-xl font-bold text-white mb-0.5">{stat.value}</p>
+              <p className="text-[10px] text-gray-light">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -160,7 +170,7 @@ export default function FleetSection() {
           onClick={openDriverModal}
           className="btn-primary inline-flex items-center justify-center gap-2 w-full"
         >
-          See fleet specs
+          Apply Now
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
@@ -168,31 +178,34 @@ export default function FleetSection() {
       {/* ─── DESKTOP LAYOUT ─── */}
       <div className="hidden lg:block relative z-[3] w-full h-full">
         <div className="absolute left-[6vw] top-[10vh]">
-          <p ref={labelRef} className="font-mono text-xs uppercase tracking-[0.14em] text-orange">Fleet</p>
+          <p ref={labelRef} className="font-mono text-xs uppercase tracking-[0.14em] text-orange">Why Delo Trans</p>
         </div>
 
-        <div className="absolute left-[6vw] top-[16vh] w-[46vw] max-w-2xl">
+        <div className="absolute left-[6vw] top-[16vh] w-[44vw] max-w-2xl">
           <h2 ref={headlineRef} className="font-heading text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-[1.05]">
-            Modern equipment. Meticulous maintenance.
+            The carrier that works <br />for <span className="text-orange">you.</span>
           </h2>
         </div>
 
-        <div className="absolute left-[6vw] top-[38vh] w-[34vw] max-w-lg">
-          <p ref={bodyRef} className="text-base lg:text-lg text-gray-light leading-relaxed">
-            We invest in reliability—low emissions, high uptime, and strict safety checks on every unit.
-          </p>
+        {/* Reasons checklist */}
+        <div ref={bodyRef} className="absolute left-[6vw] top-[38vh] w-[42vw]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-4">
+            {reasons.map((r, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <r.icon className="w-5 h-5 text-orange flex-shrink-0" />
+                <span className="text-base text-white/90 font-medium">{r.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Stats */}
-        <div ref={statsRef} className="absolute left-[6vw] top-[52vh] flex flex-wrap gap-4 lg:gap-6">
+        <div ref={statsRef} className="absolute left-[6vw] top-[72vh] flex flex-wrap gap-4 lg:gap-5">
           {stats.map((stat, index) => (
             <div
               key={index}
               className="stat-card bg-navy-800/80 backdrop-blur-md rounded-xl p-5 lg:p-6 border border-white/10 min-w-[140px] lg:min-w-[160px]"
             >
-              <div className="w-10 h-10 rounded-lg bg-orange/10 flex items-center justify-center mb-4">
-                <stat.icon className="w-5 h-5 text-orange" />
-              </div>
               <p className="font-heading text-2xl lg:text-3xl font-bold text-white mb-1">{stat.value}</p>
               <p className="text-xs text-gray-light">{stat.label}</p>
             </div>
@@ -200,13 +213,13 @@ export default function FleetSection() {
         </div>
 
         {/* CTA */}
-        <div className="absolute left-[6vw] top-[78vh]">
+        <div className="absolute left-[6vw] top-[88vh]">
           <button
             ref={ctaRef}
             onClick={openDriverModal}
             className="btn-primary inline-flex items-center gap-2"
           >
-            See fleet specs
+            Apply Now — Get $1,000 Bonus
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

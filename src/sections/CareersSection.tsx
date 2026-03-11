@@ -1,16 +1,16 @@
 import { useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, DollarSign, Truck, Headphones, TrendingUp } from 'lucide-react';
+import { ArrowRight, DollarSign, Truck, MapPin, ChevronDown } from 'lucide-react';
 import { useDriverApplication } from '../context/DriverApplicationContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const benefits = [
-  { text: 'Competitive pay + bonuses', icon: DollarSign },
-  { text: 'Modern, well-maintained fleet', icon: Truck },
-  { text: '24/7 dispatch support', icon: Headphones },
-  { text: 'Career progression', icon: TrendingUp },
+const ownerOpStats = [
+  { icon: DollarSign, value: '12%',           label: 'Dispatch Fee' },
+  { icon: DollarSign, value: '$8K–$12K+',     label: 'Gross Per Week' },
+  { icon: Truck,      value: '$2.20–$3.00+',  label: 'Per Mile' },
+  { icon: MapPin,     value: 'Anywhere',      label: 'Start Location' },
 ];
 
 export default function CareersSection() {
@@ -20,7 +20,7 @@ export default function CareersSection() {
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const bodyRef = useRef<HTMLParagraphElement>(null);
   const benefitsRef = useRef<HTMLDivElement>(null);
-  const ctaRef = useRef<HTMLButtonElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
   const { openDriverModal } = useDriverApplication();
 
   useLayoutEffect(() => {
@@ -29,85 +29,32 @@ export default function CareersSection() {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top top',
-          end: '+=130%',
+          end: '+=100%',
           pin: true,
-          scrub: 0.6,
+          scrub: 0.8,
         },
       });
 
-      // ENTRANCE (0-30%)
-      scrollTl.fromTo(
-        bgRef.current,
-        { scale: 1.08, opacity: 0.7 },
-        { scale: 1, opacity: 1, ease: 'none' },
-        0
-      );
+      scrollTl.fromTo(bgRef.current,
+        { scale: 1.15 }, { scale: 1, ease: 'none' }, 0);
 
-      scrollTl.fromTo(
-        [labelRef.current, headlineRef.current],
-        { x: '-16vw', opacity: 0 },
-        { x: 0, opacity: 1, ease: 'none' },
-        0
-      );
+      scrollTl.fromTo([labelRef.current, headlineRef.current],
+        { y: '10vh', opacity: 0 }, { y: 0, opacity: 1, ease: 'power2.out' }, 0.1);
 
-      scrollTl.fromTo(
-        bodyRef.current,
-        { y: '5vh', opacity: 0 },
-        { y: 0, opacity: 1, ease: 'none' },
-        0.1
-      );
+      scrollTl.fromTo(bodyRef.current,
+        { y: '5vh', opacity: 0 }, { y: 0, opacity: 1, ease: 'power2.out' }, 0.2);
 
-      const benefitItems = benefitsRef.current?.querySelectorAll('.benefit-item');
-      if (benefitItems) {
-        scrollTl.fromTo(
-          benefitItems,
-          { x: '-8vw', opacity: 0 },
-          { x: 0, opacity: 1, stagger: 0.04, ease: 'none' },
-          0.15
-        );
+      const items = benefitsRef.current?.querySelectorAll('.benefit-item');
+      if (items) {
+        scrollTl.fromTo(items,
+          { y: '5vh', opacity: 0, scale: 0.95 },
+          { y: 0, opacity: 1, scale: 1, stagger: 0.05, ease: 'power2.out' }, 0.3);
       }
 
-      scrollTl.fromTo(
-        ctaRef.current,
-        { y: '6vh', opacity: 0 },
-        { y: 0, opacity: 1, ease: 'none' },
-        0.2
-      );
+      scrollTl.fromTo(ctaRef.current,
+        { y: '4vh', opacity: 0 }, { y: 0, opacity: 1, ease: 'power2.out' }, 0.5);
 
-      // SETTLE (30-70%): Hold
-
-      // EXIT (70-100%)
-      scrollTl.fromTo(
-        [labelRef.current, headlineRef.current, bodyRef.current],
-        { x: 0, opacity: 1 },
-        { x: '-12vw', opacity: 0, ease: 'power2.in' },
-        0.7
-      );
-
-      if (benefitItems) {
-        scrollTl.fromTo(
-          benefitItems,
-          { x: 0, opacity: 1 },
-          { x: '-6vw', opacity: 0, ease: 'power2.in' },
-          0.72
-        );
-      }
-
-      scrollTl.fromTo(
-        ctaRef.current,
-        { y: 0, opacity: 1 },
-        { y: '6vh', opacity: 0, ease: 'power2.in' },
-        0.75
-      );
-
-      scrollTl.fromTo(
-        bgRef.current,
-        { scale: 1, opacity: 1 },
-        { scale: 1.03, opacity: 0, ease: 'power2.in' },
-        0.7
-      );
     }, sectionRef);
-
     return () => ctx.revert();
   }, []);
 
@@ -115,79 +62,84 @@ export default function CareersSection() {
     <section
       ref={sectionRef}
       id="careers"
-      className="section-pinned bg-navy-900"
+      className="section-pinned bg-[#0A0F1C] relative flex items-center min-h-screen pt-20 overflow-hidden"
     >
-      {/* Background Image */}
-      <div
-        ref={bgRef}
-        className="absolute inset-0 z-[1]"
-      >
-        <img
-          src="/images/careers_driver.jpg"
-          alt="Professional driver"
-          className="w-full h-full object-cover img-industrial"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/70 to-navy-900/50" />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-navy-900/40" />
+      {/* Background */}
+      <div ref={bgRef} className="absolute inset-0 z-[1]">
+        <img src="/images/careers_driver.jpg" alt="Professional driver" className="w-full h-full object-cover opacity-40" />
+        <div className="absolute inset-0 bg-[#0A0F1C]/70 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0F1C] via-transparent to-[#0A0F1C]" />
       </div>
+      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[500px] h-[500px] bg-orange/10 rounded-full blur-[120px] z-[2] pointer-events-none hidden lg:block" />
 
       {/* Content */}
-      <div className="relative z-[3] w-full h-full flex items-center">
-        <div className="absolute left-[6vw] top-[10vh]">
-          <p
-            ref={labelRef}
-            className="font-mono text-xs uppercase tracking-[0.14em] text-orange"
-          >
-            Careers
+      <div className="relative z-[10] w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
+
+        {/* Left: Text */}
+        <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left">
+          <p ref={labelRef} className="font-mono text-xs sm:text-sm uppercase tracking-[0.2em] text-orange mb-4 flex items-center gap-3 justify-center lg:justify-start">
+            <span className="w-8 h-px bg-orange" />
+            Owner Operators
           </p>
-        </div>
 
-        <div className="absolute left-[6vw] top-[16vh] w-[44vw] max-w-2xl">
-          <h2
-            ref={headlineRef}
-            className="font-heading text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-[1.05]"
-          >
-            Drivers wanted. Respect guaranteed.
-          </h2>
-        </div>
+          <h1 ref={headlineRef} className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] tracking-tight mb-4 drop-shadow-xl">
+            If You Run Your Truck<br />Like a Business —<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange to-red-500">We're Your Partner.</span>
+          </h1>
 
-        <div className="absolute left-[6vw] top-[34vh] w-[34vw] max-w-lg">
-          <p
-            ref={bodyRef}
-            className="text-base lg:text-lg text-gray-light leading-relaxed"
-          >
-            Stable routes, modern trucks, and a team that answers the phone when you need help.
+          <p ref={bodyRef} className="text-base sm:text-lg text-gray-300 leading-relaxed max-w-xl mb-2">
+            High rate-per-mile freight only. Profit-focused operations. Driver-first dispatch model. Start anywhere in the U.S.
           </p>
+
+          <div ref={ctaRef} className="mt-6 flex flex-wrap gap-3">
+            <button
+              onClick={openDriverModal}
+              className="group relative inline-flex items-center gap-3 px-8 py-4 bg-orange text-white rounded-full font-medium hover:bg-red-600 transition-all duration-300 shadow-[0_0_20px_rgba(253,10,7,0.3)]"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
+              <span className="relative z-10">Apply Now — Get $1,000 Bonus</span>
+              <div className="relative z-10 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                <ArrowRight className="w-4 h-4 text-white" />
+              </div>
+            </button>
+          </div>
         </div>
 
-        {/* Benefits */}
-        <div
-          ref={benefitsRef}
-          className="absolute left-[6vw] top-[48vh] w-[34vw] max-w-lg grid grid-cols-2 gap-3"
-        >
-          {benefits.map((benefit, index) => (
+        {/* Right: Stats */}
+        <div ref={benefitsRef} className="w-full lg:w-5/12 grid grid-cols-2 gap-4">
+          {ownerOpStats.map((stat, index) => (
             <div
               key={index}
-              className="benefit-item flex items-center gap-3 p-3 bg-navy-800/60 backdrop-blur-sm rounded-lg border border-white/5"
+              className="benefit-item group relative bg-navy-900/60 backdrop-blur-xl rounded-2xl border border-white/5 p-5 hover:bg-navy-800/80 hover:border-orange/20 transition-all duration-500 shadow-xl overflow-hidden"
             >
-              <div className="w-8 h-8 rounded-lg bg-orange/10 flex items-center justify-center flex-shrink-0">
-                <benefit.icon className="w-4 h-4 text-orange" />
+              <div className="absolute -inset-px bg-gradient-to-br from-orange/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none" />
+              <div className="relative z-10 flex flex-col items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-orange/10 border border-orange/20 flex items-center justify-center">
+                  <stat.icon className="w-5 h-5 text-orange" />
+                </div>
+                <p className="font-heading text-2xl font-bold text-white">{stat.value}</p>
+                <p className="text-xs text-gray-light">{stat.label}</p>
               </div>
-              <span className="text-sm text-white">{benefit.text}</span>
             </div>
           ))}
-        </div>
 
-        {/* CTA */}
-        <div className="absolute left-[6vw] top-[74vh]">
-          <button
-            ref={ctaRef}
-            onClick={openDriverModal}
-            className="btn-primary inline-flex items-center gap-2"
-          >
-            Apply now
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          {/* Company Drivers teaser card */}
+          <div className="benefit-item col-span-2 bg-blue-500/5 border border-blue-500/20 rounded-2xl p-5">
+            <p className="text-xs font-mono uppercase tracking-widest text-blue-400 mb-1">Company Drivers</p>
+            <p className="text-sm font-semibold text-white mb-0.5">Drive With a Carrier That Respects Your Time</p>
+            <p className="text-xs text-gray-light">Consistent loads · Supportive dispatch · Nationwide routes</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Scroll Down Indicator */}
+      <div className="absolute bottom-28 sm:bottom-8 left-1/2 -translate-x-1/2 z-[50] flex flex-col items-center gap-2 pointer-events-none">
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/70">Scroll</span>
+        <div className="relative flex items-center justify-center">
+          <span className="absolute w-10 h-10 rounded-full border border-orange/40 animate-ping opacity-70" />
+          <div className="w-8 h-8 rounded-full bg-navy-800/90 backdrop-blur-sm border border-orange/50 flex items-center justify-center animate-bounce">
+            <ChevronDown className="w-4 h-4 text-orange shadow-[0_0_10px_rgba(253,10,7,0.3)]" />
+          </div>
         </div>
       </div>
     </section>
