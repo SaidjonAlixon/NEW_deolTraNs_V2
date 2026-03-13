@@ -67,6 +67,8 @@ app.post('/api/applications', async (req: Request, res: Response) => {
       `Files:\n${!files || files.length === 0 ? 'No files attached.' : files.join('\n')}`;
 
   const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s
 
   try {
     const tgRes = await fetch(telegramUrl, {
@@ -74,9 +76,11 @@ app.post('/api/applications', async (req: Request, res: Response) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         chat_id: chatId,
-        text,
+        text: text.slice(0, 4096),
       }),
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
 
     if (!tgRes.ok) {
       const errBody = await tgRes.text();
@@ -85,9 +89,11 @@ app.post('/api/applications', async (req: Request, res: Response) => {
     }
 
     return res.json({ success: true });
-  } catch (err) {
+  } catch (err: any) {
+    clearTimeout(timeoutId);
     console.error('Telegram request failed', err);
-    return res.status(500).json({ success: false, message: 'Internal server error' });
+    const msg = err?.name === 'AbortError' ? 'Telegram API timeout' : 'Internal server error';
+    return res.status(504).json({ success: false, message: msg });
   }
 });
 

@@ -172,8 +172,10 @@ export default function DriverApplicationModal() {
       }
 
       const fullText = lines.join('\n');
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 35000);
 
-      await fetch('/api/applications', {
+      const res = await fetch('/api/applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -181,7 +183,14 @@ export default function DriverApplicationModal() {
           phone: formData.phone || '',
           fullText,
         }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.message || `Server error (${res.status})`);
+      }
 
       closeDriverModal();
     } catch (error) {
