@@ -13,6 +13,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Drivers from './pages/Drivers';
 import Contact from './pages/Contact';
+import ApplicationForm from './components/ApplicationForm';
 
 // Import Context/Modal
 import { DriverApplicationProvider } from './context/DriverApplicationContext';
@@ -53,6 +54,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/drivers" element={<Drivers />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/test-upload" element={<ApplicationForm />} />
           </Routes>
         </main>
 

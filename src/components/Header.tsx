@@ -18,8 +18,6 @@ export default function Header() {
   const location = useLocation();
   const { openDriverModal } = useDriverApplication();
 
-  const [navStyleIndex, setNavStyleIndex] = useState(0);
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 100);
@@ -46,15 +44,6 @@ export default function Header() {
     }
   }, []);
 
-  useEffect(() => {
-    const styleInterval = setInterval(() => {
-      setNavStyleIndex((prev) => (prev + 1) % 5);
-    }, 3000);
-    return () => clearInterval(styleInterval);
-  }, []);
-
-
-
   return (
     <>
       <style>{`
@@ -68,99 +57,85 @@ export default function Header() {
         }
       `}</style>
       <header
-        className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-500 ${isScrolled || location.pathname !== '/'
-          ? 'bg-navy-900/90 backdrop-blur-lg border-b border-white/5'
-          : 'bg-transparent'
-          }`}
+        className="fixed top-2 lg:top-4 left-0 right-0 z-[1000] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
       >
-        <div className="w-full px-6 lg:px-12">
-          <div className="flex items-center justify-between h-20 lg:h-32">
+        <div className="max-w-[1920px] mx-auto w-full px-3 lg:px-8">
+          <div className={`flex items-center justify-between relative transition-all duration-500 rounded-2xl lg:rounded-3xl ${isScrolled || location.pathname !== '/' ? 'bg-[#0f172a]/90 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] h-14 lg:h-[76px] px-4 lg:px-8' : 'bg-[#0f172a]/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none border border-white/5 lg:border-transparent h-16 lg:h-[90px] px-4 lg:px-4'}`}>
             {/* Logo */}
             <Link
               to="/"
-              className="font-heading font-bold text-xl lg:text-2xl text-white tracking-tight hover:scale-105 transition-transform"
+              className="flex-shrink-0 z-50 flex items-center group relative h-full"
               onClick={() => window.scrollTo(0, 0)}
             >
-              <img
-                ref={logoRef}
-                src="/images/logo.png"
-                alt="DELO TRANS INC"
-                className="h-16 lg:h-28 w-auto"
-              />
+              <div className="relative h-14 lg:h-20 w-[140px] lg:w-[180px] flex items-center">
+                <img
+                  ref={logoRef}
+                  src="/images/logo.png"
+                  alt="DELO TRANS INC"
+                  className={`absolute left-0 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)] transition-all duration-500 ease-out hover:scale-[1.03] z-50 origin-left ${isScrolled || location.pathname !== '/' ? 'h-10 lg:h-16 top-2 lg:top-2' : 'h-14 lg:h-[110px] top-[4px] lg:top-[14px]'}`}
+                />
+              </div>
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-10">
-              {navLinks.map((link, index) => {
+            {/* Desktop Navigation - Floating Pill */}
+            <nav className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center bg-white/[0.03] backdrop-blur-md border border-white/5 rounded-full p-1.5 shadow-inner shadow-white/5">
+              {navLinks.map((link) => {
                 const isCurrentPage = location.pathname === link.path;
-                const isRotatingHighlight = index === navStyleIndex % navLinks.length;
-                
-                // Mintaqaviy matn rangi va o'lcham animatsiyalari
-                const getTextColorAndSize = () => {
-                  if (isCurrentPage) {
-                      return 'text-[#005E99] drop-shadow-[0_0_8px_rgba(0,94,153,0.6)] scale-110 font-bold'; // Yirik, logodagi ko'k, glowing
-                  }
-                  if (isRotatingHighlight) {
-                      return 'text-[#fd0a07] drop-shadow-[0_0_8px_rgba(253,10,7,0.6)] scale-110 font-bold'; // Yirik, qizil, glowing
-                  }
-                  return 'text-white/80 scale-100 hover:text-white'; // Default
-                };
 
                 return (
                   <Link
                     key={link.label}
                     to={link.path}
-                    className={`text-base lg:text-lg transition-all duration-500 relative group font-bold tracking-wider px-4 py-2 ${getTextColorAndSize()}`}
+                    className="relative group px-6 py-2.5 flex items-center justify-center transition-all duration-500 rounded-full overflow-hidden"
                   >
-                    <span className="relative z-10">{link.label}</span>
+                    {/* Hover Background Layer */}
+                    <span className={`absolute inset-0 transition-opacity duration-300 rounded-full ${isCurrentPage ? 'bg-white/10 opacity-100' : 'bg-white/5 opacity-0 group-hover:opacity-100'}`} />
                     
-                    {/* Bitta tanlangan (ko'k) ramka, va aylanib turuvchi (qizil) ramka yonib-o'chishi uchun */}
-                    <span className={`absolute inset-0 border transition-all duration-500 pointer-events-none rounded ${
-                        isCurrentPage ? 'border-[#005E99] bg-[#005E99]/5 opacity-100 scale-100 object-cover' : 
-                        isRotatingHighlight ? 'border-red-500 bg-red-500/5 opacity-100 scale-100 object-cover' : 'border-transparent opacity-0 scale-95'
-                    }`} />
+                    <span className={`relative text-[13px] font-bold tracking-[0.1em] transition-all duration-300 ${isCurrentPage ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-slate-300 group-hover:text-white'
+                      }`}>
+                      {link.label}
+                    </span>
+                    
+                    {/* Active Indicator Line rather than dot, but sophisticated */}
+                    {isCurrentPage && (
+                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-[2px] bg-red-500 rounded-t-lg shadow-[0_-2px_8px_rgba(239,68,68,0.8)]" />
+                    )}
                   </Link>
                 );
               })}
             </nav>
 
-            {/* CTA Button */}
-            <div className="hidden lg:flex items-center gap-4">
+            {/* CTA Elements */}
+            <div className="hidden lg:flex items-center gap-5 z-10 relative">
               <a
                 href="tel:+998901234567"
-                className="flex items-center gap-2 text-sm text-gray-light hover:text-white transition-colors group"
+                className="flex items-center gap-2 group bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 pr-4 pl-1.5 py-1.5 rounded-full transition-all duration-300"
               >
-                <Phone className="w-4 h-4 group-hover:animate-pulse group-hover:text-blue-400 transition-colors" />
-                <span className="font-mono flex items-center">
-                  {'+998 90 123 45 67'.split('').map((char, index) => (
-                    <span
-                      key={index}
-                      className="wave-char inline-block"
-                      style={{ 
-                        animationDelay: `${index * 0.04}s`,
-                        minWidth: char === ' ' ? '0.3em' : 'auto' 
-                      }}
-                    >
-                      {char}
-                    </span>
-                  ))}
+                <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                  <Phone className="w-[14px] h-[14px] text-red-500" />
+                </div>
+                <span className="text-[13px] font-semibold text-slate-200 group-hover:text-white transition-colors">
+                  +998 90 123 45 67
                 </span>
               </a>
               <button
                 onClick={openDriverModal}
-                className="btn-primary text-sm ml-2"
+                className="relative overflow-hidden group bg-red-600 text-white px-7 py-3.5 rounded-full text-[13px] font-bold tracking-wider transition-all duration-300 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:-translate-y-0.5"
               >
-                Apply now
+                <span className="relative z-10">APPLY NOW</span>
+                <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-red-600 via-white/20 to-red-600 -translate-x-[150%] skew-x-[-20deg] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
               </button>
             </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              className="lg:hidden text-white p-2"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            {/* Mobile Menu Button Container */}
+            <div className="flex lg:hidden items-center z-[110] relative">
+              <button
+                className="relative p-2 text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-colors outline-none"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </div>
           </div>
         </div>
       </header>

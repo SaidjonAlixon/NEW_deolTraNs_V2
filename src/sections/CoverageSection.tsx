@@ -6,26 +6,49 @@ import { useDriverApplication } from '../context/DriverApplicationContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const routes = [
+const routesLeft = [
   {
-    from: 'Uzbekistan',
-    to: 'Türkiye',
-    description: 'Regular departures, predictable lead times.',
+    from: 'Germany',
+    to: 'France',
+    description: 'High-frequency shuttles between Ruhr area and Paris region.',
     icon: Route,
   },
   {
-    from: 'Uzbekistan',
-    to: 'Europe',
-    description: 'Via Türkiye and intermodal links.',
+    from: 'Poland',
+    to: 'Benelux',
+    description: 'Regular FTL capacity into Belgium and the Netherlands.',
     icon: Globe,
   },
   {
-    from: 'Uzbekistan',
-    to: 'China / CIS',
-    description: 'Border-clearance and consolidated options.',
+    from: 'Austria',
+    to: 'Italy',
+    description: 'Alpine crossings linking Vienna, Milan, and Northern Italy.',
     icon: MapPin,
   },
 ];
+
+const routesRight = [
+  {
+    from: 'Spain',
+    to: 'Germany',
+    description: 'Automotive and retail flows between Iberia and Germany.',
+    icon: Globe,
+  },
+  {
+    from: 'France',
+    to: 'United Kingdom',
+    description: 'Channel crossings via Calais–Dover and other gateways.',
+    icon: Route,
+  },
+  {
+    from: 'Italy',
+    to: 'Scandinavia',
+    description: 'North–south corridors into Sweden, Norway, and Denmark.',
+    icon: Globe,
+  },
+];
+
+const routes = [...routesLeft, ...routesRight];
 
 export default function CoverageSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -210,43 +233,49 @@ export default function CoverageSection() {
           ref={routesRef}
           className="absolute left-[6vw] right-[6vw] top-[44vh] grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-8 overflow-hidden lg:overflow-visible pb-4"
         >
-          {routes.flatMap((route, index) => [
-            /* Left Column Item (Red) */
-            <div
-              key={`left-${index}`}
-              className="route-card group flex items-center gap-4 p-4 bg-navy-800/60 backdrop-blur-xl rounded-xl border border-white/5 hover:border-[#fd0a07]/50 hover:bg-navy-800/80 hover:shadow-[0_0_15px_rgba(253,10,7,0.3)] transition-all duration-300"
-            >
-              <div className="w-10 h-10 rounded-lg bg-[#fd0a07]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#fd0a07]/20 transition-colors">
-                <route.icon className="w-5 h-5 text-[#fd0a07]" />
-              </div>
-              <div className="flex-1 text-left">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-heading font-semibold text-white">{route.from}</span>
-                  <span className="text-[#fd0a07]">⇄</span>
-                  <span className="font-heading font-semibold text-white">{route.to}</span>
+          {/* Left column – red cards */}
+          <div className="space-y-4">
+            {routesLeft.map((route, index) => (
+              <div
+                key={`left-${index}`}
+                className="route-card group flex items-center gap-4 p-4 bg-navy-800/60 backdrop-blur-xl rounded-xl border border-white/5 hover:border-[#fd0a07]/50 hover:bg-navy-800/80 hover:shadow-[0_0_15px_rgba(253,10,7,0.3)] transition-all duration-300"
+              >
+                <div className="w-10 h-10 rounded-lg bg-[#fd0a07]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#fd0a07]/20 transition-colors">
+                  <route.icon className="w-5 h-5 text-[#fd0a07]" />
                 </div>
-                <p className="text-sm text-gray-light leading-snug">{route.description}</p>
-              </div>
-            </div>,
-            
-            /* Right Column Item (Blue) */
-            <div
-              key={`right-${index}`}
-              className="route-card group flex items-center gap-4 p-4 bg-navy-800/60 backdrop-blur-xl rounded-xl border border-white/5 hover:border-[#005E99]/50 hover:bg-navy-800/80 hover:shadow-[0_0_15px_rgba(0,94,153,0.3)] transition-all duration-300"
-            >
-              <div className="w-10 h-10 rounded-lg bg-[#005E99]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#005E99]/20 transition-colors">
-                <route.icon className="w-5 h-5 text-[#005E99]" />
-              </div>
-              <div className="flex-1 text-left">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-heading font-semibold text-white">{route.from}</span>
-                  <span className="text-[#005E99]">⇄</span>
-                  <span className="font-heading font-semibold text-white">{route.to}</span>
+                <div className="flex-1 text-left">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-heading font-semibold text-white">{route.from}</span>
+                    <span className="text-[#fd0a07]">⇄</span>
+                    <span className="font-heading font-semibold text-white">{route.to}</span>
+                  </div>
+                  <p className="text-sm text-gray-light leading-snug">{route.description}</p>
                 </div>
-                <p className="text-sm text-gray-light leading-snug">{route.description}</p>
               </div>
-            </div>
-          ])}
+            ))}
+          </div>
+
+          {/* Right column – blue cards */}
+          <div className="space-y-4">
+            {routesRight.map((route, index) => (
+              <div
+                key={`right-${index}`}
+                className="route-card group flex items-center gap-4 p-4 bg-navy-800/60 backdrop-blur-xl rounded-xl border border-white/5 hover:border-[#005E99]/50 hover:bg-navy-800/80 hover:shadow-[0_0_15px_rgba(0,94,153,0.3)] transition-all duration-300"
+              >
+                <div className="w-10 h-10 rounded-lg bg-[#005E99]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#005E99]/20 transition-colors">
+                  <route.icon className="w-5 h-5 text-[#005E99]" />
+                </div>
+                <div className="flex-1 text-left">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-heading font-semibold text-white">{route.from}</span>
+                    <span className="text-[#005E99]">⇄</span>
+                    <span className="font-heading font-semibold text-white">{route.to}</span>
+                  </div>
+                  <p className="text-sm text-gray-light leading-snug">{route.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* CTA */}

@@ -140,19 +140,19 @@ export default function SafetySection() {
           </p>
         </div>
 
-        <div className="absolute left-[6vw] top-[16vh] w-[40vw] max-w-xl">
+        <div className="absolute left-[6vw] top-[14vh] lg:top-[16vh] w-[88vw] lg:w-[40vw] max-w-xl">
           <h2
             ref={headlineRef}
-            className="font-heading text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-[1.05]"
+            className="font-heading text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold text-white leading-[1.05]"
           >
             Safety is standard.
           </h2>
         </div>
 
-        <div className="absolute left-[6vw] top-[28vh] w-[34vw] max-w-lg">
+        <div className="absolute left-[6vw] top-[24vh] lg:top-[28vh] w-[88vw] lg:w-[34vw] max-w-lg">
           <p
             ref={bodyRef}
-            className="text-base lg:text-lg text-gray-light leading-relaxed"
+            className="text-[15px] sm:text-base lg:text-lg text-gray-light leading-relaxed"
           >
             Certified processes, trained drivers, and transparent accountability—on every shipment.
           </p>
@@ -161,23 +161,23 @@ export default function SafetySection() {
         {/* Checklist */}
         <div
           ref={checklistRef}
-          className="absolute left-[6vw] top-[44vh] w-[34vw] max-w-lg space-y-3"
+          className="absolute left-[6vw] top-[36vh] lg:top-[44vh] w-[88vw] lg:w-[34vw] max-w-lg space-y-2 lg:space-y-3"
         >
           {checklist.map((item, index) => (
             <div
               key={index}
-              className="check-item flex items-center gap-3 p-3 bg-navy-800/60 backdrop-blur-sm rounded-lg border border-white/5"
+              className="check-item flex items-center gap-3 p-2.5 lg:p-3 bg-navy-800/60 backdrop-blur-sm rounded-lg border border-white/5"
             >
               <div className="w-8 h-8 rounded-lg bg-orange/10 flex items-center justify-center flex-shrink-0">
                 <item.icon className="w-4 h-4 text-orange" />
               </div>
-              <span className="text-sm text-white">{item.text}</span>
+              <span className="text-sm font-medium text-white">{item.text}</span>
             </div>
           ))}
         </div>
 
         {/* CTA */}
-        <div className="absolute left-[6vw] top-[76vh]">
+        <div className="absolute left-[6vw] bottom-[10vh] lg:bottom-auto lg:top-[76vh]">
           <button
             ref={ctaRef}
             onClick={() => alert('Safety policy download coming soon!')}

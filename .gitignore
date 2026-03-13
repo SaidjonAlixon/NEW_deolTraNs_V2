@@ -20,6 +20,11 @@ dist-ssr
 .DS_Store
 *.suo
 *.ntvs*
+
+# Environment
+.env
+.env.*
+!.env.example
 *.njsproj
 *.sln
 *.sw?

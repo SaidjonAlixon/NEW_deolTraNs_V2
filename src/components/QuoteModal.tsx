@@ -86,8 +86,8 @@ export default function QuoteModal() {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && closeQuoteModal()}>
       <DialogPortal>
-        <DialogOverlay className="bg-navy-900/80 backdrop-blur-sm z-[150]" />
-        <DialogContent className="max-w-2xl w-full p-0 border-none bg-transparent shadow-none z-[160] overflow-hidden">
+        <DialogOverlay className="bg-navy-900/80 backdrop-blur-sm z-[2000]" />
+        <DialogContent className="max-w-2xl w-full p-0 border-none bg-transparent shadow-none z-[2010] overflow-hidden">
           <div className="relative bg-navy-800 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
             
             {/* Header / Progress Bar */}

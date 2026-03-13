@@ -8,6 +8,7 @@ import {
 import { useDriverApplication } from '../context/DriverApplicationContext';
 import { cn } from '../lib/utils';
 import { Dialog, DialogContent, DialogOverlay, DialogPortal } from './ui/dialog';
+import { upload } from '@vercel/blob/client';
 
 const steps = [
   { id: 1, name: 'Position', icon: Truck },
@@ -48,6 +49,19 @@ export default function DriverApplicationModal() {
   const [direction, setDirection] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const resumeInputRef = useRef<HTMLInputElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const getFileLabel = (value: string) => {
+    if (!value) return '';
+    if (!value.startsWith('http')) return value;
+    try {
+      const url = new URL(value);
+      const parts = url.pathname.split('/');
+      return parts[parts.length - 1] || value;
+    } catch {
+      return value;
+    }
+  };
 
   const [formData, setFormData] = useState({
     position: '',
@@ -58,8 +72,17 @@ export default function DriverApplicationModal() {
     address: '',
     cdlType: '',
     yearsExperience: '',
-    ssn: '',
+    ssnNumber: '',
+    ssnImageFileName: '',
     licenseFileName: '',
+    licenseFrontFileName: '',
+    licenseBackFileName: '',
+    medicalCardFileName: '',
+    registrationCardFileName: '',
+    annualInspectionFileName: '',
+    truckEngineFileName: '',
+    truckUnderEngineFileName: '',
+    truckTiresFileName: '',
     resumeFileName: '',
     termsAccepted: false,
   });
@@ -87,6 +110,89 @@ export default function DriverApplicationModal() {
     }
   };
 
+  const handleSubmit = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    try {
+      const positionTitle =
+        positions.find((p) => p.id === formData.position)?.title || formData.position;
+      const fullName = `${formData.firstName || ''} ${formData.lastName || ''}`.trim();
+
+      const docLabels: Record<string, string> = {
+        ssnImageFileName: 'SSN (Image copy)',
+        licenseFrontFileName: 'Driver License (Front)',
+        licenseBackFileName: 'Driver License (Back)',
+        medicalCardFileName: 'Medical Card',
+        registrationCardFileName: 'Registration Card (CAP Card)',
+        annualInspectionFileName: 'Annual Truck Inspection',
+        truckEngineFileName: 'Truck Photo (Engine)',
+        truckUnderEngineFileName: 'Truck Photo (Under Engine)',
+        truckTiresFileName: 'Truck Photo (Tires)',
+        resumeFileName: 'Resume / Document',
+      };
+
+      const documentFields = [
+        'ssnImageFileName',
+        'licenseFrontFileName',
+        'licenseBackFileName',
+        'medicalCardFileName',
+        'registrationCardFileName',
+        'annualInspectionFileName',
+        'truckEngineFileName',
+        'truckUnderEngineFileName',
+        'truckTiresFileName',
+        'resumeFileName',
+      ] as const;
+
+      const documents: { label: string; url: string }[] = [];
+      for (const field of documentFields) {
+        const url = formData[field];
+        if (url && typeof url === 'string' && url.startsWith('http')) {
+          documents.push({ label: docLabels[field] || field, url });
+        }
+      }
+
+      const lines: string[] = [
+        '🚀 New Driver Application',
+        '',
+        `Position: ${positionTitle || '-'}`,
+        `Name: ${fullName || '-'}`,
+        `Phone: ${formData.phone || '-'}`,
+        `Email: ${formData.email || '-'}`,
+        `Address: ${formData.address || '-'}`,
+        `Experience: ${formData.yearsExperience ? `${formData.yearsExperience} years` : '-'}`,
+        `CDL Type: ${formData.cdlType || '-'}`,
+        formData.ssnNumber ? `SSN / EID: ${formData.ssnNumber}` : null,
+      ].filter(Boolean) as string[];
+
+      lines.push('');
+      lines.push(`Documents: 📎 ${documents.length} file(s)`);
+      for (const d of documents) {
+        lines.push(`📎 ${d.label}: ${d.url}`);
+      }
+
+      const fullText = lines.join('\n');
+
+      await fetch('/api/applications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: fullName || 'Unknown',
+          phone: formData.phone || '',
+          fullText,
+        }),
+      });
+
+      closeDriverModal();
+    } catch (error) {
+      console.error('Failed to submit driver application', error);
+      alert('Application could not be sent. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     if (type === 'checkbox') {
@@ -96,10 +202,60 @@ export default function DriverApplicationModal() {
     }
   };
 
-  const handleFileChange = (field: 'licenseFileName' | 'resumeFileName') => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    file: File,
+    field:
+      | 'licenseFileName'
+      | 'resumeFileName'
+      | 'ssnImageFileName'
+      | 'licenseFrontFileName'
+      | 'licenseBackFileName'
+      | 'medicalCardFileName'
+      | 'registrationCardFileName'
+      | 'annualInspectionFileName'
+      | 'truckEngineFileName'
+      | 'truckUnderEngineFileName'
+      | 'truckTiresFileName'
+  ) => {
+    if (file.size > 10 * 1024 * 1024) {
+      alert(`File "${file.name}" is larger than 10MB`);
+      return;
+    }
+
+    const blob = await upload(file.name, file, {
+      access: 'public',
+      handleUploadUrl: '/api/blob-upload',
+    });
+
+    setFormData(prev => ({ ...prev, [field]: blob.url }));
+  };
+
+  const handleFileChange = (
+    field:
+      | 'licenseFileName'
+      | 'resumeFileName'
+      | 'ssnImageFileName'
+      | 'licenseFrontFileName'
+      | 'licenseBackFileName'
+      | 'medicalCardFileName'
+      | 'registrationCardFileName'
+      | 'annualInspectionFileName'
+      | 'truckEngineFileName'
+      | 'truckUnderEngineFileName'
+      | 'truckTiresFileName'
+  ) => async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData(prev => ({ ...prev, [field]: file.name }));
+      await handleFileUpload(file, field);
+    }
+  };
+
+  const handleResumeDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      await handleFileUpload(file, 'resumeFileName');
     }
   };
 
@@ -113,11 +269,11 @@ export default function DriverApplicationModal() {
     <Dialog open={isOpen} onOpenChange={(open) => !open && closeDriverModal()}>
       <DialogPortal>
         {/* Backdrop */}
-        <DialogOverlay className="z-[200] bg-black/70 backdrop-blur-md" />
+        <DialogOverlay className="z-[2000] bg-black/70 backdrop-blur-md" />
         
         <DialogContent 
           showCloseButton={false}
-          className="z-[210] max-w-xl w-full p-0 border-none bg-transparent shadow-none overflow-hidden"
+          className="z-[2010] max-w-xl w-full p-0 border-none bg-transparent shadow-none overflow-hidden"
         >
           <div className="relative rounded-3xl overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.8)] flex flex-col max-h-[92vh]">
             
@@ -327,11 +483,13 @@ export default function DriverApplicationModal() {
                       </div>
                     )}
 
-                    {/* STEP 3: Experience */}
+                    {/* STEP 3: Experience / Documents */}
                     {currentStep === 3 && (
+                      formData.position === 'company-driver' ? (
                       <div className="space-y-5">
+                        {/* CDL type */}
                         <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">CDL License Type</label>
+                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Choose your CDL type</label>
                           <div className="relative">
                             <select
                               name="cdlType"
@@ -347,62 +505,170 @@ export default function DriverApplicationModal() {
                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                           </div>
                         </div>
-                        
+
+                        {/* SSN / EID */}
                         <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Years of Commercial Driving Experience</label>
-                          <div className="flex gap-2">
-                            {['0-1', '1-3', '3-5', '5-10', '10+'].map(yr => (
-                              <button
-                                key={yr}
-                                onClick={() => setFormData(prev => ({ ...prev, yearsExperience: yr }))}
-                                className={cn(
-                                  "flex-1 py-2.5 rounded-xl text-sm font-bold border transition-all",
-                                  formData.yearsExperience === yr
-                                    ? "bg-red-600 border-red-600 text-white shadow-[0_0_10px_rgba(220,38,38,0.3)]"
-                                    : "bg-white/5 border-white/10 text-gray-400 hover:border-white/20"
-                                )}
-                              >
-                                {yr}
-                              </button>
-                            ))}
-                          </div>
+                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Your SSN or EID number</label>
+                          <input
+                            name="ssnNumber"
+                            value={formData.ssnNumber}
+                            onChange={handleInputChange}
+                            placeholder="Your SSN or EID number"
+                            className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-red-500/50 transition-all placeholder:text-gray-600"
+                          />
                         </div>
 
-                        {/* Driver License Upload */}
+                        {/* SSN image copy */}
                         <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Driver License (Front & Back)</label>
-                          <button
-                            onClick={() => fileInputRef.current?.click()}
+                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">SSN (Image copy)</label>
+                          <label
                             className={cn(
-                              "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4",
-                              formData.licenseFileName 
-                                ? "border-red-500/50 bg-red-600/5" 
+                              "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
+                              formData.ssnImageFileName
+                                ? "border-red-500/50 bg-red-600/5"
                                 : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                             )}
                           >
+                            <input
+                              type="file"
+                              className="hidden"
+                              accept=".pdf,.jpg,.jpeg,.png"
+                              onChange={handleFileChange('ssnImageFileName')}
+                            />
                             <div className={cn(
                               "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                              formData.licenseFileName ? "bg-red-600" : "bg-white/10"
+                              formData.ssnImageFileName ? "bg-red-600" : "bg-white/10"
                             )}>
-                              {formData.licenseFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                              {formData.ssnImageFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
                             </div>
                             <div className="text-left">
-                              <p className={cn("text-sm font-medium", formData.licenseFileName ? "text-white" : "text-gray-400")}>
-                                {formData.licenseFileName || "Click to upload"}
+                              <p className={cn("text-sm font-medium", formData.ssnImageFileName ? "text-white" : "text-gray-400")}>
+                                {formData.ssnImageFileName ? getFileLabel(formData.ssnImageFileName) : "Choose file"}
                               </p>
                               <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
                             </div>
-                          </button>
-                          <input ref={fileInputRef} type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileChange('licenseFileName')} />
+                          </label>
                         </div>
 
-                        {/* Resume Upload */}
+                        {/* Years experience (numeric) */}
                         <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Resume / Work History <span className="text-gray-600 normal-case">(optional)</span></label>
-                          <button
-                            onClick={() => resumeInputRef.current?.click()}
+                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Years of commercial driving experience?</label>
+                          <input
+                            name="yearsExperience"
+                            value={formData.yearsExperience}
+                            onChange={handleInputChange}
+                            type="number"
+                            min={0}
+                            className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-red-500/50 transition-all placeholder:text-gray-600"
+                          />
+                        </div>
+
+                        {/* Driver License (both sides) */}
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Driver License (Both Sides)</label>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <label
+                              className={cn(
+                                "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-3 cursor-pointer",
+                                formData.licenseFrontFileName
+                                  ? "border-red-500/50 bg-red-600/5"
+                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                              )}
+                            >
+                              <input
+                                type="file"
+                                className="hidden"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                onChange={handleFileChange('licenseFrontFileName')}
+                              />
+                              <div className={cn(
+                                "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
+                                formData.licenseFrontFileName ? "bg-red-600" : "bg-white/10"
+                              )}>
+                                {formData.licenseFrontFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                              </div>
+                              <div className="text-left">
+                                <p className={cn("text-xs font-medium", formData.licenseFrontFileName ? "text-white" : "text-gray-400")}>
+                                  {formData.licenseFrontFileName ? getFileLabel(formData.licenseFrontFileName) : "Front side"}
+                                </p>
+                                <p className="text-[11px] text-gray-600">PDF, JPG, PNG</p>
+                              </div>
+                            </label>
+
+                            <label
+                              className={cn(
+                                "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-3 cursor-pointer",
+                                formData.licenseBackFileName
+                                  ? "border-red-500/50 bg-red-600/5"
+                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                              )}
+                            >
+                              <input
+                                type="file"
+                                className="hidden"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                onChange={handleFileChange('licenseBackFileName')}
+                              />
+                              <div className={cn(
+                                "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
+                                formData.licenseBackFileName ? "bg-red-600" : "bg-white/10"
+                              )}>
+                                {formData.licenseBackFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                              </div>
+                              <div className="text-left">
+                                <p className={cn("text-xs font-medium", formData.licenseBackFileName ? "text-white" : "text-gray-400")}>
+                                  {formData.licenseBackFileName ? getFileLabel(formData.licenseBackFileName) : "Back side"}
+                                </p>
+                                <p className="text-[11px] text-gray-600">PDF, JPG, PNG</p>
+                              </div>
+                            </label>
+                          </div>
+                        </div>
+
+                        {/* Medical Card */}
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Medical Card</label>
+                          <label
                             className={cn(
-                              "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4",
+                              "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
+                              formData.medicalCardFileName
+                                ? "border-red-500/50 bg-red-600/5"
+                                : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                            )}
+                          >
+                            <input
+                              type="file"
+                              className="hidden"
+                              accept=".pdf,.jpg,.jpeg,.png"
+                              onChange={handleFileChange('medicalCardFileName')}
+                            />
+                            <div className={cn(
+                              "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
+                              formData.medicalCardFileName ? "bg-red-600" : "bg-white/10"
+                            )}>
+                              {formData.medicalCardFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                            </div>
+                            <div className="text-left">
+                              <p className={cn("text-sm font-medium", formData.medicalCardFileName ? "text-white" : "text-gray-400")}>
+                                {formData.medicalCardFileName ? getFileLabel(formData.medicalCardFileName) : "Choose file"}
+                              </p>
+                              <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
+                            </div>
+                          </label>
+                        </div>
+
+                        {/* Resume Upload (optional) with drag & drop */}
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Resume / Document <span className="text-gray-600 normal-case">(optional)</span></label>
+                          <div
+                            onClick={() => resumeInputRef.current?.click()}
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                            onDrop={handleResumeDrop}
+                            className={cn(
+                              "w-full py-6 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                               formData.resumeFileName 
                                 ? "border-red-500/50 bg-red-600/5" 
                                 : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
@@ -416,14 +682,476 @@ export default function DriverApplicationModal() {
                             </div>
                             <div className="text-left">
                               <p className={cn("text-sm font-medium", formData.resumeFileName ? "text-white" : "text-gray-400")}>
-                                {formData.resumeFileName || "Attach resume (optional)"}
+                                {formData.resumeFileName ? getFileLabel(formData.resumeFileName) : "Attach resume (optional)"}
                               </p>
-                              <p className="text-xs text-gray-600">PDF, DOCX up to 10MB</p>
+                              <p className="text-xs text-gray-600">PDF, DOCX up to 10MB — click, or drag and drop here</p>
                             </div>
-                          </button>
+                          </div>
                           <input ref={resumeInputRef} type="file" className="hidden" accept=".pdf,.doc,.docx" onChange={handleFileChange('resumeFileName')} />
                         </div>
                       </div>
+                      ) : formData.position === 'owner-operator' ? (
+                        <div className="space-y-5">
+                          {/* Owner Operator – Documents & Truck */}
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Your SSN or EID number</label>
+                            <input
+                              name="ssnNumber"
+                              value={formData.ssnNumber}
+                              onChange={handleInputChange}
+                              placeholder="Your SSN or EID number"
+                              className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-red-500/50 transition-all placeholder:text-gray-600"
+                            />
+                          </div>
+
+                          {/* SSN image copy */}
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">SSN (Image copy)</label>
+                            <label
+                              className={cn(
+                                "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
+                                formData.ssnImageFileName
+                                  ? "border-red-500/50 bg-red-600/5"
+                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                              )}
+                            >
+                              <input
+                                type="file"
+                                className="hidden"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                onChange={handleFileChange('ssnImageFileName')}
+                              />
+                              <div className={cn(
+                                "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
+                                formData.ssnImageFileName ? "bg-red-600" : "bg-white/10"
+                              )}>
+                                {formData.ssnImageFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                              </div>
+                              <div className="text-left">
+                                <p className={cn("text-sm font-medium", formData.ssnImageFileName ? "text-white" : "text-gray-400")}>
+                                  {formData.ssnImageFileName || "Choose file"}
+                                </p>
+                                <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
+                              </div>
+                            </label>
+                          </div>
+
+                          {/* Driver License (Both Sides) */}
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Driver License (Both Sides)</label>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              <label
+                                className={cn(
+                                  "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-3 cursor-pointer",
+                                  formData.licenseFrontFileName
+                                    ? "border-red-500/50 bg-red-600/5"
+                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                )}
+                              >
+                                <input
+                                  type="file"
+                                  className="hidden"
+                                  accept=".pdf,.jpg,.jpeg,.png"
+                                  onChange={handleFileChange('licenseFrontFileName')}
+                                />
+                                <div className={cn(
+                                  "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
+                                  formData.licenseFrontFileName ? "bg-red-600" : "bg-white/10"
+                                )}>
+                                  {formData.licenseFrontFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                                </div>
+                                <div className="text-left">
+                                  <p className={cn("text-xs font-medium", formData.licenseFrontFileName ? "text-white" : "text-gray-400")}>
+                                    {formData.licenseFrontFileName || "Front side"}
+                                  </p>
+                                  <p className="text-[11px] text-gray-600">PDF, JPG, PNG</p>
+                                </div>
+                              </label>
+
+                              <label
+                                className={cn(
+                                  "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-3 cursor-pointer",
+                                  formData.licenseBackFileName
+                                    ? "border-red-500/50 bg-red-600/5"
+                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                )}
+                              >
+                                <input
+                                  type="file"
+                                  className="hidden"
+                                  accept=".pdf,.jpg,.jpeg,.png"
+                                  onChange={handleFileChange('licenseBackFileName')}
+                                />
+                                <div className={cn(
+                                  "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
+                                  formData.licenseBackFileName ? "bg-red-600" : "bg-white/10"
+                                )}>
+                                  {formData.licenseBackFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                                </div>
+                                <div className="text-left">
+                                  <p className={cn("text-xs font-medium", formData.licenseBackFileName ? "text-white" : "text-gray-400")}>
+                                    {formData.licenseBackFileName || "Back side"}
+                                  </p>
+                                  <p className="text-[11px] text-gray-600">PDF, JPG, PNG</p>
+                                </div>
+                              </label>
+                            </div>
+                          </div>
+
+                          {/* Medical Card */}
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Medical Card</label>
+                            <label
+                              className={cn(
+                                "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
+                                formData.medicalCardFileName
+                                  ? "border-red-500/50 bg-red-600/5"
+                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                              )}
+                            >
+                              <input
+                                type="file"
+                                className="hidden"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                onChange={handleFileChange('medicalCardFileName')}
+                              />
+                              <div className={cn(
+                                "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
+                                formData.medicalCardFileName ? "bg-red-600" : "bg-white/10"
+                              )}>
+                                {formData.medicalCardFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                              </div>
+                              <div className="text-left">
+                                <p className={cn("text-sm font-medium", formData.medicalCardFileName ? "text-white" : "text-gray-400")}>
+                                  {formData.medicalCardFileName || "Choose file"}
+                                </p>
+                                <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
+                              </div>
+                            </label>
+                          </div>
+
+                          {/* Annual truck inspection */}
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Annual truck inspection</label>
+                            <label
+                              className={cn(
+                                "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
+                                formData.annualInspectionFileName
+                                  ? "border-red-500/50 bg-red-600/5"
+                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                              )}
+                            >
+                              <input
+                                type="file"
+                                className="hidden"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                onChange={handleFileChange('annualInspectionFileName')}
+                              />
+                              <div className={cn(
+                                "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
+                                formData.annualInspectionFileName ? "bg-red-600" : "bg-white/10"
+                              )}>
+                                {formData.annualInspectionFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                              </div>
+                              <div className="text-left">
+                                <p className={cn("text-sm font-medium", formData.annualInspectionFileName ? "text-white" : "text-gray-400")}>
+                                  {formData.annualInspectionFileName ? getFileLabel(formData.annualInspectionFileName) : "Choose file"}
+                                </p>
+                                <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
+                              </div>
+                            </label>
+                          </div>
+
+                          {/* Truck pictures */}
+                          <div className="space-y-2">
+                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                              Please upload truck pictures <span className="normal-case text-gray-500">(engine, under engine, tires)</span>
+                            </label>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                              {/* Engine */}
+                              <label
+                                className={cn(
+                                  "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
+                                  formData.truckEngineFileName
+                                    ? "border-red-500/50 bg-red-600/5"
+                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                )}
+                              >
+                                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Engine</span>
+                                <input
+                                  type="file"
+                                  className="hidden"
+                                  accept=".jpg,.jpeg,.png"
+                                  onChange={handleFileChange('truckEngineFileName')}
+                                />
+                                <div className="flex items-center gap-2">
+                                  <div className={cn(
+                                    "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
+                                    formData.truckEngineFileName ? "bg-red-600" : "bg-white/10"
+                                  )}>
+                                    {formData.truckEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
+                                  </div>
+                                  <p className={cn("text-xs font-medium truncate", formData.truckEngineFileName ? "text-white" : "text-gray-400")}>
+                                    {formData.truckEngineFileName ? getFileLabel(formData.truckEngineFileName) : "Choose file"}
+                                  </p>
+                                </div>
+                              </label>
+
+                              {/* Under engine */}
+                              <label
+                                className={cn(
+                                  "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
+                                  formData.truckUnderEngineFileName
+                                    ? "border-red-500/50 bg-red-600/5"
+                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                )}
+                              >
+                                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Under engine</span>
+                                <input
+                                  type="file"
+                                  className="hidden"
+                                  accept=".jpg,.jpeg,.png"
+                                  onChange={handleFileChange('truckUnderEngineFileName')}
+                                />
+                                <div className="flex items-center gap-2">
+                                  <div className={cn(
+                                    "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
+                                    formData.truckUnderEngineFileName ? "bg-red-600" : "bg-white/10"
+                                  )}>
+                                    {formData.truckUnderEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
+                                  </div>
+                                  <p className={cn("text-xs font-medium truncate", formData.truckUnderEngineFileName ? "text-white" : "text-gray-400")}>
+                                    {formData.truckUnderEngineFileName ? getFileLabel(formData.truckUnderEngineFileName) : "Choose file"}
+                                  </p>
+                                </div>
+                              </label>
+
+                              {/* Tires */}
+                              <label
+                                className={cn(
+                                  "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
+                                  formData.truckTiresFileName
+                                    ? "border-red-500/50 bg-red-600/5"
+                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                )}
+                              >
+                                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Tires</span>
+                                <input
+                                  type="file"
+                                  className="hidden"
+                                  accept=".jpg,.jpeg,.png"
+                                  onChange={handleFileChange('truckTiresFileName')}
+                                />
+                                <div className="flex items-center gap-2">
+                                  <div className={cn(
+                                    "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
+                                    formData.truckTiresFileName ? "bg-red-600" : "bg-white/10"
+                                  )}>
+                                    {formData.truckTiresFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
+                                  </div>
+                                  <p className={cn("text-xs font-medium truncate", formData.truckTiresFileName ? "text-white" : "text-gray-400")}>
+                                    {formData.truckTiresFileName ? getFileLabel(formData.truckTiresFileName) : "Choose file"}
+                                  </p>
+                                </div>
+                              </label>
+                            </div>
+                          </div>
+
+                          {/* Simple optional resume for Owner Operator with drag & drop */}
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Resume / Work History <span className="text-gray-600 normal-case">(optional)</span></label>
+                            <div
+                              onClick={() => resumeInputRef.current?.click()}
+                              onDragOver={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              onDrop={handleResumeDrop}
+                              className={cn(
+                                "w-full py-6 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
+                                formData.resumeFileName 
+                                  ? "border-red-500/50 bg-red-600/5" 
+                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                              )}
+                            >
+                              <div className={cn(
+                                "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
+                                formData.resumeFileName ? "bg-red-600" : "bg-white/10"
+                              )}>
+                                {formData.resumeFileName ? <Check className="w-5 h-5 text-white" /> : <FileText className="w-5 h-5 text-gray-400" />}
+                              </div>
+                              <div className="text-left">
+                                <p className={cn("text-sm font-medium", formData.resumeFileName ? "text-white" : "text-gray-400")}>
+                                  {formData.resumeFileName || "Attach resume (optional)"}
+                                </p>
+                                <p className="text-xs text-gray-600">PDF, DOCX up to 10MB — click, or drag and drop here</p>
+                              </div>
+                            </div>
+                            <input ref={resumeInputRef} type="file" className="hidden" accept=".pdf,.doc,.docx" onChange={handleFileChange('resumeFileName')} />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-5">
+                          {/* Investor – Documents & Truck */}
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Registration Card (CAP Card)</label>
+                            <label
+                              className={cn(
+                                "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
+                                formData.registrationCardFileName
+                                  ? "border-red-500/50 bg-red-600/5"
+                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                              )}
+                            >
+                              <input
+                                type="file"
+                                className="hidden"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                onChange={handleFileChange('registrationCardFileName')}
+                              />
+                              <div className={cn(
+                                "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
+                                formData.registrationCardFileName ? "bg-red-600" : "bg-white/10"
+                              )}>
+                                {formData.registrationCardFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                              </div>
+                              <div className="text-left">
+                                <p className={cn("text-sm font-medium", formData.registrationCardFileName ? "text-white" : "text-gray-400")}>
+                                  {formData.registrationCardFileName ? getFileLabel(formData.registrationCardFileName) : "Choose file"}
+                                </p>
+                                <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
+                              </div>
+                            </label>
+                          </div>
+
+                          {/* Annual truck inspection */}
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Annual truck inspection</label>
+                            <label
+                              className={cn(
+                                "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
+                                formData.annualInspectionFileName
+                                  ? "border-red-500/50 bg-red-600/5"
+                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                              )}
+                            >
+                              <input
+                                type="file"
+                                className="hidden"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                onChange={handleFileChange('annualInspectionFileName')}
+                              />
+                              <div className={cn(
+                                "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
+                                formData.annualInspectionFileName ? "bg-red-600" : "bg-white/10"
+                              )}>
+                                {formData.annualInspectionFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                              </div>
+                              <div className="text-left">
+                                <p className={cn("text-sm font-medium", formData.annualInspectionFileName ? "text-white" : "text-gray-400")}>
+                                  {formData.annualInspectionFileName || "Choose file"}
+                                </p>
+                                <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
+                              </div>
+                            </label>
+                          </div>
+
+                          {/* Truck pictures – engine / under engine / tires */}
+                          <div className="space-y-2">
+                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                              Please upload truck pictures <span className="normal-case text-gray-500">(engine, under engine, tires)</span>
+                            </label>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                              {/* Engine */}
+                              <label
+                                className={cn(
+                                  "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
+                                  formData.truckEngineFileName
+                                    ? "border-red-500/50 bg-red-600/5"
+                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                )}
+                              >
+                                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Engine</span>
+                                <input
+                                  type="file"
+                                  className="hidden"
+                                  accept=".jpg,.jpeg,.png"
+                                  onChange={handleFileChange('truckEngineFileName')}
+                                />
+                                <div className="flex items-center gap-2">
+                                  <div className={cn(
+                                    "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
+                                    formData.truckEngineFileName ? "bg-red-600" : "bg-white/10"
+                                  )}>
+                                    {formData.truckEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
+                                  </div>
+                                  <p className={cn("text-xs font-medium truncate", formData.truckEngineFileName ? "text-white" : "text-gray-400")}>
+                                    {formData.truckEngineFileName || "Choose file"}
+                                  </p>
+                                </div>
+                              </label>
+
+                              {/* Under engine */}
+                              <label
+                                className={cn(
+                                  "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
+                                  formData.truckUnderEngineFileName
+                                    ? "border-red-500/50 bg-red-600/5"
+                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                )}
+                              >
+                                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Under engine</span>
+                                <input
+                                  type="file"
+                                  className="hidden"
+                                  accept=".jpg,.jpeg,.png"
+                                  onChange={handleFileChange('truckUnderEngineFileName')}
+                                />
+                                <div className="flex items-center gap-2">
+                                  <div className={cn(
+                                    "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
+                                    formData.truckUnderEngineFileName ? "bg-red-600" : "bg-white/10"
+                                  )}>
+                                    {formData.truckUnderEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
+                                  </div>
+                                  <p className={cn("text-xs font-medium truncate", formData.truckUnderEngineFileName ? "text-white" : "text-gray-400")}>
+                                    {formData.truckUnderEngineFileName || "Choose file"}
+                                  </p>
+                                </div>
+                              </label>
+
+                              {/* Tires */}
+                              <label
+                                className={cn(
+                                  "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
+                                  formData.truckTiresFileName
+                                    ? "border-red-500/50 bg-red-600/5"
+                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                )}
+                              >
+                                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Tires</span>
+                                <input
+                                  type="file"
+                                  className="hidden"
+                                  accept=".jpg,.jpeg,.png"
+                                  onChange={handleFileChange('truckTiresFileName')}
+                                />
+                                <div className="flex items-center gap-2">
+                                  <div className={cn(
+                                    "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
+                                    formData.truckTiresFileName ? "bg-red-600" : "bg-white/10"
+                                  )}>
+                                    {formData.truckTiresFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
+                                  </div>
+                                  <p className={cn("text-xs font-medium truncate", formData.truckTiresFileName ? "text-white" : "text-gray-400")}>
+                                    {formData.truckTiresFileName || "Choose file"}
+                                  </p>
+                                </div>
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      )
                     )}
 
                     {/* STEP 4: Review */}
@@ -465,28 +1193,151 @@ export default function DriverApplicationModal() {
 
                             <div className="h-px bg-white/5" />
 
-                            <div className="grid grid-cols-2 gap-4">
-                              <div>
-                                <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">CDL Type</p>
-                                <p className="text-white font-medium text-sm">{formData.cdlType || '—'}</p>
+                            {/* Position-specific summary */}
+                            {formData.position === 'company-driver' && (
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">CDL Type</p>
+                                  <p className="text-white font-medium text-sm">{formData.cdlType || '—'}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Experience (years)</p>
+                                  <p className="text-white font-medium text-sm">{formData.yearsExperience || '—'}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">SSN / EID Number</p>
+                                  <p className="text-white font-medium text-sm">{formData.ssnNumber || '—'}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">SSN Image</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.ssnImageFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.ssnImageFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">License – Front</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.licenseFrontFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.licenseFrontFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">License – Back</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.licenseBackFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.licenseBackFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Medical Card</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.medicalCardFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.medicalCardFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Resume / Document</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.resumeFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.resumeFileName || 'Not attached'}
+                                  </p>
+                                </div>
                               </div>
-                              <div>
-                                <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Experience</p>
-                                <p className="text-white font-medium text-sm">{formData.yearsExperience ? `${formData.yearsExperience} years` : '—'}</p>
+                            )}
+
+                            {formData.position === 'owner-operator' && (
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">SSN / EID Number</p>
+                                  <p className="text-white font-medium text-sm">{formData.ssnNumber || '—'}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">SSN Image</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.ssnImageFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.ssnImageFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">License – Front</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.licenseFrontFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.licenseFrontFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">License – Back</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.licenseBackFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.licenseBackFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Medical Card</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.medicalCardFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.medicalCardFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Annual Truck Inspection</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.annualInspectionFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.annualInspectionFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Truck Photo – Engine</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.truckEngineFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.truckEngineFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Truck Photo – Under Engine</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.truckUnderEngineFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.truckUnderEngineFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Truck Photo – Tires</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.truckTiresFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.truckTiresFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Resume / Work History</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.resumeFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.resumeFileName || 'Not attached'}
+                                  </p>
+                                </div>
                               </div>
-                              <div>
-                                <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">License File</p>
-                                <p className="text-sm font-medium truncate" style={{ color: formData.licenseFileName ? '#86efac' : '#6b7280' }}>
-                                  {formData.licenseFileName || 'Not uploaded'}
-                                </p>
+                            )}
+
+                            {formData.position === 'investor' && (
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Registration Card (CAP)</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.registrationCardFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.registrationCardFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Annual Truck Inspection</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.annualInspectionFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.annualInspectionFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Truck Photo – Engine</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.truckEngineFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.truckEngineFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Truck Photo – Under Engine</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.truckUnderEngineFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.truckUnderEngineFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Truck Photo – Tires</p>
+                                  <p className="text-sm font-medium truncate" style={{ color: formData.truckTiresFileName ? '#86efac' : '#6b7280' }}>
+                                    {formData.truckTiresFileName || 'Not uploaded'}
+                                  </p>
+                                </div>
                               </div>
-                              <div>
-                                <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Resume</p>
-                                <p className="text-sm font-medium truncate" style={{ color: formData.resumeFileName ? '#86efac' : '#6b7280' }}>
-                                  {formData.resumeFileName || 'Not attached'}
-                                </p>
-                              </div>
-                            </div>
+                            )}
                           </div>
                         </div>
 
@@ -527,10 +1378,11 @@ export default function DriverApplicationModal() {
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-gray-600 font-medium">{currentStep} / {steps.length}</span>
                   <button
-                    onClick={currentStep === steps.length ? closeDriverModal : handleNext}
+                    onClick={currentStep === steps.length ? handleSubmit : handleNext}
                     disabled={
                       (currentStep === 1 && !formData.position) ||
-                      (currentStep === 4 && !formData.termsAccepted)
+                      (currentStep === 4 && !formData.termsAccepted) ||
+                      isSubmitting
                     }
                     className={cn(
                       "flex items-center gap-2 px-7 py-3 rounded-xl text-sm font-extrabold transition-all duration-300",
@@ -538,7 +1390,7 @@ export default function DriverApplicationModal() {
                       "disabled:opacity-40 disabled:pointer-events-none"
                     )}
                   >
-                    {currentStep === steps.length ? 'Submit Application' : 'Continue'}
+                    {currentStep === steps.length ? (isSubmitting ? 'Sending…' : 'Submit Application') : 'Continue'}
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>

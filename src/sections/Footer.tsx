@@ -58,7 +58,7 @@ export default function Footer() {
             <img
               src="/images/logo.png"
               alt="DELO TRANS INC"
-              className="h-24 lg:h-32 w-auto"
+              className="h-32 lg:h-44 w-auto object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.3)]"
             />
           </Link>
         </div>
