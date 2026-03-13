@@ -1,116 +1,162 @@
-import type { Request, Response } from 'express';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import express from 'express';
-import serverless from 'serverless-http';
 import https from 'node:https';
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 
-export const app = express();
-
-app.use(express.json());
-
-// Blob upload handler (for local dev; Vercel uses api/blob-upload.ts)
-app.post('/api/blob-upload', async (req: Request, res: Response) => {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    return res.status(500).json({ error: 'BLOB_READ_WRITE_TOKEN is not configured' });
-  }
-  const body = req.body as HandleUploadBody;
-  try {
-    const jsonResponse = await handleUpload({
-      body,
-      request: req as any,
-      token: process.env.BLOB_READ_WRITE_TOKEN,
-      onBeforeGenerateToken: async () => ({
-        addRandomSuffix: true,
-        access: 'public',
-        maximumSizeInBytes: 10 * 1024 * 1024, // 10MB
-      }),
-      onUploadCompleted: async () => {},
-    });
-    return res.status(200).json(jsonResponse);
-  } catch (error: any) {
-    console.error('Blob handleUpload error', error);
-    return res.status(400).json({ error: error?.message || 'Upload error' });
-  }
-});
+const TELEGRAM_TIMEOUT_MS = 5000;
 
 interface ApplicationBody {
-  name: string;
-  phone: string;
+  name?: string;
+  phone?: string;
   message?: string;
   files?: string[];
   fullText?: string;
 }
 
-app.post('/api/applications', async (req: Request, res: Response) => {
-  const { name, phone, message, files, fullText } = req.body as ApplicationBody;
+function sendJson(res: VercelResponse | any, status: number, data: object) {
+  res.setHeader('Content-Type', 'application/json');
+  return res.status(status).json(data);
+}
 
-  if (!fullText && (!name || !phone)) {
-    return res.status(400).json({ success: false, message: 'Name and phone are required' });
-  }
-
-  if (files && !Array.isArray(files)) {
-    return res.status(400).json({ success: false, message: '`files` must be an array of URLs' });
-  }
-
+async function sendToTelegram(text: string): Promise<{ ok: boolean; error?: string }> {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
   if (!botToken || !chatId) {
-    return res.status(500).json({ success: false, message: 'Telegram environment variables are not configured' });
+    return { ok: false, error: 'Telegram not configured' };
   }
-
-  const text = fullText
-    ? fullText
-    : `New Application Received\n\n` +
-      `Name: ${name}\n` +
-      `Phone: ${phone}\n` +
-      `Message: ${message || '-'}\n\n` +
-      `Files:\n${!files || files.length === 0 ? 'No files attached.' : files.join('\n')}`;
 
   const payload = JSON.stringify({
     chat_id: chatId,
     text: text.slice(0, 4096),
   });
 
-  try {
-    const result = await new Promise<{ ok: boolean; body: string }>((resolve, reject) => {
-      const req = https.request(
-        `https://api.telegram.org/bot${botToken}/sendMessage`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) },
-          timeout: 15000,
+  return new Promise((resolve) => {
+    const req = https.request(
+      `https://api.telegram.org/bot${botToken}/sendMessage`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(payload),
         },
-        (tgRes) => {
-          let body = '';
-          tgRes.on('data', (chunk) => (body += chunk));
-          tgRes.on('end', () => resolve({ ok: tgRes.statusCode === 200, body }));
-        }
-      );
-      req.on('error', reject);
-      req.on('timeout', () => {
-        req.destroy();
-        reject(new Error('Telegram API timeout'));
-      });
-      req.write(payload);
-      req.end();
-    });
+        timeout: TELEGRAM_TIMEOUT_MS,
+      },
+      (tgRes) => {
+        let body = '';
+        tgRes.on('data', (chunk: Buffer) => (body += chunk.toString()));
+        tgRes.on('end', () => {
+          if (tgRes.statusCode === 200) {
+            resolve({ ok: true });
+          } else {
+            resolve({ ok: false, error: body || 'Telegram API error' });
+          }
+        });
+      }
+    );
 
-    if (!result.ok) {
-      console.error('Telegram error:', result.body);
-      return res.status(502).json({ success: false, message: 'Failed to send Telegram message' });
+    req.on('error', (err) => resolve({ ok: false, error: err.message }));
+    req.on('timeout', () => {
+      req.destroy();
+      resolve({ ok: false, error: 'Telegram API timeout' });
+    });
+    req.write(payload);
+    req.end();
+  });
+}
+
+export async function applicationsHandler(
+  req: VercelRequest | import('express').Request,
+  res: VercelResponse | import('express').Response
+) {
+  try {
+    if (req.method !== 'POST') {
+      return sendJson(res, 405, {
+        success: false,
+        message: 'Method not allowed',
+      });
     }
 
-    return res.json({ success: true });
+    const body = (req.body || {}) as ApplicationBody;
+    const { name, phone, message, files, fullText } = body;
+
+    if (!fullText && (!name || !phone)) {
+      return sendJson(res, 400, {
+        success: false,
+        message: 'Name and phone are required',
+      });
+    }
+
+    if (files && !Array.isArray(files)) {
+      return sendJson(res, 400, {
+        success: false,
+        message: 'files must be an array of URLs',
+      });
+    }
+
+    const text = fullText
+      ? fullText
+      : [
+          'New Driver Application',
+          '',
+          `Name: ${name || '-'}`,
+          `Phone: ${phone || '-'}`,
+          `Message: ${message || '-'}`,
+          '',
+          'Files:',
+          !files || files.length === 0 ? 'No files attached' : files.map((f) => f).join('\n'),
+        ].join('\n');
+
+    const result = await sendToTelegram(text);
+
+    if (!result.ok) {
+      console.error('Telegram failed:', result.error);
+      return sendJson(res, 502, {
+        success: false,
+        message: result.error || 'Failed to send notification',
+      });
+    }
+
+    return sendJson(res, 200, { success: true });
   } catch (err: any) {
-    console.error('Telegram request failed', err);
-    return res.status(504).json({
+    console.error('applicationsHandler error:', err);
+    return sendJson(res, 500, {
       success: false,
-      message: err?.message || 'Telegram API timeout. Please try again.',
+      message: err?.message || 'Internal server error',
     });
+  }
+}
+
+// Express app for local dev (includes blob-upload + applications)
+export const app = express();
+app.use(express.json());
+
+app.post('/api/blob-upload', async (req, res) => {
+  try {
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      return sendJson(res, 500, { error: 'BLOB_READ_WRITE_TOKEN not configured' });
+    }
+    const body = req.body as HandleUploadBody;
+    const jsonResponse = await handleUpload({
+      body,
+      request: req as any,
+      token: process.env.BLOB_READ_WRITE_TOKEN!,
+      onBeforeGenerateToken: async () => ({
+        addRandomSuffix: true,
+        access: 'public',
+        maximumSizeInBytes: 10 * 1024 * 1024,
+      }),
+      onUploadCompleted: async () => {},
+    });
+    return res.status(200).json(jsonResponse);
+  } catch (error: any) {
+    console.error('Blob handleUpload error', error);
+    return sendJson(res, 400, { error: error?.message || 'Upload error' });
   }
 });
 
-// Export serverless handler for Vercel
-export default serverless(app);
+app.post('/api/applications', applicationsHandler);
 
+// Vercel: use native handler (faster, no Express overhead)
+// Local: server.ts uses app
+export default applicationsHandler;

@@ -173,7 +173,7 @@ export default function DriverApplicationModal() {
 
       const fullText = lines.join('\n');
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 35000);
+      const timeoutId = setTimeout(() => controller.abort(), 12000); // 12s client timeout
 
       const res = await fetch('/api/applications', {
         method: 'POST',
@@ -187,8 +187,15 @@ export default function DriverApplicationModal() {
       });
       clearTimeout(timeoutId);
 
-      const data = await res.json();
-      if (!res.ok) {
+      let data: { success?: boolean; message?: string };
+      const text = await res.text();
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        throw new Error(res.ok ? 'Invalid response' : `Server error (${res.status}). Please try again.`);
+      }
+
+      if (!res.ok || !data.success) {
         throw new Error(data?.message || `Server error (${res.status})`);
       }
 
