@@ -47,7 +47,6 @@ export default function DriverApplicationModal() {
   const { isOpen, closeDriverModal } = useDriverApplication();
   const [currentStep, setCurrentStep] = useState(1);
   const [direction, setDirection] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const resumeInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
