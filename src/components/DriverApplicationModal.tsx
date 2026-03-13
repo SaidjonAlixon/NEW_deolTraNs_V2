@@ -152,26 +152,6 @@ export default function DriverApplicationModal() {
         }
       }
 
-      const lines: string[] = [
-        '🚀 New Driver Application',
-        '',
-        `Position: ${positionTitle || '-'}`,
-        `Name: ${fullName || '-'}`,
-        `Phone: ${formData.phone || '-'}`,
-        `Email: ${formData.email || '-'}`,
-        `Address: ${formData.address || '-'}`,
-        `Experience: ${formData.yearsExperience ? `${formData.yearsExperience} years` : '-'}`,
-        `CDL Type: ${formData.cdlType || '-'}`,
-        formData.ssnNumber ? `SSN / EID: ${formData.ssnNumber}` : null,
-      ].filter(Boolean) as string[];
-
-      lines.push('');
-      lines.push(`Documents: 📎 ${documents.length} file(s)`);
-      for (const d of documents) {
-        lines.push(`📎 ${d.label}: ${d.url}`);
-      }
-
-      const fullText = lines.join('\n');
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 12000); // 12s client timeout
 
@@ -179,9 +159,15 @@ export default function DriverApplicationModal() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          position: positionTitle || formData.position,
           name: fullName || 'Unknown',
           phone: formData.phone || '',
-          fullText,
+          email: formData.email || '',
+          address: formData.address || '',
+          experience: formData.yearsExperience ? `${formData.yearsExperience} years` : '',
+          cdlType: formData.cdlType || '',
+          ssn: formData.ssnNumber || '',
+          documents,
         }),
         signal: controller.signal,
       });
