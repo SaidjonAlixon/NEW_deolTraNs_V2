@@ -50,18 +50,6 @@ export default function DriverApplicationModal() {
   const resumeInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const getFileLabel = (value: string) => {
-    if (!value) return '';
-    if (!value.startsWith('http')) return value;
-    try {
-      const url = new URL(value);
-      const parts = url.pathname.split('/');
-      return parts[parts.length - 1] || value;
-    } catch {
-      return value;
-    }
-  };
-
   const [formData, setFormData] = useState({
     position: '',
     firstName: '',
@@ -95,7 +83,24 @@ export default function DriverApplicationModal() {
     }
   }, [isOpen]);
 
+  const canProceedStep2 = () =>
+    formData.firstName?.trim() &&
+    formData.lastName?.trim() &&
+    formData.email?.trim() &&
+    formData.phone?.trim() &&
+    formData.address?.trim();
+
+  const canProceedStep3 = () => {
+    const hasSsn = !!formData.ssnNumber?.trim();
+    if (formData.position === 'company-driver') {
+      return hasSsn && !!formData.cdlType;
+    }
+    return hasSsn;
+  };
+
   const handleNext = () => {
+    if (currentStep === 2 && !canProceedStep2()) return;
+    if (currentStep === 3 && !canProceedStep3()) return;
     if (currentStep < steps.length) {
       setDirection(1);
       setCurrentStep(prev => prev + 1);
@@ -526,7 +531,7 @@ export default function DriverApplicationModal() {
                             className={cn(
                               "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                               formData.ssnImageFileName
-                                ? "border-red-500/50 bg-red-600/5"
+                                ? "border-green-500/50 bg-green-600/5"
                                 : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                             )}
                           >
@@ -538,13 +543,13 @@ export default function DriverApplicationModal() {
                             />
                             <div className={cn(
                               "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                              formData.ssnImageFileName ? "bg-red-600" : "bg-white/10"
+                              formData.ssnImageFileName ? "bg-green-600" : "bg-white/10"
                             )}>
                               {formData.ssnImageFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
                             </div>
                             <div className="text-left">
-                              <p className={cn("text-sm font-medium", formData.ssnImageFileName ? "text-white" : "text-gray-400")}>
-                                {formData.ssnImageFileName ? getFileLabel(formData.ssnImageFileName) : "Choose file"}
+                              <p className={cn("text-sm font-medium", formData.ssnImageFileName ? "text-green-500" : "text-gray-400")}>
+                                {formData.ssnImageFileName ? "Uploaded" : "Choose file"}
                               </p>
                               <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
                             </div>
@@ -572,7 +577,7 @@ export default function DriverApplicationModal() {
                               className={cn(
                                 "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-3 cursor-pointer",
                                 formData.licenseFrontFileName
-                                  ? "border-red-500/50 bg-red-600/5"
+                                  ? "border-green-500/50 bg-green-600/5"
                                   : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                               )}
                             >
@@ -584,13 +589,13 @@ export default function DriverApplicationModal() {
                               />
                               <div className={cn(
                                 "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
-                                formData.licenseFrontFileName ? "bg-red-600" : "bg-white/10"
+                                formData.licenseFrontFileName ? "bg-green-600" : "bg-white/10"
                               )}>
                                 {formData.licenseFrontFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
                               </div>
                               <div className="text-left">
-                                <p className={cn("text-xs font-medium", formData.licenseFrontFileName ? "text-white" : "text-gray-400")}>
-                                  {formData.licenseFrontFileName ? getFileLabel(formData.licenseFrontFileName) : "Front side"}
+                                <p className={cn("text-xs font-medium", formData.licenseFrontFileName ? "text-green-500" : "text-gray-400")}>
+                                  {formData.licenseFrontFileName ? "Uploaded" : "Front side"}
                                 </p>
                                 <p className="text-[11px] text-gray-600">PDF, JPG, PNG</p>
                               </div>
@@ -600,7 +605,7 @@ export default function DriverApplicationModal() {
                               className={cn(
                                 "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-3 cursor-pointer",
                                 formData.licenseBackFileName
-                                  ? "border-red-500/50 bg-red-600/5"
+                                  ? "border-green-500/50 bg-green-600/5"
                                   : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                               )}
                             >
@@ -612,13 +617,13 @@ export default function DriverApplicationModal() {
                               />
                               <div className={cn(
                                 "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
-                                formData.licenseBackFileName ? "bg-red-600" : "bg-white/10"
+                                formData.licenseBackFileName ? "bg-green-600" : "bg-white/10"
                               )}>
                                 {formData.licenseBackFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
                               </div>
                               <div className="text-left">
-                                <p className={cn("text-xs font-medium", formData.licenseBackFileName ? "text-white" : "text-gray-400")}>
-                                  {formData.licenseBackFileName ? getFileLabel(formData.licenseBackFileName) : "Back side"}
+                                <p className={cn("text-xs font-medium", formData.licenseBackFileName ? "text-green-500" : "text-gray-400")}>
+                                  {formData.licenseBackFileName ? "Uploaded" : "Back side"}
                                 </p>
                                 <p className="text-[11px] text-gray-600">PDF, JPG, PNG</p>
                               </div>
@@ -633,7 +638,7 @@ export default function DriverApplicationModal() {
                             className={cn(
                               "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                               formData.medicalCardFileName
-                                ? "border-red-500/50 bg-red-600/5"
+                                ? "border-green-500/50 bg-green-600/5"
                                 : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                             )}
                           >
@@ -645,13 +650,13 @@ export default function DriverApplicationModal() {
                             />
                             <div className={cn(
                               "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                              formData.medicalCardFileName ? "bg-red-600" : "bg-white/10"
+                              formData.medicalCardFileName ? "bg-green-600" : "bg-white/10"
                             )}>
                               {formData.medicalCardFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
                             </div>
                             <div className="text-left">
-                              <p className={cn("text-sm font-medium", formData.medicalCardFileName ? "text-white" : "text-gray-400")}>
-                                {formData.medicalCardFileName ? getFileLabel(formData.medicalCardFileName) : "Choose file"}
+                              <p className={cn("text-sm font-medium", formData.medicalCardFileName ? "text-green-500" : "text-gray-400")}>
+                                {formData.medicalCardFileName ? "Uploaded" : "Choose file"}
                               </p>
                               <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
                             </div>
@@ -671,19 +676,19 @@ export default function DriverApplicationModal() {
                             className={cn(
                               "w-full py-6 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                               formData.resumeFileName 
-                                ? "border-red-500/50 bg-red-600/5" 
+                                ? "border-green-500/50 bg-green-600/5" 
                                 : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                             )}
                           >
                             <div className={cn(
                               "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                              formData.resumeFileName ? "bg-red-600" : "bg-white/10"
+                              formData.resumeFileName ? "bg-green-600" : "bg-white/10"
                             )}>
                               {formData.resumeFileName ? <Check className="w-5 h-5 text-white" /> : <FileText className="w-5 h-5 text-gray-400" />}
                             </div>
                             <div className="text-left">
-                              <p className={cn("text-sm font-medium", formData.resumeFileName ? "text-white" : "text-gray-400")}>
-                                {formData.resumeFileName ? getFileLabel(formData.resumeFileName) : "Attach resume (optional)"}
+                              <p className={cn("text-sm font-medium", formData.resumeFileName ? "text-green-500" : "text-gray-400")}>
+                                {formData.resumeFileName ? "Uploaded" : "Attach resume (optional)"}
                               </p>
                               <p className="text-xs text-gray-600">PDF, DOCX up to 10MB — click, or drag and drop here</p>
                             </div>
@@ -712,7 +717,7 @@ export default function DriverApplicationModal() {
                               className={cn(
                                 "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                                 formData.ssnImageFileName
-                                  ? "border-red-500/50 bg-red-600/5"
+                                  ? "border-green-500/50 bg-green-600/5"
                                   : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                               )}
                             >
@@ -724,13 +729,13 @@ export default function DriverApplicationModal() {
                               />
                               <div className={cn(
                                 "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                                formData.ssnImageFileName ? "bg-red-600" : "bg-white/10"
+                                formData.ssnImageFileName ? "bg-green-600" : "bg-white/10"
                               )}>
                                 {formData.ssnImageFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
                               </div>
                               <div className="text-left">
-                                <p className={cn("text-sm font-medium", formData.ssnImageFileName ? "text-white" : "text-gray-400")}>
-                                  {formData.ssnImageFileName || "Choose file"}
+                                <p className={cn("text-sm font-medium", formData.ssnImageFileName ? "text-green-500" : "text-gray-400")}>
+                                  {formData.ssnImageFileName ? "Uploaded" : "Choose file"}
                                 </p>
                                 <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
                               </div>
@@ -745,7 +750,7 @@ export default function DriverApplicationModal() {
                                 className={cn(
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-3 cursor-pointer",
                                   formData.licenseFrontFileName
-                                    ? "border-red-500/50 bg-red-600/5"
+                                    ? "border-green-500/50 bg-green-600/5"
                                     : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                                 )}
                               >
@@ -757,13 +762,13 @@ export default function DriverApplicationModal() {
                                 />
                                 <div className={cn(
                                   "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
-                                  formData.licenseFrontFileName ? "bg-red-600" : "bg-white/10"
+                                  formData.licenseFrontFileName ? "bg-green-600" : "bg-white/10"
                                 )}>
                                   {formData.licenseFrontFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
                                 </div>
                                 <div className="text-left">
-                                  <p className={cn("text-xs font-medium", formData.licenseFrontFileName ? "text-white" : "text-gray-400")}>
-                                    {formData.licenseFrontFileName || "Front side"}
+                                  <p className={cn("text-xs font-medium", formData.licenseFrontFileName ? "text-green-500" : "text-gray-400")}>
+                                    {formData.licenseFrontFileName ? "Uploaded" : "Front side"}
                                   </p>
                                   <p className="text-[11px] text-gray-600">PDF, JPG, PNG</p>
                                 </div>
@@ -773,7 +778,7 @@ export default function DriverApplicationModal() {
                                 className={cn(
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-3 cursor-pointer",
                                   formData.licenseBackFileName
-                                    ? "border-red-500/50 bg-red-600/5"
+                                    ? "border-green-500/50 bg-green-600/5"
                                     : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                                 )}
                               >
@@ -785,13 +790,13 @@ export default function DriverApplicationModal() {
                                 />
                                 <div className={cn(
                                   "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
-                                  formData.licenseBackFileName ? "bg-red-600" : "bg-white/10"
+                                  formData.licenseBackFileName ? "bg-green-600" : "bg-white/10"
                                 )}>
                                   {formData.licenseBackFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
                                 </div>
                                 <div className="text-left">
-                                  <p className={cn("text-xs font-medium", formData.licenseBackFileName ? "text-white" : "text-gray-400")}>
-                                    {formData.licenseBackFileName || "Back side"}
+                                  <p className={cn("text-xs font-medium", formData.licenseBackFileName ? "text-green-500" : "text-gray-400")}>
+                                    {formData.licenseBackFileName ? "Uploaded" : "Back side"}
                                   </p>
                                   <p className="text-[11px] text-gray-600">PDF, JPG, PNG</p>
                                 </div>
@@ -806,7 +811,7 @@ export default function DriverApplicationModal() {
                               className={cn(
                                 "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                                 formData.medicalCardFileName
-                                  ? "border-red-500/50 bg-red-600/5"
+                                  ? "border-green-500/50 bg-green-600/5"
                                   : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                               )}
                             >
@@ -818,13 +823,13 @@ export default function DriverApplicationModal() {
                               />
                               <div className={cn(
                                 "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                                formData.medicalCardFileName ? "bg-red-600" : "bg-white/10"
+                                formData.medicalCardFileName ? "bg-green-600" : "bg-white/10"
                               )}>
                                 {formData.medicalCardFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
                               </div>
                               <div className="text-left">
-                                <p className={cn("text-sm font-medium", formData.medicalCardFileName ? "text-white" : "text-gray-400")}>
-                                  {formData.medicalCardFileName || "Choose file"}
+                                <p className={cn("text-sm font-medium", formData.medicalCardFileName ? "text-green-500" : "text-gray-400")}>
+                                  {formData.medicalCardFileName ? "Uploaded" : "Choose file"}
                                 </p>
                                 <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
                               </div>
@@ -838,7 +843,7 @@ export default function DriverApplicationModal() {
                               className={cn(
                                 "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                                 formData.annualInspectionFileName
-                                  ? "border-red-500/50 bg-red-600/5"
+                                  ? "border-green-500/50 bg-green-600/5"
                                   : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                               )}
                             >
@@ -850,13 +855,13 @@ export default function DriverApplicationModal() {
                               />
                               <div className={cn(
                                 "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                                formData.annualInspectionFileName ? "bg-red-600" : "bg-white/10"
+                                formData.annualInspectionFileName ? "bg-green-600" : "bg-white/10"
                               )}>
                                 {formData.annualInspectionFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
                               </div>
                               <div className="text-left">
                                 <p className={cn("text-sm font-medium", formData.annualInspectionFileName ? "text-white" : "text-gray-400")}>
-                                  {formData.annualInspectionFileName ? getFileLabel(formData.annualInspectionFileName) : "Choose file"}
+                                  {formData.annualInspectionFileName ? "Uploaded" : "Choose file"}
                                 </p>
                                 <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
                               </div>
@@ -874,7 +879,7 @@ export default function DriverApplicationModal() {
                                 className={cn(
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
                                   formData.truckEngineFileName
-                                    ? "border-red-500/50 bg-red-600/5"
+                                    ? "border-green-500/50 bg-green-600/5"
                                     : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                                 )}
                               >
@@ -888,12 +893,12 @@ export default function DriverApplicationModal() {
                                 <div className="flex items-center gap-2">
                                   <div className={cn(
                                     "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
-                                    formData.truckEngineFileName ? "bg-red-600" : "bg-white/10"
+                                    formData.truckEngineFileName ? "bg-green-600" : "bg-white/10"
                                   )}>
                                     {formData.truckEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
                                   </div>
-                                  <p className={cn("text-xs font-medium truncate", formData.truckEngineFileName ? "text-white" : "text-gray-400")}>
-                                    {formData.truckEngineFileName ? getFileLabel(formData.truckEngineFileName) : "Choose file"}
+                                  <p className={cn("text-xs font-medium truncate", formData.truckEngineFileName ? "text-green-500" : "text-gray-400")}>
+                                    {formData.truckEngineFileName ? "Uploaded" : "Choose file"}
                                   </p>
                                 </div>
                               </label>
@@ -903,7 +908,7 @@ export default function DriverApplicationModal() {
                                 className={cn(
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
                                   formData.truckUnderEngineFileName
-                                    ? "border-red-500/50 bg-red-600/5"
+                                    ? "border-green-500/50 bg-green-600/5"
                                     : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                                 )}
                               >
@@ -917,12 +922,12 @@ export default function DriverApplicationModal() {
                                 <div className="flex items-center gap-2">
                                   <div className={cn(
                                     "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
-                                    formData.truckUnderEngineFileName ? "bg-red-600" : "bg-white/10"
+                                    formData.truckUnderEngineFileName ? "bg-green-600" : "bg-white/10"
                                   )}>
                                     {formData.truckUnderEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
                                   </div>
-                                  <p className={cn("text-xs font-medium truncate", formData.truckUnderEngineFileName ? "text-white" : "text-gray-400")}>
-                                    {formData.truckUnderEngineFileName ? getFileLabel(formData.truckUnderEngineFileName) : "Choose file"}
+                                  <p className={cn("text-xs font-medium truncate", formData.truckUnderEngineFileName ? "text-green-500" : "text-gray-400")}>
+                                    {formData.truckUnderEngineFileName ? "Uploaded" : "Choose file"}
                                   </p>
                                 </div>
                               </label>
@@ -932,7 +937,7 @@ export default function DriverApplicationModal() {
                                 className={cn(
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
                                   formData.truckTiresFileName
-                                    ? "border-red-500/50 bg-red-600/5"
+                                    ? "border-green-500/50 bg-green-600/5"
                                     : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                                 )}
                               >
@@ -946,12 +951,12 @@ export default function DriverApplicationModal() {
                                 <div className="flex items-center gap-2">
                                   <div className={cn(
                                     "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
-                                    formData.truckTiresFileName ? "bg-red-600" : "bg-white/10"
+                                    formData.truckTiresFileName ? "bg-green-600" : "bg-white/10"
                                   )}>
                                     {formData.truckTiresFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
                                   </div>
-                                  <p className={cn("text-xs font-medium truncate", formData.truckTiresFileName ? "text-white" : "text-gray-400")}>
-                                    {formData.truckTiresFileName ? getFileLabel(formData.truckTiresFileName) : "Choose file"}
+                                  <p className={cn("text-xs font-medium truncate", formData.truckTiresFileName ? "text-green-500" : "text-gray-400")}>
+                                    {formData.truckTiresFileName ? "Uploaded" : "Choose file"}
                                   </p>
                                 </div>
                               </label>
@@ -1000,7 +1005,7 @@ export default function DriverApplicationModal() {
                               className={cn(
                                 "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                                 formData.registrationCardFileName
-                                  ? "border-red-500/50 bg-red-600/5"
+                                  ? "border-green-500/50 bg-green-600/5"
                                   : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                               )}
                             >
@@ -1012,13 +1017,13 @@ export default function DriverApplicationModal() {
                               />
                               <div className={cn(
                                 "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                                formData.registrationCardFileName ? "bg-red-600" : "bg-white/10"
+                                formData.registrationCardFileName ? "bg-green-600" : "bg-white/10"
                               )}>
                                 {formData.registrationCardFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
                               </div>
                               <div className="text-left">
                                 <p className={cn("text-sm font-medium", formData.registrationCardFileName ? "text-white" : "text-gray-400")}>
-                                  {formData.registrationCardFileName ? getFileLabel(formData.registrationCardFileName) : "Choose file"}
+                                  {formData.registrationCardFileName ? "Uploaded" : "Choose file"}
                                 </p>
                                 <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
                               </div>
@@ -1032,7 +1037,7 @@ export default function DriverApplicationModal() {
                               className={cn(
                                 "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                                 formData.annualInspectionFileName
-                                  ? "border-red-500/50 bg-red-600/5"
+                                  ? "border-green-500/50 bg-green-600/5"
                                   : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                               )}
                             >
@@ -1044,13 +1049,13 @@ export default function DriverApplicationModal() {
                               />
                               <div className={cn(
                                 "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                                formData.annualInspectionFileName ? "bg-red-600" : "bg-white/10"
+                                formData.annualInspectionFileName ? "bg-green-600" : "bg-white/10"
                               )}>
                                 {formData.annualInspectionFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
                               </div>
                               <div className="text-left">
-                                <p className={cn("text-sm font-medium", formData.annualInspectionFileName ? "text-white" : "text-gray-400")}>
-                                  {formData.annualInspectionFileName || "Choose file"}
+                                <p className={cn("text-sm font-medium", formData.annualInspectionFileName ? "text-green-500" : "text-gray-400")}>
+                                  {formData.annualInspectionFileName ? "Uploaded" : "Choose file"}
                                 </p>
                                 <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
                               </div>
@@ -1068,7 +1073,7 @@ export default function DriverApplicationModal() {
                                 className={cn(
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
                                   formData.truckEngineFileName
-                                    ? "border-red-500/50 bg-red-600/5"
+                                    ? "border-green-500/50 bg-green-600/5"
                                     : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                                 )}
                               >
@@ -1082,12 +1087,12 @@ export default function DriverApplicationModal() {
                                 <div className="flex items-center gap-2">
                                   <div className={cn(
                                     "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
-                                    formData.truckEngineFileName ? "bg-red-600" : "bg-white/10"
+                                    formData.truckEngineFileName ? "bg-green-600" : "bg-white/10"
                                   )}>
                                     {formData.truckEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
                                   </div>
-                                  <p className={cn("text-xs font-medium truncate", formData.truckEngineFileName ? "text-white" : "text-gray-400")}>
-                                    {formData.truckEngineFileName || "Choose file"}
+                                  <p className={cn("text-xs font-medium truncate", formData.truckEngineFileName ? "text-green-500" : "text-gray-400")}>
+                                    {formData.truckEngineFileName ? "Uploaded" : "Choose file"}
                                   </p>
                                 </div>
                               </label>
@@ -1097,7 +1102,7 @@ export default function DriverApplicationModal() {
                                 className={cn(
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
                                   formData.truckUnderEngineFileName
-                                    ? "border-red-500/50 bg-red-600/5"
+                                    ? "border-green-500/50 bg-green-600/5"
                                     : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                                 )}
                               >
@@ -1111,12 +1116,12 @@ export default function DriverApplicationModal() {
                                 <div className="flex items-center gap-2">
                                   <div className={cn(
                                     "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
-                                    formData.truckUnderEngineFileName ? "bg-red-600" : "bg-white/10"
+                                    formData.truckUnderEngineFileName ? "bg-green-600" : "bg-white/10"
                                   )}>
                                     {formData.truckUnderEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
                                   </div>
-                                  <p className={cn("text-xs font-medium truncate", formData.truckUnderEngineFileName ? "text-white" : "text-gray-400")}>
-                                    {formData.truckUnderEngineFileName || "Choose file"}
+                                  <p className={cn("text-xs font-medium truncate", formData.truckUnderEngineFileName ? "text-green-500" : "text-gray-400")}>
+                                    {formData.truckUnderEngineFileName ? "Uploaded" : "Choose file"}
                                   </p>
                                 </div>
                               </label>
@@ -1126,7 +1131,7 @@ export default function DriverApplicationModal() {
                                 className={cn(
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
                                   formData.truckTiresFileName
-                                    ? "border-red-500/50 bg-red-600/5"
+                                    ? "border-green-500/50 bg-green-600/5"
                                     : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
                                 )}
                               >
@@ -1140,12 +1145,12 @@ export default function DriverApplicationModal() {
                                 <div className="flex items-center gap-2">
                                   <div className={cn(
                                     "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
-                                    formData.truckTiresFileName ? "bg-red-600" : "bg-white/10"
+                                    formData.truckTiresFileName ? "bg-green-600" : "bg-white/10"
                                   )}>
                                     {formData.truckTiresFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
                                   </div>
-                                  <p className={cn("text-xs font-medium truncate", formData.truckTiresFileName ? "text-white" : "text-gray-400")}>
-                                    {formData.truckTiresFileName || "Choose file"}
+                                  <p className={cn("text-xs font-medium truncate", formData.truckTiresFileName ? "text-green-500" : "text-gray-400")}>
+                                    {formData.truckTiresFileName ? "Uploaded" : "Choose file"}
                                   </p>
                                 </div>
                               </label>
@@ -1382,6 +1387,8 @@ export default function DriverApplicationModal() {
                     onClick={currentStep === steps.length ? handleSubmit : handleNext}
                     disabled={
                       (currentStep === 1 && !formData.position) ||
+                      (currentStep === 2 && !canProceedStep2()) ||
+                      (currentStep === 3 && !canProceedStep3()) ||
                       (currentStep === 4 && !formData.termsAccepted) ||
                       isSubmitting
                     }
