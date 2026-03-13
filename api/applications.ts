@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import express from 'express';
 import serverless from 'serverless-http';
+import https from 'node:https';
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 
 export const app = express();
@@ -66,34 +67,47 @@ app.post('/api/applications', async (req: Request, res: Response) => {
       `Message: ${message || '-'}\n\n` +
       `Files:\n${!files || files.length === 0 ? 'No files attached.' : files.join('\n')}`;
 
-  const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s
+  const payload = JSON.stringify({
+    chat_id: chatId,
+    text: text.slice(0, 4096),
+  });
 
   try {
-    const tgRes = await fetch(telegramUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: text.slice(0, 4096),
-      }),
-      signal: controller.signal,
+    const result = await new Promise<{ ok: boolean; body: string }>((resolve, reject) => {
+      const req = https.request(
+        `https://api.telegram.org/bot${botToken}/sendMessage`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) },
+          timeout: 15000,
+        },
+        (tgRes) => {
+          let body = '';
+          tgRes.on('data', (chunk) => (body += chunk));
+          tgRes.on('end', () => resolve({ ok: tgRes.statusCode === 200, body }));
+        }
+      );
+      req.on('error', reject);
+      req.on('timeout', () => {
+        req.destroy();
+        reject(new Error('Telegram API timeout'));
+      });
+      req.write(payload);
+      req.end();
     });
-    clearTimeout(timeoutId);
 
-    if (!tgRes.ok) {
-      const errBody = await tgRes.text();
-      console.error('Telegram error:', errBody);
+    if (!result.ok) {
+      console.error('Telegram error:', result.body);
       return res.status(502).json({ success: false, message: 'Failed to send Telegram message' });
     }
 
     return res.json({ success: true });
   } catch (err: any) {
-    clearTimeout(timeoutId);
     console.error('Telegram request failed', err);
-    const msg = err?.name === 'AbortError' ? 'Telegram API timeout' : 'Internal server error';
-    return res.status(504).json({ success: false, message: msg });
+    return res.status(504).json({
+      success: false,
+      message: err?.message || 'Telegram API timeout. Please try again.',
+    });
   }
 });
 
