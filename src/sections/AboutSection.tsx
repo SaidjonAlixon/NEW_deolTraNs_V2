@@ -146,7 +146,7 @@ export default function AboutSection() {
                   'Profit over cheap miles',
                   'Efficiency over wasted time',
                   'Partnerships over transactions',
-                  'Safety over shortcuts',
+                  'Coast-to-coast coverage',
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-orange flex-shrink-0" />
@@ -162,7 +162,7 @@ export default function AboutSection() {
                 className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white/5 backdrop-blur-md rounded-full border border-white/10 text-white font-medium hover:bg-white/10 hover:border-orange/30 transition-all duration-300"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-orange/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
-                <span className="relative z-10">Get In Touch</span>
+                <span className="relative z-10">Apply Now</span>
                 <div className="relative z-10 w-8 h-8 rounded-full bg-orange/20 flex items-center justify-center group-hover:bg-orange transition-colors">
                   <ArrowRight className="w-4 h-4 text-orange group-hover:text-white transition-colors" />
                 </div>
@@ -210,7 +210,7 @@ export default function AboutSection() {
                 className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white/5 backdrop-blur-md rounded-full border border-white/10 text-white font-medium hover:bg-white/10 hover:border-orange/30 transition-all duration-300 w-full justify-center"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-orange/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
-                <span className="relative z-10">Get In Touch</span>
+                <span className="relative z-10">Apply Now</span>
                 <div className="relative z-10 w-8 h-8 rounded-full bg-orange/20 flex items-center justify-center group-hover:bg-orange transition-colors">
                   <ArrowRight className="w-4 h-4 text-orange group-hover:text-white transition-colors" />
                 </div>

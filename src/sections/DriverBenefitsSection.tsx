@@ -230,7 +230,7 @@ export default function DriverBenefitsSection() {
             onClick={openDriverModal}
             className="btn-primary inline-flex items-center gap-2 px-10 py-4 text-base"
           >
-            Apply Now — Get $1,000 Bonus
+            Apply Now
             <Package className="w-5 h-5" />
           </button>
         </div>

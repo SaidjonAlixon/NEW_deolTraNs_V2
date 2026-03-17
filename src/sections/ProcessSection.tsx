@@ -48,7 +48,7 @@ export default function ProcessSection() {
             trigger: sectionRef.current,
             start: 'top 85%',
             end: 'top 25%',
-            scrub: 0.4,
+            scrub: 0.2,
           },
         }
       );
@@ -65,7 +65,7 @@ export default function ProcessSection() {
             trigger: sectionRef.current,
             start: 'top 80%',
             end: 'top 30%',
-            scrub: 0.4,
+            scrub: 0.2,
           },
         }
       );
@@ -85,7 +85,7 @@ export default function ProcessSection() {
               trigger: stepsRef.current,
               start: 'top 80%',
               end: 'top 40%',
-              scrub: 0.4,
+              scrub: 0.2, // Faster scrub
             },
           }
         );
@@ -99,8 +99,13 @@ export default function ProcessSection() {
     <section
       ref={sectionRef}
       id="process"
-      className="relative min-h-screen bg-navy-900 py-20 lg:py-0"
+      className="relative min-h-screen bg-[#0A0F1C] py-20 lg:py-0 overflow-hidden"
     >
+      {/* Subtle Mesh Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
+        <div className="absolute top-[20%] right-[10%] w-[40vw] h-[40vw] bg-blue-600/10 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[20%] left-[5%] w-[30vw] h-[30vw] bg-orange/5 blur-[100px] rounded-full" />
+      </div>
       <div className="lg:flex lg:min-h-screen">
         {/* Left Image Panel */}
         <div
@@ -109,7 +114,7 @@ export default function ProcessSection() {
         >
           <div className="h-[40vh] lg:h-full relative">
             <img
-              src="/images/process_aerial_hub.png"
+              src="/images/process_aerial_hub.jpg"
               alt="Aerial view of logistics hub"
               className="w-full h-full object-cover"
             />
@@ -167,7 +172,7 @@ export default function ProcessSection() {
                 onClick={openDriverModal}
                 className="btn-primary inline-flex items-center gap-2"
               >
-                Apply now
+                Apply Now
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>

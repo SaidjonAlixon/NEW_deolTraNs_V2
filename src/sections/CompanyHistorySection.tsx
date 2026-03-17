@@ -4,30 +4,30 @@ import { Truck, Globe2, Building2, MapPin } from 'lucide-react';
 
 const timelineEvents = [
   {
-    year: '2012',
+    year: '2021',
     title: 'The Beginning',
     description: 'Founded DELO TRANS INC as a single-truck operation dedicated to reliable local dry van freight solutions.',
     icon: Truck,
     side: 'left',
   },
   {
-    year: '2015',
+    year: '2022',
     title: 'Fleet Expansion',
     description: 'Scaled our fleet to 20+ trucks and introduced advanced logistics software to track shipments in real-time.',
     icon: Building2,
     side: 'right',
   },
-  {
-    year: '2019',
-    title: 'Regional Hubs',
+   {
+    year: '2024',
+    title: 'Hubs',
     description: 'Opened strategic hubs across the Midwest and East Coast to ensure faster transit times and better compliance.',
     icon: MapPin,
     side: 'left',
   },
   {
-    year: '2023',
-    title: 'Cross-Border Dominance',
-    description: 'Solidified our reputation as an industry leader in seamless, cross-border transportation management with a 99% on-time rate.',
+    year: '2026',
+    title: 'Nationwide Dominance',
+    description: 'Solidified our reputation as an industry leader in seamless, nationwide transportation management with a 99% on-time rate.',
     icon: Globe2,
     side: 'right',
   },
@@ -110,7 +110,7 @@ function TimelineItem({ event }: { event: typeof timelineEvents[0] }) {
         initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+        transition={{ duration: 0.4, delay: 0.05 }}
         className="w-full md:w-5/12 ml-12 md:ml-0"
       >
         <div className={`

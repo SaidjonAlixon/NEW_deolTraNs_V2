@@ -60,7 +60,7 @@ export default function HeroSection() {
         setActiveCard((prev) => (prev === 0 ? 1 : 0));
       }, 2000);
       return () => clearInterval(interval);
-    }, 3500);
+    }, 2000); // Shorter initial delay
     return () => clearTimeout(timeout);
   }, []);
 
@@ -75,50 +75,50 @@ export default function HeroSection() {
       // Background fade in
       tl.fromTo(
         bgRef.current,
-        { opacity: 0, scale: 1.06 },
-        { opacity: 1, scale: 1, duration: 1.2 },
+        { opacity: 0, scale: 1.04 },
+        { opacity: 1, scale: 1, duration: 0.8 },
         0
       );
 
       // Headline slide in
       tl.fromTo(
         headlineRef.current,
-        { x: '-12vw', opacity: 0 },
-        { x: 0, opacity: 1, duration: 1 },
-        0.2
+        { x: '-8vw', opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.6 },
+        0.1
       );
 
-      // Card A slide in (1 second from load)
+      // Card A slide in
       tl.fromTo(
         cardARef.current,
-        { x: '55vw', opacity: 0, rotate: 1 },
-        { x: 0, opacity: 1, rotate: 0, duration: 0.9 },
-        1.0
+        { x: '40vw', opacity: 0, rotate: 1 },
+        { x: 0, opacity: 1, rotate: 0, duration: 0.6 },
+        0.4
       );
 
-      // Card B slide in (1 second after Card A -> 1.0 + 1.0 = 2.0)
+      // Card B slide in
       tl.fromTo(
         cardBRef.current,
-        { x: '55vw', opacity: 0, rotate: -1 },
-        { x: 0, opacity: 1, rotate: 0, duration: 0.9 },
-        2.0
+        { x: '40vw', opacity: 0, rotate: -1 },
+        { x: 0, opacity: 1, rotate: 0, duration: 0.6 },
+        0.8
       );
 
       // CTA fade in
       tl.fromTo(
         ctaRef.current,
-        { y: '6vh', opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7 },
-        2.5
+        { y: '4vh', opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5 },
+        1.0
       );
 
       // Stats stagger in from bottom
       if (statsRef.current) {
         tl.fromTo(
           statsRef.current.children,
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.6, stagger: 0.15 },
-          2.8
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.4, stagger: 0.1 },
+          1.2
         );
 
         // Animate numbers
@@ -129,8 +129,8 @@ export default function HeroSection() {
             shipments: 1000,
             countries: 48,
             vehicles: 250,
-            experience: 10,
-            duration: 1.5,
+            experience: 4,
+            duration: 1.2,
             ease: 'power3.out',
             onUpdate: () => {
               setStats({
@@ -141,7 +141,7 @@ export default function HeroSection() {
               });
             },
           },
-          3.0 // Start counting slightly after stats fade in
+          1.4
         );
       }
     }, sectionRef);
@@ -205,7 +205,7 @@ export default function HeroSection() {
           }}
           className="w-full h-full object-cover img-industrial"
         />
-        <div className="absolute inset-0 bg-navy-900/40 backdrop-blur-sm transition-colors duration-500"></div>
+        <div className="absolute inset-0 bg-navy-900/40 backdrop-blur-md transition-colors duration-500"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-navy-950/90 via-navy-950/60 to-transparent w-[70%]"></div>
       </div>
 
@@ -228,7 +228,7 @@ export default function HeroSection() {
         </h1>
 
         {/* Description */}
-        <div className="border-l-2 border-orange/50 pl-4 py-3 bg-gradient-to-r from-navy-900/60 to-transparent backdrop-blur-sm rounded-r-xl mb-6">
+        <div className="border-l-2 border-orange/50 pl-4 py-3 bg-gradient-to-r from-navy-900/60 to-transparent backdrop-blur-md rounded-r-xl mb-6">
           <p className="text-sm text-white/90 leading-relaxed font-light">
             {descriptions[currentDescIndex]}
           </p>
@@ -277,8 +277,8 @@ export default function HeroSection() {
         {/* Left Headline & Text */}
         <div
           ref={headlineRef}
-          className="absolute left-[8vw] top-[24vh] w-[40vw] z-10"
-          style={{ opacity: 0, transform: 'translateX(-12vw)' }}
+          className="absolute left-[8vw] top-[20vh] w-[40vw] z-10"
+          style={{ opacity: 0, transform: 'translateX(-8vw)' }}
         >
           <div className="flex items-center gap-3 mb-6">
             <div className="h-[2px] w-12 bg-orange shadow-[0_0_10px_rgba(253,10,7,0.8)]"></div>
@@ -296,7 +296,7 @@ export default function HeroSection() {
             </span>
           </h1>
 
-          <div className="mt-4 border-l-2 border-orange/50 pl-6 py-4 bg-gradient-to-r from-navy-900/60 to-transparent backdrop-blur-sm rounded-r-xl w-full max-w-[600px] min-h-[100px] flex items-center">
+          <div className="mt-4 border-l-2 border-orange/50 pl-6 py-4 bg-gradient-to-r from-navy-900/60 to-transparent backdrop-blur-md rounded-r-xl w-full max-w-[600px] min-h-[100px] flex items-center">
             <p key={`desc-${currentDescIndex}`} className="text-base lg:text-lg text-white/95 leading-relaxed drop-shadow-lg font-light animate-fade-in w-full">
               {descriptions[currentDescIndex]}
             </p>
@@ -306,8 +306,8 @@ export default function HeroSection() {
         {/* Card A */}
         <div
           ref={cardARef}
-          className="absolute left-[56vw] top-[15vh] w-[36vw] max-w-lg z-20"
-          style={{ opacity: 0, transform: 'translateX(100vw)' }}
+          className="absolute left-[56vw] top-[14vh] w-[36vw] max-w-lg z-20"
+          style={{ opacity: 0, transform: 'translateX(40vw)' }}
         >
           <div className={`w-full h-full bg-black/40 backdrop-blur-2xl rounded-tr-3xl rounded-bl-3xl p-8 border-t-[3px] border-r-2 shadow-[0_0_50px_rgba(253,10,7,0.15)] hover:border-orange/50 hover:shadow-[0_0_60px_rgba(253,10,7,0.3)] transition-all duration-700 card-lift group overflow-hidden ${activeCard === 0 ? 'scale-105 opacity-100 border-orange/80 shadow-[0_0_60px_rgba(253,10,7,0.4)]' : 'scale-95 opacity-50 border-white/20 shadow-[0_0_30px_rgba(253,10,7,0.15)]'}`}>
             <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-orange/20 to-transparent pointer-events-none rounded-tr-3xl"></div>
@@ -346,8 +346,8 @@ export default function HeroSection() {
         {/* Card B */}
         <div
           ref={cardBRef}
-          className="absolute left-[62vw] top-[48vh] w-[34vw] max-w-md z-10"
-          style={{ opacity: 0, transform: 'translateX(100vw)' }}
+          className="absolute left-[62vw] top-[46vh] w-[34vw] max-w-md z-10"
+          style={{ opacity: 0, transform: 'translateX(40vw)' }}
         >
           <div className={`w-full h-full bg-navy-950/60 backdrop-blur-3xl rounded-tl-3xl rounded-br-3xl p-8 border-b-[3px] border-l-2 hover:border-blue-400/60 transition-all duration-700 card-lift group overflow-hidden ${activeCard === 1 ? 'scale-105 opacity-100 border-blue-500/80 shadow-[0_0_60px_rgba(59,130,246,0.5)]' : 'scale-95 opacity-50 border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.15)]'}`}>
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-blue-500/10 to-transparent pointer-events-none rounded-bl-3xl"></div>
@@ -382,10 +382,10 @@ export default function HeroSection() {
         {/* Desktop CTA */}
         <div
           ref={ctaRef}
-          className="absolute left-[62vw] top-[82vh] flex items-center gap-4 z-20"
+          className="absolute left-[62vw] top-[78vh] flex items-center gap-4 z-20"
         >
           <button onClick={openDriverModal} className="btn-primary flex items-center gap-2">
-            Apply Now — Get $1,000 Bonus
+            Apply Now
             <ArrowRight className="w-4 h-4" />
           </button>
           <button onClick={() => scrollToSection('#services')} className="btn-secondary">

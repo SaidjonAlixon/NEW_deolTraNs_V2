@@ -219,7 +219,7 @@ export default function FleetSection() {
             onClick={openDriverModal}
             className="btn-primary inline-flex items-center gap-2"
           >
-            Apply Now — Get $1,000 Bonus
+            Apply Now
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

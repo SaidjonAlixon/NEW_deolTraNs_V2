@@ -21,7 +21,7 @@ const teamMembers = [
     name: 'Rustam Aliev',
     role: 'Head of Safety & Compliance',
     image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=600&auto=format&fit=crop',
-    bio: 'Rustam\'s zero-compromise approach to safety protocols has earned DELO TRANS top safety ratings across the board for 5 years running.',
+    bio: 'Rustam\'s zero-compromise approach to safety protocols has earned DELO TRANS top safety ratings across the board for 4 years running.',
     socials: { linkedin: '#', twitter: '#' },
   },
   {
@@ -81,7 +81,7 @@ function TeamMemberCard({ member, index, isInView }: { member: typeof teamMember
     <motion.div
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      transition={{ duration: 0.4, delay: index * 0.08 }}
       className="group relative bg-navy-800/40 backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col"
     >
       {/* Image Container */}

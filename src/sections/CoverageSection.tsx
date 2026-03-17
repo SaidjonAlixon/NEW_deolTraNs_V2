@@ -8,42 +8,42 @@ gsap.registerPlugin(ScrollTrigger);
 
 const routesLeft = [
   {
-    from: 'Germany',
-    to: 'France',
-    description: 'High-frequency shuttles between Ruhr area and Paris region.',
+    from: 'Texas',
+    to: 'California',
+    description: 'High-frequency corridors linking the South to the West Coast.',
     icon: Route,
   },
   {
-    from: 'Poland',
-    to: 'Benelux',
-    description: 'Regular FTL capacity into Belgium and the Netherlands.',
+    from: 'Illinois',
+    to: 'Georgia',
+    description: 'Regular FTL capacity between the Midwest and the Southeast.',
     icon: Globe,
   },
   {
-    from: 'Austria',
-    to: 'Italy',
-    description: 'Alpine crossings linking Vienna, Milan, and Northern Italy.',
+    from: 'New Jersey',
+    to: 'Florida',
+    description: 'Consistent North–South lanes along the Eastern Seaboard.',
     icon: MapPin,
   },
 ];
 
 const routesRight = [
   {
-    from: 'Spain',
-    to: 'Germany',
-    description: 'Automotive and retail flows between Iberia and Germany.',
+    from: 'Ohio',
+    to: 'Texas',
+    description: 'Industrial and retail flows between the Great Lakes and the South.',
     icon: Globe,
   },
   {
-    from: 'France',
-    to: 'United Kingdom',
-    description: 'Channel crossings via Calais–Dover and other gateways.',
+    from: 'Washington',
+    to: 'Arizona',
+    description: 'Reliable capacity serving the Pacific Northwest to the Southwest.',
     icon: Route,
   },
   {
-    from: 'Italy',
-    to: 'Scandinavia',
-    description: 'North–south corridors into Sweden, Norway, and Denmark.',
+    from: 'Tennessee',
+    to: 'North Carolina',
+    description: 'Short-haul and regional lanes across the Appalachian corridor.',
     icon: Globe,
   },
 ];
@@ -175,7 +175,7 @@ export default function CoverageSection() {
         </h2>
 
         <p ref={bodyRef} className="text-sm text-gray-light leading-relaxed mb-6">
-          Strong lanes across Central Asia with seamless connections to Europe and Asia.
+          Leading power-only capacity solutions covering all 48 continental U.S. states.
         </p>
 
         {/* Route Cards */}
@@ -205,7 +205,7 @@ export default function CoverageSection() {
           onClick={openDriverModal}
           className="btn-primary inline-flex items-center justify-center gap-2 w-full !bg-[#fd0a07] hover:!bg-red-700"
         >
-          View transit times
+          Apply Now
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
@@ -224,7 +224,7 @@ export default function CoverageSection() {
 
         <div className="absolute left-[6vw] top-[30vh] w-[34vw] max-w-lg">
           <p ref={bodyRef} className="text-base lg:text-lg text-gray-light leading-relaxed">
-            Strong lanes across Central Asia with seamless connections to Europe and Asia.
+            Leading power-only capacity solutions covering all 48 continental U.S. states.
           </p>
         </div>
 
@@ -285,7 +285,7 @@ export default function CoverageSection() {
             onClick={openDriverModal}
             className="btn-primary inline-flex items-center gap-2 !bg-[#fd0a07] hover:!bg-red-700 hover:!shadow-[0_0_20px_rgba(253,10,7,0.5)]"
           >
-            View transit times
+            Apply Now
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

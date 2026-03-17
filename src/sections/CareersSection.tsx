@@ -97,7 +97,7 @@ export default function CareersSection() {
               className="group relative inline-flex items-center gap-3 px-8 py-4 bg-orange text-white rounded-full font-medium hover:bg-red-600 transition-all duration-300 shadow-[0_0_20px_rgba(253,10,7,0.3)]"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
-              <span className="relative z-10">Apply Now — Get $1,000 Bonus</span>
+              <span className="relative z-10">Apply Now</span>
               <div className="relative z-10 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                 <ArrowRight className="w-4 h-4 text-white" />
               </div>

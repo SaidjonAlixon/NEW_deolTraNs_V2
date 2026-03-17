@@ -8,33 +8,32 @@ gsap.registerPlugin(ScrollTrigger);
 const contactInfo = [
   {
     title: 'Global Headquarters',
-    detail: 'Tashkent, Uzbekistan',
-    subDetail: '123 Logistics Ave, Business District',
+    detail: '636 N Irwin St',
+    subDetail: 'Dayton, OH 45403',
     icon: Building2,
   },
   {
     title: 'General Inquiries',
-    detail: 'info@delotrans.inc',
+    detail: 'hr@delotransinc.com',
     subDetail: 'Guaranteed 2-hour response time',
     icon: Mail,
   },
   {
     title: '24/7 Operations Support',
-    detail: '+998 90 123 45 67',
+    detail: '+1 326 220 7171',
     subDetail: 'Available for urgent shipments',
     icon: Headphones,
   },
   {
-    title: 'International Presence',
-    detail: '12+ Regional Hubs',
-    subDetail: 'Spanning across Central Asia & Europe',
+    title: 'Hubs',
+    detail: 'Nationwide Presence',
+    subDetail: 'Strategically located across the United States',
     icon: Globe,
   }
 ];
 
 export default function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const bgImageRef = useRef<HTMLDivElement>(null);
   const titleGlowRef = useRef<HTMLDivElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -57,41 +56,58 @@ export default function ContactSection() {
         },
       });
 
-      // 1. Background image reveal
+      // 1. Background glow reveal
       tl.fromTo(
-        bgImageRef.current,
-        { scale: 1.1, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1.5, ease: 'power3.out' }
+        '.contact-mesh-orb',
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 0.6, duration: 0.8, stagger: 0.2, ease: 'power2.out' }
       );
 
-      // 2. Section Title and Description (Smooth slide up + text reveal)
+      // 2. Section Title and Description (Snappy slide up)
       tl.fromTo(
         '.contact-animate-title', 
-        { y: 60, opacity: 0, scale: 0.95, filter: 'blur(10px)' },
-        { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1, stagger: 0.2, ease: 'power4.out' },
-        '-=0.8'
+        { y: 40, opacity: 0, scale: 0.98, filter: 'blur(8px)' },
+        { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.6, stagger: 0.1, ease: 'power3.out' },
+        '-=0.4'
       );
 
-      // 3. Form and Map Cards (Staggered from bottom)
+      // 3. Form and Map Cards (Faster reveal)
       tl.fromTo(
         '.contact-animate-card',
-        { y: 50, opacity: 0, transformPerspective: 1000, rotateX: -15 },
-        { y: 0, opacity: 1, rotateX: 0, duration: 1, stagger: 0.15, ease: 'power3.out' },
-        '-=0.5'
+        { y: 40, opacity: 0, transformPerspective: 1000, rotateX: -10 },
+        { y: 0, opacity: 1, rotateX: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out' },
+        '-=0.3'
       );
 
-      // 4. Contact Row Info (Last but not least)
+      // 4. Contact Row Info (Snappy)
       tl.fromTo(
         '.contact-animate-info',
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'back.out(1.4)' },
-        '-=0.6'
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, stagger: 0.05, ease: 'power2.out' },
+        '-=0.3'
       );
 
-      // Infinite slow tilt/pan on the background image for dynamic feel
-      gsap.to('.contact-bg-img', {
-        scale: 1.08,
-        duration: 25,
+      // Animated mesh orbs
+      gsap.to('.contact-mesh-orb-1', {
+        x: '+=50',
+        y: '+=30',
+        duration: 15,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+      gsap.to('.contact-mesh-orb-2', {
+        x: '-=40',
+        y: '-=60',
+        duration: 20,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+      gsap.to('.contact-mesh-orb-3', {
+        x: '+=30',
+        y: '-=40',
+        duration: 18,
         repeat: -1,
         yoyo: true,
         ease: 'sine.inOut',
@@ -125,23 +141,27 @@ export default function ContactSection() {
     <section ref={sectionRef} id="contact" className="relative bg-navy-900 overflow-hidden text-center lg:text-left pt-0">
       
       {/* Top Banner with Image and Title */}
-      <div className="relative h-[65vh] lg:h-[75vh] w-full flex flex-col justify-center items-center overflow-hidden">
+      <div className="relative h-[45vh] lg:h-[55vh] w-full flex flex-col justify-center items-center overflow-hidden">
         
-        {/* Full Width Background Image */}
-        <div ref={bgImageRef} className="absolute inset-0 z-0">
-          <img
-            src="/images/DELO_BIOM.png"
-            alt="DELO TRANS INC Operations Background"
-            className="contact-bg-img w-full h-full object-cover origin-center object-[center_30%]"
-          />
-          {/* Dimmer over the whole image so text is readable */}
-          <div className="absolute inset-0 bg-navy-900/50 mix-blend-multiply" />
+        {/* Image-less Premium Background (Mesh/Gradient) */}
+        <div className="absolute inset-0 z-0 bg-[#0A0F1C] overflow-hidden">
+          {/* Main Gradient Surface */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(59,130,246,0.18),transparent_60%)]" />
+          
+          {/* Mesh Orbs - More Vibrant */}
+          <div className="contact-mesh-orb contact-mesh-orb-1 absolute top-[5%] left-[10%] w-[45vw] h-[45vw] rounded-full bg-blue-500/15 blur-[120px]" />
+          <div className="contact-mesh-orb contact-mesh-orb-2 absolute bottom-[15%] right-[5%] w-[40vw] h-[40vw] rounded-full bg-red-500/10 blur-[110px]" />
+          <div className="contact-mesh-orb contact-mesh-orb-3 absolute top-[30%] right-[25%] w-[35vw] h-[35vw] rounded-full bg-blue-400/12 blur-[150px]" />
+          
+          {/* Subtle Grid Pattern Overlay */}
+          <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(#fff 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }} />
+          
           {/* Fades smoothly into the bottom section */}
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-navy-900 to-transparent" />
         </div>
 
         {/* Title Centered over the image */}
-        <div className="w-full text-center max-w-4xl mx-auto px-6 relative z-10 mt-16">
+        <div className="w-full text-center max-w-4xl mx-auto px-6 relative z-10 pt-10">
           <div ref={titleGlowRef} className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-blue-500/10 blur-[120px] h-64 w-full opacity-0 pointer-events-none" />
           
           <h2 className="contact-animate-title font-heading text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-6 relative z-10 tracking-tight leading-[1.1] drop-shadow-2xl">
@@ -164,11 +184,11 @@ export default function ContactSection() {
             <div className="contact-animate-card w-full lg:w-1/2 relative bg-navy-800/40 backdrop-blur-xl rounded-3xl p-6 lg:p-8 border border-white/10 shadow-2xl flex flex-col text-left">
               <div className="mb-6">
                 <h3 className="font-heading text-2xl font-bold text-white mb-2">Our Location</h3>
-                <p className="text-gray-light text-sm lg:text-base">500 N Central Expy, Suite 360, Plano, TX, 75074</p>
+                <p className="text-gray-light text-sm lg:text-base">636 N Irwin St, Dayton, OH 45403</p>
               </div>
               <div className="flex-grow rounded-2xl overflow-hidden relative min-h-[400px]">
                 <iframe 
-                  src="https://maps.google.com/maps?q=500%20N%20Central%20Expy,%20Suite%20360,%20Plano,%20TX,%2075074&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+                  src="https://maps.google.com/maps?q=636%20N%20Irwin%20St,%20Dayton,%20OH%2045403&t=&z=13&ie=UTF8&iwloc=&output=embed" 
                   className="absolute inset-0 w-full h-full border-0 opacity-95 transition-all duration-300 hover:opacity-100"
                   allowFullScreen={false} 
                   loading="lazy" 

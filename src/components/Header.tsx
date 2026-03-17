@@ -108,21 +108,21 @@ export default function Header() {
             {/* CTA Elements */}
             <div className="hidden lg:flex items-center gap-5 z-10 relative">
               <a
-                href="tel:+998901234567"
+                href="tel:+13262207171"
                 className="flex items-center gap-2 group bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 pr-4 pl-1.5 py-1.5 rounded-full transition-all duration-300"
               >
                 <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
                   <Phone className="w-[14px] h-[14px] text-red-500" />
                 </div>
                 <span className="text-[13px] font-semibold text-slate-200 group-hover:text-white transition-colors">
-                  +998 90 123 45 67
+                  +1 326 220 7171
                 </span>
               </a>
               <button
                 onClick={openDriverModal}
                 className="relative overflow-hidden group bg-red-600 text-white px-7 py-3.5 rounded-full text-[13px] font-bold tracking-wider transition-all duration-300 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:-translate-y-0.5"
               >
-                <span className="relative z-10">APPLY NOW</span>
+                <span className="relative z-10">Apply Now</span>
                 <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-red-600 via-white/20 to-red-600 -translate-x-[150%] skew-x-[-20deg] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
               </button>
             </div>
@@ -163,7 +163,7 @@ export default function Header() {
             onClick={() => { setIsMobileMenuOpen(false); openDriverModal(); }}
             className="btn-primary mt-8"
           >
-            Apply now
+            Apply Now
           </button>
         </div>
       </div>

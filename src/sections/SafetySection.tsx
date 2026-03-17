@@ -29,7 +29,7 @@ export default function SafetySection() {
           start: 'top top',
           end: '+=130%',
           pin: true,
-          scrub: 0.6,
+          scrub: 0.2, // Faster scrub
         },
       });
 
@@ -121,17 +121,20 @@ export default function SafetySection() {
         className="absolute inset-0 z-[1]"
       >
         <img
-          src="/images/delo_truc_ombor.png"
+          src="/images/delo_truc_ombor.jpg"
           alt="Warehouse safety"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/70 to-navy-900/50" />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-navy-900/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0A0F1C]/95 via-[#0A0F1C]/75 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1C] via-transparent to-[#0A0F1C]/40" />
+        
+        {/* Subtle Mesh Glow */}
+        <div className="absolute top-[20%] right-[15%] w-[35vw] h-[35vw] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none" />
       </div>
 
       {/* Content */}
       <div className="relative z-[3] w-full h-full flex items-center">
-        <div className="absolute left-[6vw] top-[10vh]">
+        <div className="absolute left-[6vw] top-[8vh]">
           <p
             ref={labelRef}
             className="font-mono text-xs uppercase tracking-[0.14em] text-orange"
@@ -140,7 +143,7 @@ export default function SafetySection() {
           </p>
         </div>
 
-        <div className="absolute left-[6vw] top-[14vh] lg:top-[16vh] w-[88vw] lg:w-[40vw] max-w-xl">
+        <div className="absolute left-[6vw] top-[12vh] lg:top-[14vh] w-[88vw] lg:w-[40vw] max-w-xl">
           <h2
             ref={headlineRef}
             className="font-heading text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold text-white leading-[1.05]"
@@ -149,7 +152,7 @@ export default function SafetySection() {
           </h2>
         </div>
 
-        <div className="absolute left-[6vw] top-[24vh] lg:top-[28vh] w-[88vw] lg:w-[34vw] max-w-lg">
+        <div className="absolute left-[6vw] top-[20vh] lg:top-[24vh] w-[88vw] lg:w-[34vw] max-w-lg">
           <p
             ref={bodyRef}
             className="text-[15px] sm:text-base lg:text-lg text-gray-light leading-relaxed"
@@ -161,7 +164,7 @@ export default function SafetySection() {
         {/* Checklist */}
         <div
           ref={checklistRef}
-          className="absolute left-[6vw] top-[36vh] lg:top-[44vh] w-[88vw] lg:w-[34vw] max-w-lg space-y-2 lg:space-y-3"
+          className="absolute left-[6vw] top-[30vh] lg:top-[38vh] w-[88vw] lg:w-[34vw] max-w-lg space-y-2 lg:space-y-3"
         >
           {checklist.map((item, index) => (
             <div

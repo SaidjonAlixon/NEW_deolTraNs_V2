@@ -61,7 +61,7 @@ export default function ServicesSection() {
           className="lg:w-[46vw] lg:min-h-screen relative"
         >
           <div className="h-[40vh] lg:h-full relative overflow-hidden">
-            <img src="/images/chap_truck.png" alt="DELO TRANS INC Services" className="w-full h-full object-cover" />
+            <img src="/images/chap_truck.jpg" alt="DELO TRANS INC Services" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-navy-900/50 hidden lg:block" />
             <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-transparent lg:hidden" />
           </div>
@@ -137,7 +137,7 @@ export default function ServicesSection() {
             {/* CTA */}
             <motion.div {...fadeUp(0.2)}>
               <button onClick={openDriverModal} className="btn-primary inline-flex items-center gap-2">
-                Partner With Us
+                Apply Now
                 <ArrowRight className="w-4 h-4" />
               </button>
             </motion.div>
