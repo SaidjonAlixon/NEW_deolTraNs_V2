@@ -7,6 +7,15 @@
   "functions": {
     "api/applications.ts": {
       "maxDuration": 15
+    },
+    "api/quote.ts": {
+      "maxDuration": 15
+    },
+    "api/contact.ts": {
+      "maxDuration": 15
+    },
+    "api/blob-upload.ts": {
+      "maxDuration": 15
     }
   }
 }

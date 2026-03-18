@@ -1,7 +1,7 @@
 import { useRef, useLayoutEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Mail, Headphones, Send, Building2, Globe } from 'lucide-react';
+import { Mail, Headphones, Send, Building2 } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,7 +15,7 @@ const contactInfo = [
   {
     title: 'General Inquiries',
     detail: 'hr@delotransinc.com',
-    subDetail: 'Guaranteed 2-hour response time',
+    subDetail: "We'll get back to you as soon as we can.",
     icon: Mail,
   },
   {
@@ -24,12 +24,6 @@ const contactInfo = [
     subDetail: 'Available for urgent shipments',
     icon: Headphones,
   },
-  {
-    title: 'Hubs',
-    detail: 'Nationwide Presence',
-    subDetail: 'Strategically located across the United States',
-    icon: Globe,
-  }
 ];
 
 export default function ContactSection() {
@@ -118,16 +112,44 @@ export default function ContactSection() {
     return () => ctx.revert();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setIsSubmitting(true);
-    
-    // Simulate API call for button animation
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert('Message sent directly to DELO TRANS INC headquarters. We will contact you shortly.');
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      const text = await res.text();
+      let data: { success?: boolean; message?: string } = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        throw new Error(res.ok ? 'Invalid response' : `Server error (${res.status}). Please try again.`);
+      }
+
+      if (!res.ok || !data.success) {
+        throw new Error(data?.message || `Server error (${res.status})`);
+      }
+
+      alert('Message sent. We will contact you shortly.');
       setFormData({ name: '', email: '', company: '', message: '' });
-    }, 1500);
+    } catch (error) {
+      console.error('Failed to submit contact message', error);
+      alert('Message could not be sent. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -287,7 +309,7 @@ export default function ContactSection() {
                     <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
-                      <span className="text-lg">Send Transmission</span>
+                      <span className="text-lg">Submit</span>
                       <Send className="w-5 h-5 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
                     </>
                   )}
@@ -297,7 +319,7 @@ export default function ContactSection() {
           </div>
 
           {/* Bottom Contact Info Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 xl:gap-8 pt-6 border-t border-white/5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-8 pt-6 border-t border-white/5">
             {contactInfo.map((info, idx) => (
               <div 
                 key={idx} 

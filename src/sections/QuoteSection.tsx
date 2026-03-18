@@ -13,11 +13,46 @@ export default function QuoteSection() {
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', company: '', from: '', to: '', cargo: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Thank you for your request! We will contact you within one business day.');
-    setFormData({ name: '', email: '', phone: '', company: '', from: '', to: '', cargo: '' });
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+      const res = await fetch('/api/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      const text = await res.text();
+      let data: { success?: boolean; message?: string } = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        throw new Error(res.ok ? 'Invalid response' : `Server error (${res.status}). Please try again.`);
+      }
+
+      if (!res.ok || !data.success) {
+        throw new Error(data?.message || `Server error (${res.status})`);
+      }
+
+      alert('Thank you for your request! We will contact you within one business day.');
+      setFormData({ name: '', email: '', phone: '', company: '', from: '', to: '', cargo: '' });
+    } catch (err) {
+      console.error('Failed to submit quote request', err);
+      alert('Request could not be sent. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -134,9 +169,13 @@ export default function QuoteSection() {
                   placeholder="Describe your cargo (type, weight, dimensions, etc.)" />
               </div>
 
-              <button type="submit" className="w-full btn-primary flex items-center justify-center gap-2 py-4">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full btn-primary flex items-center justify-center gap-2 py-4 disabled:opacity-50"
+              >
                 <Send className="w-4 h-4" />
-                Get a quote
+                {isSubmitting ? 'Sending...' : 'Get a quote'}
               </button>
 
               <p className="text-xs text-gray-light text-center">

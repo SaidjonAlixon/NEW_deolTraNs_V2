@@ -1,7 +1,26 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+function getJsonBody<T extends object>(req: any): T {
+  const b = req?.body;
+  if (!b) return {} as T;
+  if (typeof b === 'string') {
+    try {
+      return JSON.parse(b) as T;
+    } catch {
+      return {} as T;
+    }
+  }
+  if (Buffer.isBuffer(b)) {
+    try {
+      return JSON.parse(b.toString('utf8')) as T;
+    } catch {
+      return {} as T;
+    }
+  }
+  return b as T;
+}
+
+export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).end('Method Not Allowed');
@@ -13,7 +32,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ error: 'Blob storage is not configured' });
   }
 
-  const body = req.body as HandleUploadBody;
+  const body = getJsonBody<HandleUploadBody>(req);
 
   try {
     const jsonResponse = await handleUpload({

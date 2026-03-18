@@ -1,8 +1,7 @@
 import { useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, Package, ClipboardList, CheckCircle } from 'lucide-react';
-import { useDriverApplication } from '../context/DriverApplicationContext';
+import { Package, ClipboardList, CheckCircle, ShieldCheck, Zap, FileSearch, Users } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,6 +24,30 @@ const steps = [
     description: 'Updates, docs, and proof of delivery.',
     icon: CheckCircle,
   },
+  {
+    number: '04',
+    title: 'Logistics Engineering',
+    description: 'Custom solutions for complex cargo.',
+    icon: ShieldCheck,
+  },
+  {
+    number: '05',
+    title: 'Integrated Communication',
+    description: 'Direct link to dispatch and drivers.',
+    icon: Zap,
+  },
+  {
+    number: '06',
+    title: 'Financial Transparency',
+    description: 'Clean billing and competitive pricing.',
+    icon: FileSearch,
+  },
+  {
+    number: '07',
+    title: 'Long-term Partnerships',
+    description: 'Scalable capacity for your growth.',
+    icon: Users,
+  },
 ];
 
 export default function ProcessSection() {
@@ -32,7 +55,6 @@ export default function ProcessSection() {
   const imageRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const stepsRef = useRef<HTMLDivElement>(null);
-  const { openDriverModal } = useDriverApplication();
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -166,16 +188,7 @@ export default function ProcessSection() {
               ))}
             </div>
 
-            {/* CTA */}
-            <div className="mt-10">
-              <button
-                onClick={openDriverModal}
-                className="btn-primary inline-flex items-center gap-2"
-              >
-                Apply Now
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
+
           </div>
         </div>
       </div>
