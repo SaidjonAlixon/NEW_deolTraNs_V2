@@ -2,7 +2,9 @@ import { useEffect } from 'react';
 import AboutSection from '../sections/AboutSection';
 import MissionVisionSection from '../sections/MissionVisionSection';
 import CompanyHistorySection from '../sections/CompanyHistorySection';
-import TeamSection from '../sections/TeamSection';
+import StrengthsSection from '../sections/StrengthsSection';
+import WorkGallerySection from '../sections/WorkGallerySection';
+import TechAdvantageSection from '../sections/TechAdvantageSection';
 
 export default function About() {
     useEffect(() => {
@@ -10,11 +12,13 @@ export default function About() {
     }, []);
 
     return (
-        <div className="bg-[#0A0F1C] min-h-screen">
+        <div className="bg-[#050810] min-h-screen">
             <AboutSection />
             <MissionVisionSection />
             <CompanyHistorySection />
-            <TeamSection />
+            <StrengthsSection />
+            <TechAdvantageSection />
+            <WorkGallerySection />
         </div>
     );
 }
