@@ -13,6 +13,9 @@ const freightTypes = [
     images: [
       { url: '/images/gallery/dry_van_1.png', category: 'Dry Van', caption: 'Regional Load - Texas Operations' },
       { url: '/images/gallery/dry_van_2.png', category: 'Warehouse', caption: 'Loading Dock Operations - Ohio Hub' },
+      { url: '/images/truck/dry_van.jpg', category: 'Dry Van', caption: 'Dry Van Operations' },
+      { url: '/images/truck/dry_van2.jpg', category: 'Dry Van', caption: 'Dry Van Transport' },
+      { url: '/images/truck/dry_van3.jpg', category: 'Dry Van', caption: 'Dry Van Logistics' },
     ]
   },
   { 
@@ -22,6 +25,9 @@ const freightTypes = [
     description: 'Temperature-sensitive freight handled with care and precision on proven reefer lanes.',
     images: [
       { url: '/images/gallery/reefer_1.png', category: 'Reefer', caption: 'Temperature Controlled Transit - Midwest' },
+      { url: '/images/truck/Refrigerated.jpg', category: 'Reefer', caption: 'Refrigerated Operations' },
+      { url: '/images/truck/Refrigerated2.jpg', category: 'Reefer', caption: 'Temperature Controlled Transport' },
+      { url: '/images/truck/Refrigerated3.jpg', category: 'Reefer', caption: 'Refrigerated Freight' },
     ]
   },
   { 
@@ -31,6 +37,9 @@ const freightTypes = [
     description: 'Oversized and over-height cargo transported safely on stepdeck trailers nationwide.',
     images: [
       { url: '/images/gallery/stepdeck_1.png', category: 'Stepdeck', caption: 'Oversized Industrial Equipment - Highway' },
+      { url: '/images/truck/Stepdeck.jpg', category: 'Stepdeck', caption: 'Stepdeck Transport' },
+      { url: '/images/truck/Stepdeck2.jpg', category: 'Stepdeck', caption: 'Oversized Cargo' },
+      { url: '/images/truck/Stepdeck3.jpg', category: 'Stepdeck', caption: 'Stepdeck Operations' },
     ]
   },
   { 
@@ -40,6 +49,9 @@ const freightTypes = [
     description: 'Open-deck flatbed loads including construction materials and industrial equipment.',
     images: [
       { url: '/images/gallery/flatbed_1.png', category: 'Flatbed', caption: 'Industrial Machinery Transport - Construction Site' },
+      { url: '/images/truck/Flatbed.jpg', category: 'Flatbed', caption: 'Flatbed Operations' },
+      { url: '/images/truck/Flatbed2.jpg', category: 'Flatbed', caption: 'Open-deck Transport' },
+      { url: '/images/truck/Flatbed3.jpg', category: 'Flatbed', caption: 'Flatbed Freight' },
     ]
   },
   { 
@@ -49,6 +61,9 @@ const freightTypes = [
     description: 'Heavy and specialized equipment moves handled by experienced power-only operators.',
     images: [
       { url: '/images/gallery/specialized_1.png', category: 'Specialized', caption: 'Heavy Power Generation Unit - Specialized Transport' },
+      { url: '/images/truck/Generators.jpg', category: 'Specialized', caption: 'Generator Transport' },
+      { url: '/images/truck/Generators2.jpg', category: 'Specialized', caption: 'Specialized Load' },
+      { url: '/images/truck/Generators3.jpg', category: 'Specialized', caption: 'Heavy Equipment Move' },
     ]
   },
   { 
@@ -58,6 +73,9 @@ const freightTypes = [
     description: 'Consistent, high-paying dedicated lanes with predictable schedules and mileage guarantees.',
     images: [
       { url: '/images/gallery/dedicated_1.png', category: 'Dedicated', caption: 'Night Transit - Long Haul Operations' },
+      { url: '/images/truck/Dedicated.jpg', category: 'Dedicated', caption: 'Dedicated Run Transit' },
+      { url: '/images/truck/Dedicated2.jpg', category: 'Dedicated', caption: 'Contracted Lane Operations' },
+      { url: '/images/truck/Dedicated3.jpg', category: 'Dedicated', caption: 'High-paying Dedicated Route' },
     ]
   },
 ];

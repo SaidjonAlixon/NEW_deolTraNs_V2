@@ -5,7 +5,7 @@ const galleryItems = [
   {
     title: 'Interstate Alpha-9',
     location: 'California Corridor',
-    image: '/images/chap_truck.jpg',
+    image: '/images/truck/about_truck4.jpg',
     telemetry: { weight: '78,400 lbs', temp: '68°F', speed: '65 mph' },
     coords: '34.0522° N, 118.2437° W'
   },
@@ -44,6 +44,27 @@ const galleryItems = [
     telemetry: { vis: 'IR Enabled', load: 'Secure', driver: 'Alert' },
     coords: '40.7128° N, 74.0060° W'
   },
+  {
+    title: 'Cross-Country Freight',
+    location: 'Midwest Corridor',
+    image: '/images/truck/about_truck1.jpg',
+    telemetry: { weight: '65,000 lbs', temp: 'Optimal', speed: '68 mph' },
+    coords: '39.8283° N, 98.5795° W'
+  },
+  {
+    title: 'Mountain Pass Transport',
+    location: 'High Altitude Route',
+    image: '/images/truck/about_truck2.jpg',
+    telemetry: { grade: '6%', engine: 'Normal', torque: 'High' },
+    coords: '39.7392° N, 104.9903° W'
+  },
+  {
+    title: 'Urban Logistics Sector',
+    location: 'Metro Distribution',
+    image: '/images/truck/about_truck3.jpg',
+    telemetry: { traffic: 'Moderate', stops: '12 Left', eta: 'On Time' },
+    coords: '41.8781° N, 87.6298° W'
+  }
 ];
 
 export default function WorkGallerySection() {
