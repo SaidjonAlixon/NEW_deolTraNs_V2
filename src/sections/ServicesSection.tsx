@@ -11,11 +11,12 @@ const freightTypes = [
     title: 'Dry Van', 
     description: 'High-volume power-only dry van coverage across all 48 states with consistent lanes.',
     images: [
-      { url: '/images/gallery/dry_van_1.png', category: 'Dry Van', caption: 'Regional Load - Texas Operations' },
-      { url: '/images/gallery/dry_van_2.png', category: 'Warehouse', caption: 'Loading Dock Operations - Ohio Hub' },
-      { url: '/images/truck/dry_van.jpg', category: 'Dry Van', caption: 'Dry Van Operations' },
-      { url: '/images/truck/dry_van2.jpg', category: 'Dry Van', caption: 'Dry Van Transport' },
-      { url: '/images/truck/dry_van3.jpg', category: 'Dry Van', caption: 'Dry Van Logistics' },
+      { url: '/images/trucks/dry van/dry van.jpg', category: 'Dry Van', caption: 'Dry Van Operations' },
+      { url: '/images/trucks/dry van/dry van (2).jpg', category: 'Dry Van', caption: 'High-volume Dry Van Transport' },
+      { url: '/images/trucks/dry van/dry van (3).jpg', category: 'Dry Van', caption: 'Consistent Logistics Lanes' },
+      { url: '/images/trucks/dry van/dry van (4).jpg', category: 'Dry Van', caption: 'Dry Van Capacity' },
+      { url: '/images/trucks/dry van/dry van (5).jpg', category: 'Dry Van', caption: 'Power-only Dry Van' },
+      { url: '/images/trucks/dry van/dry van (6).jpg', category: 'Dry Van', caption: 'Nationwide Dry Van Load' }
     ]
   },
   { 
@@ -24,10 +25,10 @@ const freightTypes = [
     title: 'Refrigerated (Reefer)', 
     description: 'Temperature-sensitive freight handled with care and precision on proven reefer lanes.',
     images: [
-      { url: '/images/gallery/reefer_1.png', category: 'Reefer', caption: 'Temperature Controlled Transit - Midwest' },
-      { url: '/images/truck/Refrigerated.jpg', category: 'Reefer', caption: 'Refrigerated Operations' },
-      { url: '/images/truck/Refrigerated2.jpg', category: 'Reefer', caption: 'Temperature Controlled Transport' },
-      { url: '/images/truck/Refrigerated3.jpg', category: 'Reefer', caption: 'Refrigerated Freight' },
+      { url: '/images/trucks/refrigerated/Refrigerated.jpg', category: 'Reefer', caption: 'Temperature Controlled Transit' },
+      { url: '/images/trucks/refrigerated/Refrigerated (2).jpg', category: 'Reefer', caption: 'Refrigerated Operations' },
+      { url: '/images/trucks/refrigerated/Refrigerated (3).jpg', category: 'Reefer', caption: 'Reefer Load Transport' },
+      { url: '/images/trucks/refrigerated/Refrigerated (4).jpg', category: 'Reefer', caption: 'Temperature-sensitive Freight' }
     ]
   },
   { 
@@ -36,10 +37,11 @@ const freightTypes = [
     title: 'Stepdeck', 
     description: 'Oversized and over-height cargo transported safely on stepdeck trailers nationwide.',
     images: [
-      { url: '/images/gallery/stepdeck_1.png', category: 'Stepdeck', caption: 'Oversized Industrial Equipment - Highway' },
-      { url: '/images/truck/Stepdeck.jpg', category: 'Stepdeck', caption: 'Stepdeck Transport' },
-      { url: '/images/truck/Stepdeck2.jpg', category: 'Stepdeck', caption: 'Oversized Cargo' },
-      { url: '/images/truck/Stepdeck3.jpg', category: 'Stepdeck', caption: 'Stepdeck Operations' },
+      { url: '/images/trucks/stepdeck/stepdeck.jpg', category: 'Stepdeck', caption: 'Stepdeck Intermodal Loading' },
+      { url: '/images/trucks/stepdeck/stepdeck (2).jpg', category: 'Stepdeck', caption: 'Oversized Cargo Transport' },
+      { url: '/images/trucks/stepdeck/stepdeck (3).jpg', category: 'Stepdeck', caption: 'Stepdeck Machinery Move' },
+      { url: '/images/trucks/stepdeck/stepdeck (4).jpg', category: 'Stepdeck', caption: 'Open-deck Transport on Stepdeck' },
+      { url: '/images/trucks/stepdeck/stepdeck (5).jpg', category: 'Stepdeck', caption: 'Over-height Equipment Logistics' }
     ]
   },
   { 
@@ -48,10 +50,10 @@ const freightTypes = [
     title: 'Flatbed', 
     description: 'Open-deck flatbed loads including construction materials and industrial equipment.',
     images: [
-      { url: '/images/gallery/flatbed_1.png', category: 'Flatbed', caption: 'Industrial Machinery Transport - Construction Site' },
-      { url: '/images/truck/Flatbed.jpg', category: 'Flatbed', caption: 'Flatbed Operations' },
-      { url: '/images/truck/Flatbed2.jpg', category: 'Flatbed', caption: 'Open-deck Transport' },
-      { url: '/images/truck/Flatbed3.jpg', category: 'Flatbed', caption: 'Flatbed Freight' },
+      { url: '/images/trucks/flatbed/flatbed (2).jpg', category: 'Flatbed', caption: 'Flatbed Operations' },
+      { url: '/images/trucks/flatbed/flatbed (3).jpg', category: 'Flatbed', caption: 'Open-deck Transport' },
+      { url: '/images/trucks/flatbed/flatbed (4).jpg', category: 'Flatbed', caption: 'Industrial Machinery Handling' },
+      { url: '/images/trucks/flatbed/flatbed (5).jpg', category: 'Flatbed', caption: 'Flatbed Logistics Load' }
     ]
   },
   { 
@@ -60,10 +62,10 @@ const freightTypes = [
     title: 'Generators & Specialized Loads', 
     description: 'Heavy and specialized equipment moves handled by experienced power-only operators.',
     images: [
-      { url: '/images/gallery/specialized_1.png', category: 'Specialized', caption: 'Heavy Power Generation Unit - Specialized Transport' },
-      { url: '/images/truck/Generators.jpg', category: 'Specialized', caption: 'Generator Transport' },
-      { url: '/images/truck/Generators2.jpg', category: 'Specialized', caption: 'Specialized Load' },
-      { url: '/images/truck/Generators3.jpg', category: 'Specialized', caption: 'Heavy Equipment Move' },
+      { url: '/images/trucks/Generators & Specialized Loads/generator.jpg', category: 'Specialized', caption: 'Heavy Power Generation Unit' },
+      { url: '/images/trucks/Generators & Specialized Loads/generator (2).jpg', category: 'Specialized', caption: 'Specialized Generator Move' },
+      { url: '/images/trucks/Generators & Specialized Loads/Generators.jpg', category: 'Specialized', caption: 'Heavy Equipment Specialized Load' },
+      { url: '/images/trucks/Generators & Specialized Loads/Generators2.jpg', category: 'Specialized', caption: 'Industrial Output Transport' }
     ]
   },
   { 
@@ -72,10 +74,13 @@ const freightTypes = [
     title: 'Dedicated Contracted Runs', 
     description: 'Consistent, high-paying dedicated lanes with predictable schedules and mileage guarantees.',
     images: [
-      { url: '/images/gallery/dedicated_1.png', category: 'Dedicated', caption: 'Night Transit - Long Haul Operations' },
-      { url: '/images/truck/Dedicated.jpg', category: 'Dedicated', caption: 'Dedicated Run Transit' },
-      { url: '/images/truck/Dedicated2.jpg', category: 'Dedicated', caption: 'Contracted Lane Operations' },
-      { url: '/images/truck/Dedicated3.jpg', category: 'Dedicated', caption: 'High-paying Dedicated Route' },
+      { url: '/images/trucks/Dedicated Contracted Runs/Dedicated Contracted Runs.jpg', category: 'Dedicated', caption: 'Dedicated Run Night Transit' },
+      { url: '/images/trucks/Dedicated Contracted Runs/Dedicated Contracted Runs (2).jpg', category: 'Dedicated', caption: 'Consistent High-paying Lane' },
+      { url: '/images/trucks/Dedicated Contracted Runs/Dedicated Contracted Runs (3).jpg', category: 'Dedicated', caption: 'Contracted Route Operations' },
+      { url: '/images/trucks/Dedicated Contracted Runs/Dedicated Contracted Runs (4).jpg', category: 'Dedicated', caption: 'Scheduled Freight Move' },
+      { url: '/images/trucks/Dedicated Contracted Runs/Dedicated Contracted Runs (5).jpg', category: 'Dedicated', caption: 'Mileage Guaranteed Transport' },
+      { url: '/images/trucks/Dedicated Contracted Runs/Dedicated Contracted Runs (6).jpg', category: 'Dedicated', caption: 'Regional Contracted Support' },
+      { url: '/images/trucks/Dedicated Contracted Runs/Dedicated Contracted Runs (7).jpg', category: 'Dedicated', caption: 'Long Haul Run Operation' }
     ]
   },
 ];
