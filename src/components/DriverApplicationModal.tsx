@@ -43,42 +43,44 @@ const positions = [
 
 const cdlTypes = ['Class A CDL', 'Class B CDL', 'No CDL (Applying for Training)'];
 
+const initialFormData = {
+  position: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  address: '',
+  cdlType: '',
+  yearsExperience: '',
+  ssnNumber: '',
+  ssnImageFileName: '',
+  licenseFileName: '',
+  licenseFrontFileName: '',
+  licenseBackFileName: '',
+  medicalCardFileName: '',
+  registrationCardFileName: '',
+  annualInspectionFileName: '',
+  truckEngineFileName: '',
+  truckUnderEngineFileName: '',
+  truckTiresFileName: '',
+  resumeFileName: '',
+  termsAccepted: false,
+};
+
 export default function DriverApplicationModal() {
   const { isOpen, closeDriverModal } = useDriverApplication();
   const [currentStep, setCurrentStep] = useState(1);
   const [direction, setDirection] = useState(0);
   const resumeInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const [formData, setFormData] = useState({
-    position: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
-    cdlType: '',
-    yearsExperience: '',
-    ssnNumber: '',
-    ssnImageFileName: '',
-    licenseFileName: '',
-    licenseFrontFileName: '',
-    licenseBackFileName: '',
-    medicalCardFileName: '',
-    registrationCardFileName: '',
-    annualInspectionFileName: '',
-    truckEngineFileName: '',
-    truckUnderEngineFileName: '',
-    truckTiresFileName: '',
-    resumeFileName: '',
-    termsAccepted: false,
-  });
+  const [formData, setFormData] = useState(initialFormData);
 
   useEffect(() => {
     if (!isOpen) {
       setTimeout(() => {
         setCurrentStep(1);
         setDirection(0);
+        setFormData({ ...initialFormData });
       }, 300);
     }
   }, [isOpen]);
@@ -90,12 +92,32 @@ export default function DriverApplicationModal() {
     formData.phone?.trim() &&
     formData.address?.trim();
 
+  const isUploaded = (val: string | undefined) => !!(val && typeof val === 'string' && val.startsWith('http'));
+
   const canProceedStep3 = () => {
-    const hasSsn = !!formData.ssnNumber?.trim();
     if (formData.position === 'company-driver') {
-      return hasSsn && !!formData.cdlType;
+      return !!formData.cdlType &&
+        isUploaded(formData.licenseFrontFileName) &&
+        isUploaded(formData.licenseBackFileName) &&
+        isUploaded(formData.medicalCardFileName);
     }
-    return hasSsn;
+    if (formData.position === 'owner-operator') {
+      return isUploaded(formData.licenseFrontFileName) &&
+        isUploaded(formData.licenseBackFileName) &&
+        isUploaded(formData.medicalCardFileName) &&
+        isUploaded(formData.annualInspectionFileName) &&
+        isUploaded(formData.truckEngineFileName) &&
+        isUploaded(formData.truckUnderEngineFileName) &&
+        isUploaded(formData.truckTiresFileName);
+    }
+    if (formData.position === 'investor') {
+      return isUploaded(formData.registrationCardFileName) &&
+        isUploaded(formData.annualInspectionFileName) &&
+        isUploaded(formData.truckEngineFileName) &&
+        isUploaded(formData.truckUnderEngineFileName) &&
+        isUploaded(formData.truckTiresFileName);
+    }
+    return false;
   };
 
   const handleNext = () => {
@@ -512,50 +534,6 @@ export default function DriverApplicationModal() {
                           </div>
                         </div>
 
-                        {/* SSN / EID */}
-                        <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Your SSN or EID number</label>
-                          <input
-                            name="ssnNumber"
-                            value={formData.ssnNumber}
-                            onChange={handleInputChange}
-                            placeholder="Your SSN or EID number"
-                            className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-red-500/50 transition-all placeholder:text-gray-600"
-                          />
-                        </div>
-
-                        {/* SSN image copy */}
-                        <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">SSN (Image copy)</label>
-                          <label
-                            className={cn(
-                              "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
-                              formData.ssnImageFileName
-                                ? "border-green-500/50 bg-green-600/5"
-                                : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
-                            )}
-                          >
-                            <input
-                              type="file"
-                              className="hidden"
-                              accept=".pdf,.jpg,.jpeg,.png"
-                              onChange={handleFileChange('ssnImageFileName')}
-                            />
-                            <div className={cn(
-                              "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                              formData.ssnImageFileName ? "bg-green-600" : "bg-white/10"
-                            )}>
-                              {formData.ssnImageFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
-                            </div>
-                            <div className="text-left">
-                              <p className={cn("text-sm font-medium", formData.ssnImageFileName ? "text-green-500" : "text-gray-400")}>
-                                {formData.ssnImageFileName ? "Uploaded" : "Choose file"}
-                              </p>
-                              <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
-                            </div>
-                          </label>
-                        </div>
-
                         {/* Years experience (numeric) */}
                         <div className="space-y-1.5">
                           <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Years of commercial driving experience?</label>
@@ -699,49 +677,6 @@ export default function DriverApplicationModal() {
                       ) : formData.position === 'owner-operator' ? (
                         <div className="space-y-5">
                           {/* Owner Operator – Documents & Truck */}
-                          <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Your SSN or EID number</label>
-                            <input
-                              name="ssnNumber"
-                              value={formData.ssnNumber}
-                              onChange={handleInputChange}
-                              placeholder="Your SSN or EID number"
-                              className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-red-500/50 transition-all placeholder:text-gray-600"
-                            />
-                          </div>
-
-                          {/* SSN image copy */}
-                          <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">SSN (Image copy)</label>
-                            <label
-                              className={cn(
-                                "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
-                                formData.ssnImageFileName
-                                  ? "border-green-500/50 bg-green-600/5"
-                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
-                              )}
-                            >
-                              <input
-                                type="file"
-                                className="hidden"
-                                accept=".pdf,.jpg,.jpeg,.png"
-                                onChange={handleFileChange('ssnImageFileName')}
-                              />
-                              <div className={cn(
-                                "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                                formData.ssnImageFileName ? "bg-green-600" : "bg-white/10"
-                              )}>
-                                {formData.ssnImageFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
-                              </div>
-                              <div className="text-left">
-                                <p className={cn("text-sm font-medium", formData.ssnImageFileName ? "text-green-500" : "text-gray-400")}>
-                                  {formData.ssnImageFileName ? "Uploaded" : "Choose file"}
-                                </p>
-                                <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
-                              </div>
-                            </label>
-                          </div>
-
                           {/* Driver License (Both Sides) */}
                           <div className="space-y-1.5">
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Driver License (Both Sides)</label>
@@ -1211,16 +1146,6 @@ export default function DriverApplicationModal() {
                                   <p className="text-white font-medium text-sm">{formData.yearsExperience || '—'}</p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">SSN / EID Number</p>
-                                  <p className="text-white font-medium text-sm">{formData.ssnNumber || '—'}</p>
-                                </div>
-                                <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">SSN Image</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.ssnImageFileName ? '#86efac' : '#6b7280' }}>
-                                    {formData.ssnImageFileName || 'Not uploaded'}
-                                  </p>
-                                </div>
-                                <div>
                                   <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">License – Front</p>
                                   <p className="text-sm font-medium truncate" style={{ color: formData.licenseFrontFileName ? '#86efac' : '#6b7280' }}>
                                     {formData.licenseFrontFileName || 'Not uploaded'}
@@ -1249,16 +1174,6 @@ export default function DriverApplicationModal() {
 
                             {formData.position === 'owner-operator' && (
                               <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">SSN / EID Number</p>
-                                  <p className="text-white font-medium text-sm">{formData.ssnNumber || '—'}</p>
-                                </div>
-                                <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">SSN Image</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.ssnImageFileName ? '#86efac' : '#6b7280' }}>
-                                    {formData.ssnImageFileName || 'Not uploaded'}
-                                  </p>
-                                </div>
                                 <div>
                                   <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">License – Front</p>
                                   <p className="text-sm font-medium truncate" style={{ color: formData.licenseFrontFileName ? '#86efac' : '#6b7280' }}>
