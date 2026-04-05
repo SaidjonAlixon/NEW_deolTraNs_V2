@@ -113,7 +113,7 @@ export default function SafetySection() {
     <section
       ref={sectionRef}
       id="safety"
-      className="section-pinned bg-navy-900"
+      className="section-pinned bg-app"
     >
       {/* Background Image */}
       <div
@@ -125,8 +125,8 @@ export default function SafetySection() {
           alt="Warehouse safety"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0A0F1C]/95 via-[#0A0F1C]/75 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1C] via-transparent to-[#0A0F1C]/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-app/95 via-app/75 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-app via-transparent to-app/40" />
         
         {/* Subtle Mesh Glow */}
         <div className="absolute top-[20%] right-[15%] w-[35vw] h-[35vw] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none" />
@@ -169,7 +169,7 @@ export default function SafetySection() {
           {checklist.map((item, index) => (
             <div
               key={index}
-              className="check-item flex items-center gap-3 p-2.5 lg:p-3 bg-navy-800/60 backdrop-blur-sm rounded-lg border border-white/5"
+              className="check-item flex items-center gap-3 p-2.5 lg:p-3 bg-surface/60 backdrop-blur-sm rounded-lg border border-white/5"
             >
               <div className="w-8 h-8 rounded-lg bg-orange/10 flex items-center justify-center flex-shrink-0">
                 <item.icon className="w-4 h-4 text-orange" />

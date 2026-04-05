@@ -44,8 +44,8 @@ export default function CompanyHistorySection() {
   const pathLength = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <section ref={containerRef} className="relative py-24 lg:py-32 bg-navy-900 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/10 via-navy-900 to-navy-900 pointer-events-none" />
+    <section ref={containerRef} className="relative py-24 lg:py-32 bg-app overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/10 via-app to-app pointer-events-none" />
       
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
         <div className="text-center mb-16 lg:mb-24">
@@ -101,7 +101,7 @@ function TimelineItem({ event }: { event: typeof timelineEvents[0] }) {
       <div className="hidden md:block w-5/12" />
 
       {/* Center Node */}
-      <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-navy-800 border-4 border-[#0A0F1C] items-center justify-center z-10 transition-colors duration-300 group-hover:bg-blue-500 group-hover:border-blue-500/30">
+      <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-surface border-4 border-app items-center justify-center z-10 transition-colors duration-300 group-hover:bg-blue-500 group-hover:border-blue-500/30">
         <event.icon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
       </div>
 
@@ -114,8 +114,8 @@ function TimelineItem({ event }: { event: typeof timelineEvents[0] }) {
         className="w-full md:w-5/12 ml-12 md:ml-0"
       >
         <div className={`
-          bg-navy-800/40 backdrop-blur-md rounded-2xl border border-white/5 p-6 lg:p-8
-          hover:bg-navy-800/60 hover:border-white/20 transition-all duration-300
+          bg-surface/40 backdrop-blur-md rounded-2xl border border-white/5 p-6 lg:p-8
+          hover:bg-surface/60 hover:border-white/20 transition-all duration-300
           relative
         `}>
           {/* Mobile node (visible only on small screens) */}

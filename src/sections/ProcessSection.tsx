@@ -121,7 +121,7 @@ export default function ProcessSection() {
     <section
       ref={sectionRef}
       id="process"
-      className="relative min-h-screen bg-[#0A0F1C] py-20 lg:py-0 overflow-hidden"
+      className="relative min-h-screen bg-app py-20 lg:py-0 overflow-hidden"
     >
       {/* Subtle Mesh Background */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
@@ -140,8 +140,8 @@ export default function ProcessSection() {
               alt="Aerial view of logistics hub"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-navy-900/50 lg:block hidden" />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-transparent lg:hidden" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-app/50 lg:block hidden" />
+            <div className="absolute inset-0 bg-gradient-to-t from-app via-transparent to-transparent lg:hidden" />
           </div>
         </div>
 
@@ -166,7 +166,7 @@ export default function ProcessSection() {
               {steps.map((step, index) => (
                 <div
                   key={index}
-                  className="step-item group flex items-start gap-5 p-5 lg:p-6 bg-navy-800/50 rounded-xl border border-white/5 hover:border-orange/30 hover:bg-navy-800/80 transition-all duration-300"
+                  className="step-item group flex items-start gap-5 p-5 lg:p-6 bg-surface/50 rounded-xl border border-white/5 hover:border-orange/30 hover:bg-surface/80 transition-all duration-300"
                 >
                   <div className="flex-shrink-0">
                     <div className="w-14 h-14 rounded-xl bg-orange/10 flex items-center justify-center group-hover:bg-orange/20 transition-colors">

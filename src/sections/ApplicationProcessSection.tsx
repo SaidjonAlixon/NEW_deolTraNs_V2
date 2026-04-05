@@ -35,10 +35,10 @@ export default function ApplicationProcessSection() {
   const { openDriverModal } = useDriverApplication();
 
   return (
-    <section ref={containerRef} className="relative py-24 lg:py-32 bg-[#0A0F1C] overflow-hidden">
+    <section ref={containerRef} className="relative py-24 lg:py-32 bg-app overflow-hidden">
       
       {/* Background radial gradient */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-blue-900/10 via-[#0A0F1C] to-[#0A0F1C] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-blue-900/10 via-app to-app pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
         <div className="text-center mb-20 lg:mb-28">
@@ -88,9 +88,9 @@ export default function ApplicationProcessSection() {
               >
                 {/* Number & Node */}
                 <div className="flex items-center lg:flex-col lg:gap-4 mb-6">
-                  <div className="w-24 h-24 rounded-full bg-navy-800 border-4 border-[#0A0F1C] flex items-center justify-center relative shadow-xl group-hover:border-blue-500/30 group-hover:scale-110 transition-all duration-500 z-10 flex-shrink-0">
+                  <div className="w-24 h-24 rounded-full bg-surface border-4 border-app flex items-center justify-center relative shadow-xl group-hover:border-blue-500/30 group-hover:scale-110 transition-all duration-500 z-10 flex-shrink-0">
                     <step.icon className="w-10 h-10 text-blue-400 group-hover:text-white transition-colors" />
-                    <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center border-4 border-[#0A0F1C] text-xs font-bold text-white shadow-lg">
+                    <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center border-4 border-app text-xs font-bold text-white shadow-lg">
                       {step.number}
                     </div>
                   </div>

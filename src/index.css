@@ -5,7 +5,17 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+
+  /* ----- Night (dark / kechki) — default before JS, matches saved “night” ----- */
+  :root,
+  html[data-theme="night"],
+  html:not([data-theme]) {
+    --app: 222 47% 6%;
+    --app-deep: 216 33% 7%;
+    --surface: 217 33% 12%;
+    --header-bar: 222 47% 11%;
+    --grain-opacity: 0.04;
+
     --background: 220 30% 6%;
     --foreground: 220 30% 97%;
     --card: 220 25% 11%;
@@ -26,6 +36,36 @@
     --input: 220 15% 20%;
     --ring: 11 100% 59%;
     --radius: 0.75rem;
+  }
+
+  /* ----- Day (kunduzgi / light) ----- */
+  html[data-theme="day"] {
+    color-scheme: light;
+    --app: 210 40% 97%;
+    --app-deep: 210 35% 93%;
+    --surface: 0 0% 100%;
+    --header-bar: 0 0% 100%;
+    --grain-opacity: 0.02;
+
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 11 90% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 40%;
+    --accent: 11 90% 48%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 88%;
+    --input: 214 32% 88%;
+    --ring: 11 90% 48%;
   }
 }
 
@@ -76,26 +116,50 @@
     height: 100%;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.04;
+    opacity: var(--grain-opacity, 0.04);
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  html[data-theme="day"] .text-gradient {
+    background-image: linear-gradient(135deg, #0f172a 0%, #475569 100%);
+  }
+
+  html[data-theme="night"] .text-gradient {
+    background-image: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
   }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar — follows theme */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
-::-webkit-scrollbar-track {
+html[data-theme="day"] ::-webkit-scrollbar-track {
+  background: hsl(210 40% 92%);
+}
+
+html[data-theme="day"] ::-webkit-scrollbar-thumb {
+  background: hsl(215 16% 70%);
+  border-radius: 4px;
+}
+
+html[data-theme="day"] ::-webkit-scrollbar-thumb:hover {
+  background: hsl(215 16% 55%);
+}
+
+html[data-theme="night"] ::-webkit-scrollbar-track,
+html:not([data-theme]) ::-webkit-scrollbar-track {
   background: #0B0F17;
 }
 
-::-webkit-scrollbar-thumb {
+html[data-theme="night"] ::-webkit-scrollbar-thumb,
+html:not([data-theme]) ::-webkit-scrollbar-thumb {
   background: #1e293b;
   border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+html[data-theme="night"] ::-webkit-scrollbar-thumb:hover,
+html:not([data-theme]) ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
 
@@ -191,4 +255,69 @@
 
 .animate-fade-in {
   animation: fade-in 0.5s ease-out forwards;
+}
+
+/* ----- Day theme: readable text outside hero video ----- */
+html[data-theme="day"] main section:not([data-hero-section]) .text-white,
+html[data-theme="day"] footer .text-white {
+  color: hsl(var(--foreground)) !important;
+}
+
+html[data-theme="day"] main section:not([data-hero-section]) .text-gray-300,
+html[data-theme="day"] footer .text-gray-300 {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+html[data-theme="day"] main section:not([data-hero-section]) .text-gray-400,
+html[data-theme="day"] footer .text-gray-400,
+html[data-theme="day"] main section:not([data-hero-section]) .text-gray-light,
+html[data-theme="day"] footer .text-gray-light {
+  color: hsl(215 16% 42%) !important;
+}
+
+html[data-theme="day"] header .text-slate-200,
+html[data-theme="day"] header .text-slate-300 {
+  color: rgb(51 65 85) !important;
+}
+
+html[data-theme="day"] header .group:hover .text-slate-300 {
+  color: rgb(15 23 42) !important;
+}
+
+/* Day: desktop nav — active + hover must stay on light header (Tailwind text-white wins otherwise) */
+html[data-theme="day"] header nav .header-nav-link-text--active {
+  color: rgb(15 23 42) !important;
+  filter: none;
+  text-shadow: none !important;
+}
+
+html[data-theme="day"] header nav a.group:hover .header-nav-link-text--idle {
+  color: rgb(15 23 42) !important;
+}
+
+html[data-theme="day"] .theme-toggle-shell {
+  border-color: hsl(var(--border));
+  background: hsl(var(--card) / 0.95);
+}
+
+html[data-theme="day"] .theme-toggle-shell button:not([aria-pressed="true"]) {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+html[data-theme="day"] .btn-secondary {
+  border-color: rgb(203 213 225);
+  color: rgb(30 41 59);
+}
+
+html[data-theme="day"] .btn-secondary:hover {
+  background: rgb(241 245 249);
+  border-color: rgb(148 163 184);
+}
+
+html[data-theme="day"] .header-mobile-overlay {
+  background: hsl(var(--background) / 0.98) !important;
+}
+
+html[data-theme="day"] .header-mobile-overlay .text-white {
+  color: hsl(var(--foreground)) !important;
 }

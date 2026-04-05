@@ -2,12 +2,26 @@
 <html lang="en">
 
 <head>
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('delo-theme');
+        if (t === 'day') {
+          document.documentElement.setAttribute('data-theme', 'day');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'night');
+        }
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'night');
+      }
+    })();
+  </script>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DELO TRANS INC | Reliable Freight & Logistics</title>
   <meta name="description"
-    content="Reliable freight across Uzbekistan and beyond—road, rail, and intermodal. DELO TRANS INC moves what moves business." />
+    content="Reliable freight across USA. DELO TRANS INC moves what moves business." />
   <meta name="keywords"
     content="logistics, trucking, freight, Uzbekistan, transport, cargo, DELO TRANS INC, shipping, logistics company" />
 
@@ -16,7 +30,7 @@
   <meta property="og:url" content="https://delotrans.inc/" />
   <meta property="og:title" content="DELO TRANS INC | Reliable Freight & Logistics" />
   <meta property="og:description"
-    content="Reliable freight across Uzbekistan and beyond—road, rail, and intermodal. DELO TRANS INC moves what moves business." />
+    content="Reliable freight across USA. DELO TRANS INC moves what moves business." />
   <meta property="og:image" content="/images/logo.png" />
 
   <!-- Twitter -->
@@ -24,7 +38,7 @@
   <meta property="twitter:url" content="https://delotrans.inc/" />
   <meta property="twitter:title" content="DELO TRANS INC | Reliable Freight & Logistics" />
   <meta property="twitter:description"
-    content="Reliable freight across Uzbekistan and beyond—road, rail, and intermodal. DELO TRANS INC moves what moves business." />
+    content="Reliable freight across USA. DELO TRANS INC moves what moves business." />
   <meta property="twitter:image" content="/images/logo.png" />
 
   <!-- Google Tag Manager -->

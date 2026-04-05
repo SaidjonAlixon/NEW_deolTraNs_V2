@@ -62,7 +62,7 @@ export default function QuoteSection() {
   return (
     <section
       id="quote"
-      className="relative min-h-screen bg-navy-900 py-10 lg:py-0 flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen bg-app py-10 lg:py-0 flex items-center justify-center overflow-hidden"
     >
       <div className="w-full max-w-[1600px] mx-auto flex flex-col lg:flex-row items-stretch lg:min-h-screen">
 
@@ -74,14 +74,14 @@ export default function QuoteSection() {
               alt="Office with logistics planning"
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-navy-900/10" />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy-900/60 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-navy-900/40" />
+            <div className="absolute inset-0 bg-app/10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-app/60 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-app/40" />
           </div>
         </motion.div>
 
         {/* Right Form */}
         <motion.div {...slideIn('right', 0.1)} className="lg:w-1/2 w-full px-6 lg:pr-10 lg:pl-5 xl:pr-16 xl:pl-6 py-6 lg:py-20 flex flex-col self-stretch">
-          <div className="w-full flex-1 flex flex-col justify-center bg-navy-800/80 backdrop-blur-md rounded-2xl p-6 sm:p-8 lg:p-10 border border-white/10 shadow-2xl">
+          <div className="w-full flex-1 flex flex-col justify-center bg-surface/80 backdrop-blur-md rounded-2xl p-6 sm:p-8 lg:p-10 border border-white/10 shadow-2xl">
 
             {/* Header */}
             <div className="mb-8">
@@ -109,7 +109,7 @@ export default function QuoteSection() {
                     <User className="w-4 h-4 inline mr-2" />Name
                   </label>
                   <input type="text" name="name" value={formData.name} onChange={handleChange} required
-                    className="w-full px-4 py-3 bg-navy-900/50 border border-white/10 rounded-lg text-white placeholder-gray-light/50 focus:outline-none focus:border-orange transition-colors"
+                    className="w-full px-4 py-3 bg-app/50 border border-white/10 rounded-lg text-white placeholder-gray-light/50 focus:outline-none focus:border-orange transition-colors"
                     placeholder="Your name" />
                 </div>
                 <div>
@@ -117,7 +117,7 @@ export default function QuoteSection() {
                     <Mail className="w-4 h-4 inline mr-2" />Email
                   </label>
                   <input type="email" name="email" value={formData.email} onChange={handleChange} required
-                    className="w-full px-4 py-3 bg-navy-900/50 border border-white/10 rounded-lg text-white placeholder-gray-light/50 focus:outline-none focus:border-orange transition-colors"
+                    className="w-full px-4 py-3 bg-app/50 border border-white/10 rounded-lg text-white placeholder-gray-light/50 focus:outline-none focus:border-orange transition-colors"
                     placeholder="your@email.com" />
                 </div>
               </div>
@@ -128,7 +128,7 @@ export default function QuoteSection() {
                     <Phone className="w-4 h-4 inline mr-2" />Phone
                   </label>
                   <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required
-                    className="w-full px-4 py-3 bg-navy-900/50 border border-white/10 rounded-lg text-white placeholder-gray-light/50 focus:outline-none focus:border-orange transition-colors"
+                    className="w-full px-4 py-3 bg-app/50 border border-white/10 rounded-lg text-white placeholder-gray-light/50 focus:outline-none focus:border-orange transition-colors"
                     placeholder="+1 000 000 0000" />
                 </div>
                 <div>
@@ -136,7 +136,7 @@ export default function QuoteSection() {
                     <Building className="w-4 h-4 inline mr-2" />Company
                   </label>
                   <input type="text" name="company" value={formData.company} onChange={handleChange}
-                    className="w-full px-4 py-3 bg-navy-900/50 border border-white/10 rounded-lg text-white placeholder-gray-light/50 focus:outline-none focus:border-orange transition-colors"
+                    className="w-full px-4 py-3 bg-app/50 border border-white/10 rounded-lg text-white placeholder-gray-light/50 focus:outline-none focus:border-orange transition-colors"
                     placeholder="Your company" />
                 </div>
               </div>
@@ -147,7 +147,7 @@ export default function QuoteSection() {
                     <MapPin className="w-4 h-4 inline mr-2" />From
                   </label>
                   <input type="text" name="from" value={formData.from} onChange={handleChange} required
-                    className="w-full px-4 py-3 bg-navy-900/50 border border-white/10 rounded-lg text-white placeholder-gray-light/50 focus:outline-none focus:border-orange transition-colors"
+                    className="w-full px-4 py-3 bg-app/50 border border-white/10 rounded-lg text-white placeholder-gray-light/50 focus:outline-none focus:border-orange transition-colors"
                     placeholder="Origin city" />
                 </div>
                 <div>
@@ -155,7 +155,7 @@ export default function QuoteSection() {
                     <MapPin className="w-4 h-4 inline mr-2" />To
                   </label>
                   <input type="text" name="to" value={formData.to} onChange={handleChange} required
-                    className="w-full px-4 py-3 bg-navy-900/50 border border-white/10 rounded-lg text-white placeholder-gray-light/50 focus:outline-none focus:border-orange transition-colors"
+                    className="w-full px-4 py-3 bg-app/50 border border-white/10 rounded-lg text-white placeholder-gray-light/50 focus:outline-none focus:border-orange transition-colors"
                     placeholder="Destination city" />
                 </div>
               </div>
@@ -165,7 +165,7 @@ export default function QuoteSection() {
                   <Package className="w-4 h-4 inline mr-2" />Cargo details
                 </label>
                 <textarea name="cargo" value={formData.cargo} onChange={handleChange} rows={4}
-                  className="w-full px-4 py-3 bg-navy-900/50 border border-white/10 rounded-lg text-white placeholder-gray-light/50 focus:outline-none focus:border-orange transition-colors resize-none"
+                  className="w-full px-4 py-3 bg-app/50 border border-white/10 rounded-lg text-white placeholder-gray-light/50 focus:outline-none focus:border-orange transition-colors resize-none"
                   placeholder="Describe your cargo (type, weight, dimensions, etc.)" />
               </div>
 

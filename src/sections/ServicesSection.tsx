@@ -130,7 +130,7 @@ export default function ServicesSection() {
   };
 
   return (
-    <section ref={sectionRef} id="services" className="relative bg-navy-900 py-20 lg:py-0">
+    <section ref={sectionRef} id="services" className="relative bg-app py-20 lg:py-0">
       <div className="lg:flex lg:min-h-screen">
 
         {/* Left Image Panel */}
@@ -143,8 +143,8 @@ export default function ServicesSection() {
         >
           <div className="h-[40vh] lg:h-full relative overflow-hidden">
             <img src="/images/chap_truck.jpg" alt="DELO TRANS INC Services" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-navy-900/50 hidden lg:block" />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-transparent lg:hidden" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-app/50 hidden lg:block" />
+            <div className="absolute inset-0 bg-gradient-to-t from-app via-transparent to-transparent lg:hidden" />
           </div>
         </motion.div>
 
@@ -179,7 +179,7 @@ export default function ServicesSection() {
                   key={service.id}
                   {...fadeUp(index * 0.07)}
                   onClick={() => handleOpenGallery(service)}
-                  className="group p-4 lg:p-5 bg-navy-800/50 rounded-xl border border-white/5 hover:border-orange/50 hover:bg-navy-800/80 transition-all duration-300 cursor-pointer relative overflow-hidden"
+                  className="group p-4 lg:p-5 bg-surface/50 rounded-xl border border-white/5 hover:border-orange/50 hover:bg-surface/80 transition-all duration-300 cursor-pointer relative overflow-hidden"
                 >
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-orange/10 p-1.5 rounded-lg">
                     <ExternalLink className="w-3 h-3 text-orange" />
@@ -203,7 +203,7 @@ export default function ServicesSection() {
             </div>
 
             {/* Coverage Area */}
-            <motion.div {...fadeUp(0.1)} className="mb-8 p-5 bg-navy-800/40 rounded-xl border border-white/5">
+            <motion.div {...fadeUp(0.1)} className="mb-8 p-5 bg-surface/40 rounded-xl border border-white/5">
               <div className="flex items-center gap-2 mb-4">
                 <MapPin className="w-4 h-4 text-orange" />
                 <p className="text-sm font-semibold text-white">Coverage Area</p>

@@ -33,8 +33,8 @@ export default function DriverRequirementsSection() {
   const { openDriverModal } = useDriverApplication();
 
   return (
-    <section ref={containerRef} className="relative py-24 lg:py-32 bg-navy-900 overflow-hidden">
-      <div className="absolute inset-0 bg-[#0A0F1C] opacity-90" />
+    <section ref={containerRef} className="relative py-24 lg:py-32 bg-app overflow-hidden">
+      <div className="absolute inset-0 bg-app opacity-90" />
       <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:20px_20px] opacity-20" />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none" />
 
@@ -80,7 +80,7 @@ export default function DriverRequirementsSection() {
             >
               <button
                 onClick={openDriverModal}
-                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-navy-800 rounded-full border border-blue-500/30 text-white font-medium hover:border-blue-400 transition-all duration-300 w-full sm:w-auto"
+                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-surface rounded-full border border-blue-500/30 text-white font-medium hover:border-blue-400 transition-all duration-300 w-full sm:w-auto"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
                 <span className="relative z-10 group-hover:text-blue-400 transition-colors">Apply as Company Driver</span>
@@ -90,7 +90,7 @@ export default function DriverRequirementsSection() {
           </div>
 
           <div className="w-full lg:w-7/12">
-            <div className="bg-navy-800/40 backdrop-blur-xl rounded-3xl border border-white/5 p-8 sm:p-10 shadow-2xl">
+            <div className="bg-surface/40 backdrop-blur-xl rounded-3xl border border-white/5 p-8 sm:p-10 shadow-2xl">
               <p className="font-mono text-xs uppercase tracking-widest text-blue-400 mb-6">Why Drive With Us</p>
               <div className="flex flex-col gap-4">
                 {companyDriverPerks.map((perk, index) => (
@@ -148,7 +148,7 @@ export default function DriverRequirementsSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="bg-navy-800/60 border border-emerald-500/20 rounded-2xl p-5 mb-6 text-left"
+              className="bg-surface/60 border border-emerald-500/20 rounded-2xl p-5 mb-6 text-left"
             >
               <div className="flex items-center gap-2 mb-3">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
@@ -178,7 +178,7 @@ export default function DriverRequirementsSection() {
           </div>
 
           <div className="w-full lg:w-7/12">
-            <div className="bg-navy-800/40 backdrop-blur-xl rounded-3xl border border-white/5 p-8 sm:p-10 shadow-2xl">
+            <div className="bg-surface/40 backdrop-blur-xl rounded-3xl border border-white/5 p-8 sm:p-10 shadow-2xl">
               <p className="font-mono text-xs uppercase tracking-widest text-orange mb-6">What You Can Expect</p>
               <div className="flex flex-col gap-4">
                 {expectations.map((req, index) => (

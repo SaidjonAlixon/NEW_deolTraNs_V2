@@ -10,7 +10,7 @@ export default function Drivers() {
     }, []);
 
     return (
-        <div className="bg-[#0A0F1C] min-h-screen">
+        <div className="bg-app min-h-screen">
             <CareersSection />
             <DriverBenefitsSection />
             <DriverRequirementsSection />

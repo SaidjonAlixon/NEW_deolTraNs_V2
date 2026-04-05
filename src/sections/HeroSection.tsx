@@ -186,7 +186,8 @@ export default function HeroSection() {
     <section
       ref={sectionRef}
       id="hero"
-      className="section-pinned bg-navy-900"
+      data-hero-section
+      className="section-pinned bg-app"
     >
       {/* Background Video */}
       <div ref={bgRef} className="absolute inset-0 z-[1]">
@@ -205,8 +206,8 @@ export default function HeroSection() {
           }}
           className="w-full h-full object-cover img-industrial"
         />
-        <div className="absolute inset-0 bg-navy-900/40 backdrop-blur-md transition-colors duration-500"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-950/90 via-navy-950/60 to-transparent w-[70%]"></div>
+        <div className="absolute inset-0 bg-app/40 backdrop-blur-md transition-colors duration-500"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-app-deep/90 via-app-deep/60 to-transparent w-[70%]"></div>
       </div>
 
       {/* ─── MOBILE LAYOUT (hidden on lg+) ─── */}
@@ -228,7 +229,7 @@ export default function HeroSection() {
         </h1>
 
         {/* Description */}
-        <div className="border-l-2 border-orange/50 pl-4 py-3 bg-gradient-to-r from-navy-900/60 to-transparent backdrop-blur-md rounded-r-xl mb-6">
+        <div className="border-l-2 border-orange/50 pl-4 py-3 bg-gradient-to-r from-app/60 to-transparent backdrop-blur-md rounded-r-xl mb-6">
           <p className="text-sm text-white/90 leading-relaxed font-light">
             {descriptions[currentDescIndex]}
           </p>
@@ -296,7 +297,7 @@ export default function HeroSection() {
             </span>
           </h1>
 
-          <div className="mt-4 border-l-2 border-orange/50 pl-6 py-4 bg-gradient-to-r from-navy-900/60 to-transparent backdrop-blur-md rounded-r-xl w-full max-w-[600px] min-h-[100px] flex items-center">
+          <div className="mt-4 border-l-2 border-orange/50 pl-6 py-4 bg-gradient-to-r from-app/60 to-transparent backdrop-blur-md rounded-r-xl w-full max-w-[600px] min-h-[100px] flex items-center">
             <p key={`desc-${currentDescIndex}`} className="text-base lg:text-lg text-white/95 leading-relaxed drop-shadow-lg font-light animate-fade-in w-full">
               {descriptions[currentDescIndex]}
             </p>
@@ -316,7 +317,7 @@ export default function HeroSection() {
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-navy-900/80 flex items-center justify-center border border-orange/40 shadow-[0_0_20px_rgba(253,10,7,0.4)] group-hover:scale-110 transition-transform">
+                  <div className="w-14 h-14 rounded-full bg-app/80 flex items-center justify-center border border-orange/40 shadow-[0_0_20px_rgba(253,10,7,0.4)] group-hover:scale-110 transition-transform">
                     <MapPin className="w-7 h-7 text-orange" />
                   </div>
                   <div>
@@ -349,7 +350,7 @@ export default function HeroSection() {
           className="absolute left-[62vw] top-[46vh] w-[34vw] max-w-md z-10"
           style={{ opacity: 0, transform: 'translateX(40vw)' }}
         >
-          <div className={`w-full h-full bg-navy-950/60 backdrop-blur-3xl rounded-tl-3xl rounded-br-3xl p-8 border-b-[3px] border-l-2 hover:border-blue-400/60 transition-all duration-700 card-lift group overflow-hidden ${activeCard === 1 ? 'scale-105 opacity-100 border-blue-500/80 shadow-[0_0_60px_rgba(59,130,246,0.5)]' : 'scale-95 opacity-50 border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.15)]'}`}>
+          <div className={`w-full h-full bg-app-deep/60 backdrop-blur-3xl rounded-tl-3xl rounded-br-3xl p-8 border-b-[3px] border-l-2 hover:border-blue-400/60 transition-all duration-700 card-lift group overflow-hidden ${activeCard === 1 ? 'scale-105 opacity-100 border-blue-500/80 shadow-[0_0_60px_rgba(59,130,246,0.5)]' : 'scale-95 opacity-50 border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.15)]'}`}>
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-blue-500/10 to-transparent pointer-events-none rounded-bl-3xl"></div>
             <div className="absolute top-0 right-0 w-8 h-[3px] bg-blue-500 group-hover:w-full transition-all duration-700"></div>
             <div className="absolute top-0 right-0 h-8 w-[3px] bg-blue-500 group-hover:h-full transition-all duration-700"></div>

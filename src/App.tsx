@@ -18,6 +18,7 @@ import ApplicationForm from './components/ApplicationForm';
 // Import Context/Modal
 import { DriverApplicationProvider } from './context/DriverApplicationContext';
 import DriverApplicationModal from './components/DriverApplicationModal';
+import TelLinkDataLayerTracking from './components/TelLinkDataLayerTracking';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -36,8 +37,9 @@ function App() {
 
   return (
     <DriverApplicationProvider>
-      <div ref={mainRef} className="relative bg-navy-900 min-h-screen">
+      <div ref={mainRef} className="relative bg-app min-h-screen">
         <ScrollToTop />
+        <TelLinkDataLayerTracking />
         {/* Grain overlay */}
         <div className="grain-overlay" />
 

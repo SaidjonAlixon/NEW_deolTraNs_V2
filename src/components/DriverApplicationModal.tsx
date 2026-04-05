@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Check, ArrowRight, ArrowLeft, 
@@ -6,6 +7,12 @@ import {
   Upload, Phone, Mail, MapPin, ChevronDown
 } from 'lucide-react';
 import { useDriverApplication } from '../context/DriverApplicationContext';
+import {
+  gtmDriverTypeFromPosition,
+  gtmFormLocationFromPathname,
+  pushDriverFormOpenOnce,
+  pushDriverFormSubmit,
+} from '../lib/gtmDataLayer';
 import { cn } from '../lib/utils';
 import { Dialog, DialogContent, DialogOverlay, DialogPortal } from './ui/dialog';
 import { upload } from '@vercel/blob/client';
@@ -43,6 +50,10 @@ const positions = [
 
 const cdlTypes = ['Class A CDL', 'Class B CDL', 'No CDL (Applying for Training)'];
 
+function uploadLineClass(done: boolean) {
+  return cn('text-sm font-medium truncate', done ? 'text-emerald-600' : 'text-muted-foreground');
+}
+
 const initialFormData = {
   position: '',
   firstName: '',
@@ -68,7 +79,9 @@ const initialFormData = {
 };
 
 export default function DriverApplicationModal() {
-  const { isOpen, closeDriverModal } = useDriverApplication();
+  const { isOpen, openSessionId, closeDriverModal } = useDriverApplication();
+  const { pathname } = useLocation();
+  const formLocation = gtmFormLocationFromPathname(pathname);
   const [currentStep, setCurrentStep] = useState(1);
   const [direction, setDirection] = useState(0);
   const resumeInputRef = useRef<HTMLInputElement>(null);
@@ -84,6 +97,11 @@ export default function DriverApplicationModal() {
       }, 300);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen || openSessionId < 1) return;
+    pushDriverFormOpenOnce(openSessionId, formLocation);
+  }, [isOpen, openSessionId, formLocation]);
 
   const canProceedStep2 = () =>
     formData.firstName?.trim() &&
@@ -212,6 +230,7 @@ export default function DriverApplicationModal() {
         throw new Error(data?.message || `Server error (${res.status})`);
       }
 
+      pushDriverFormSubmit(formLocation, gtmDriverTypeFromPosition(formData.position));
       closeDriverModal();
     } catch (error) {
       console.error('Failed to submit driver application', error);
@@ -297,17 +316,17 @@ export default function DriverApplicationModal() {
     <Dialog open={isOpen} onOpenChange={(open) => !open && closeDriverModal()}>
       <DialogPortal>
         {/* Backdrop */}
-        <DialogOverlay className="z-[2000] bg-black/70 backdrop-blur-md" />
+        <DialogOverlay className="z-[2000] bg-black/55 backdrop-blur-md" />
         
         <DialogContent 
           showCloseButton={false}
           className="z-[2010] max-w-xl w-full p-0 border-none bg-transparent shadow-none overflow-hidden"
         >
-          <div className="relative rounded-3xl overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.8)] flex flex-col max-h-[92vh]">
+          <div className="driver-app-modal relative rounded-3xl overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.4)] flex flex-col max-h-[92vh] border border-border/70 bg-card text-foreground">
             
             {/* Animated gradient border */}
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-red-600/30 via-transparent to-blue-600/30 z-0 pointer-events-none" />
-            <div className="absolute inset-[1px] rounded-3xl bg-[#0c1628] z-0" />
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-red-600/20 via-transparent to-blue-600/15 z-0 pointer-events-none" />
+            <div className="absolute inset-[1px] rounded-3xl bg-card z-0" />
 
             {/* Content */}
             <div className="relative z-10 flex flex-col max-h-[92vh]">
@@ -323,16 +342,16 @@ export default function DriverApplicationModal() {
                       <Truck className="w-3.5 h-3.5 text-red-500" />
                       <span className="text-xs font-bold uppercase tracking-widest text-red-400">DELO TRANS INC</span>
                     </div>
-                    <h2 className="text-2xl font-heading font-extrabold text-white leading-tight">
+                    <h2 className="text-2xl font-heading font-extrabold text-foreground leading-tight">
                       Driver Application
                     </h2>
-                    <p className="text-sm text-gray-400 mt-0.5">
+                    <p className="text-sm text-muted-foreground mt-0.5">
                       Step {currentStep} of {steps.length} — {steps[currentStep-1].name}
                     </p>
                   </div>
                   <button 
                     onClick={closeDriverModal}
-                    className="shrink-0 w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all mt-1"
+                    className="shrink-0 w-9 h-9 rounded-full bg-muted/60 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted hover:border-border transition-all mt-1"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -350,17 +369,17 @@ export default function DriverApplicationModal() {
                           <div className={cn(
                             "w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 border",
                             isDone ? "bg-red-600 border-red-600 shadow-[0_0_12px_rgba(220,38,38,0.5)]" :
-                            isActive ? "bg-white/10 border-white/40 shadow-[0_0_12px_rgba(255,255,255,0.15)] scale-110" :
-                            "bg-white/5 border-white/10"
+                            isActive ? "bg-muted border-primary/45 shadow-[0_0_12px_hsl(var(--primary)/0.2)] scale-110" :
+                            "bg-muted/40 border-border"
                           )}>
-                            {isDone ? <Check className="w-4 h-4 text-white" /> : <StepIcon className={cn("w-4 h-4", isActive ? "text-white" : "text-gray-600")} />}
+                            {isDone ? <Check className="w-4 h-4 text-white" /> : <StepIcon className={cn("w-4 h-4", isActive ? "text-foreground" : "text-muted-foreground")} />}
                           </div>
-                          <span className={cn("text-[10px] font-bold uppercase tracking-wider", isActive ? "text-white" : isDone ? "text-red-400" : "text-gray-600")}>
+                          <span className={cn("text-[10px] font-bold uppercase tracking-wider", isActive ? "text-foreground" : isDone ? "text-red-500" : "text-muted-foreground")}>
                             {step.name}
                           </span>
                         </div>
                         {index < steps.length - 1 && (
-                          <div className={cn("flex-1 h-0.5 mb-4 transition-all duration-500", currentStep > step.id ? "bg-red-600" : "bg-white/10")} />
+                          <div className={cn("flex-1 h-0.5 mb-4 transition-all duration-500", currentStep > step.id ? "bg-red-600" : "bg-border")} />
                         )}
                       </React.Fragment>
                     );
@@ -369,7 +388,7 @@ export default function DriverApplicationModal() {
               </div>
 
               {/* Divider */}
-              <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mx-6" />
+              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-6" />
 
               {/* Form Area */}
               <div className="flex-grow overflow-y-auto px-7 py-6" style={{scrollbarWidth: 'none'}}>
@@ -386,7 +405,7 @@ export default function DriverApplicationModal() {
                     {/* STEP 1: Position */}
                     {currentStep === 1 && (
                       <div className="space-y-4">
-                        <p className="text-sm text-gray-400 mb-5">
+                        <p className="text-sm text-muted-foreground mb-5">
                           Choose the position that best matches your situation. We welcome all experience levels.
                         </p>
                         {positions.map(pos => (
@@ -397,7 +416,7 @@ export default function DriverApplicationModal() {
                               "w-full text-left p-5 rounded-2xl border transition-all duration-300 group",
                               formData.position === pos.id
                                 ? "bg-red-600/10 border-red-600 shadow-[0_0_20px_rgba(220,38,38,0.15)]"
-                                : "bg-white/3 border-white/8 hover:border-white/20 hover:bg-white/5"
+                                : "bg-muted/20 border-border hover:border-primary/30 hover:bg-muted/45"
                             )}
                           >
                             <div className="flex items-start justify-between gap-4">
@@ -405,20 +424,20 @@ export default function DriverApplicationModal() {
                                 <div className="flex items-center gap-3 mb-2">
                                   <div className={cn(
                                     "w-8 h-8 rounded-lg flex items-center justify-center transition-all",
-                                    formData.position === pos.id ? "bg-red-600" : "bg-white/10"
+                                    formData.position === pos.id ? "bg-red-600" : "bg-muted"
                                   )}>
-                                    <Truck className="w-4 h-4 text-white" />
+                                    <Truck className={cn("w-4 h-4", formData.position === pos.id ? "text-white" : "text-foreground")} />
                                   </div>
-                                  <span className="font-bold text-white">{pos.title}</span>
+                                  <span className="font-bold text-foreground">{pos.title}</span>
                                 </div>
-                                <p className="text-sm text-gray-400 mb-3">{pos.description}</p>
+                                <p className="text-sm text-muted-foreground mb-3">{pos.description}</p>
                                 <div className="flex flex-wrap gap-2">
                                   {pos.perks.map(perk => (
                                     <span key={perk} className={cn(
                                       "text-xs px-2.5 py-1 rounded-full border",
                                       formData.position === pos.id 
-                                        ? "bg-red-600/10 border-red-600/30 text-red-300"
-                                        : "bg-white/5 border-white/10 text-gray-400"
+                                        ? "bg-red-600/10 border-red-600/30 text-red-600"
+                                        : "bg-muted/40 border-border text-muted-foreground"
                                     )}>
                                       {perk}
                                     </span>
@@ -427,7 +446,7 @@ export default function DriverApplicationModal() {
                               </div>
                               <div className={cn(
                                 "w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1 transition-all",
-                                formData.position === pos.id ? "border-red-600 bg-red-600" : "border-white/20"
+                                formData.position === pos.id ? "border-red-600 bg-red-600" : "border-border"
                               )}>
                                 {formData.position === pos.id && <Check className="w-3 h-3 text-white" />}
                               </div>
@@ -442,69 +461,69 @@ export default function DriverApplicationModal() {
                       <div className="space-y-4">
                         <div className="grid grid-cols-2 gap-3">
                           <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">First Name</label>
+                            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">First Name</label>
                             <div className="relative">
-                              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                               <input
                                 name="firstName"
                                 value={formData.firstName}
                                 onChange={handleInputChange}
                                 placeholder="John"
-                                className="w-full bg-white/5 border border-white/8 rounded-xl pl-10 pr-4 py-3 text-white text-sm focus:outline-none focus:border-red-500/50 focus:bg-white/7 transition-all placeholder:text-gray-600"
+                                className="w-full bg-muted/50 border border-input rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 focus:bg-muted/75 transition-all placeholder:text-muted-foreground/80"
                               />
                             </div>
                           </div>
                           <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Last Name</label>
+                            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Last Name</label>
                             <div className="relative">
-                              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                               <input
                                 name="lastName"
                                 value={formData.lastName}
                                 onChange={handleInputChange}
                                 placeholder="Doe"
-                                className="w-full bg-white/5 border border-white/8 rounded-xl pl-10 pr-4 py-3 text-white text-sm focus:outline-none focus:border-red-500/50 focus:bg-white/7 transition-all placeholder:text-gray-600"
+                                className="w-full bg-muted/50 border border-input rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 focus:bg-muted/75 transition-all placeholder:text-muted-foreground/80"
                               />
                             </div>
                           </div>
                         </div>
                         <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Email Address</label>
+                          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Email Address</label>
                           <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <input
                               type="email"
                               name="email"
                               value={formData.email}
                               onChange={handleInputChange}
                               placeholder="john@example.com"
-                              className="w-full bg-white/5 border border-white/8 rounded-xl pl-10 pr-4 py-3 text-white text-sm focus:outline-none focus:border-red-500/50 transition-all placeholder:text-gray-600"
+                              className="w-full bg-muted/50 border border-input rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 transition-all placeholder:text-muted-foreground/80"
                             />
                           </div>
                         </div>
                         <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Phone Number</label>
+                          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Phone Number</label>
                           <div className="relative">
-                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <input
                               name="phone"
                               value={formData.phone}
                               onChange={handleInputChange}
                               placeholder="+1 (555) 000-0000"
-                              className="w-full bg-white/5 border border-white/8 rounded-xl pl-10 pr-4 py-3 text-white text-sm focus:outline-none focus:border-red-500/50 transition-all placeholder:text-gray-600"
+                              className="w-full bg-muted/50 border border-input rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 transition-all placeholder:text-muted-foreground/80"
                             />
                           </div>
                         </div>
                         <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Home Address</label>
+                          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Home Address</label>
                           <div className="relative">
-                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <input
                               name="address"
                               value={formData.address}
                               onChange={handleInputChange}
                               placeholder="City, State, ZIP"
-                              className="w-full bg-white/5 border border-white/8 rounded-xl pl-10 pr-4 py-3 text-white text-sm focus:outline-none focus:border-red-500/50 transition-all placeholder:text-gray-600"
+                              className="w-full bg-muted/50 border border-input rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 transition-all placeholder:text-muted-foreground/80"
                             />
                           </div>
                         </div>
@@ -517,46 +536,46 @@ export default function DriverApplicationModal() {
                       <div className="space-y-5">
                         {/* CDL type */}
                         <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Choose your CDL type</label>
+                          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Choose your CDL type</label>
                           <div className="relative">
                             <select
                               name="cdlType"
                               value={formData.cdlType}
                               onChange={handleInputChange}
-                              className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-red-500/50 transition-all appearance-none cursor-pointer"
+                              className="w-full bg-muted/50 border border-input rounded-xl px-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 transition-all appearance-none cursor-pointer"
                             >
-                              <option value="" disabled className="bg-navy-900">Select CDL Type...</option>
+                              <option value="" disabled className="bg-app">Select CDL Type...</option>
                               {cdlTypes.map(type => (
-                                <option key={type} value={type} className="bg-navy-900">{type}</option>
+                                <option key={type} value={type} className="bg-app">{type}</option>
                               ))}
                             </select>
-                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                           </div>
                         </div>
 
                         {/* Years experience (numeric) */}
                         <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Years of commercial driving experience?</label>
+                          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Years of commercial driving experience?</label>
                           <input
                             name="yearsExperience"
                             value={formData.yearsExperience}
                             onChange={handleInputChange}
                             type="number"
                             min={0}
-                            className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-red-500/50 transition-all placeholder:text-gray-600"
+                            className="w-full bg-muted/50 border border-input rounded-xl px-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 transition-all placeholder:text-muted-foreground/80"
                           />
                         </div>
 
                         {/* Driver License (both sides) */}
                         <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Driver License (Both Sides)</label>
+                          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Driver License (Both Sides)</label>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <label
                               className={cn(
                                 "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-3 cursor-pointer",
                                 formData.licenseFrontFileName
                                   ? "border-green-500/50 bg-green-600/5"
-                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                  : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                               )}
                             >
                               <input
@@ -567,15 +586,15 @@ export default function DriverApplicationModal() {
                               />
                               <div className={cn(
                                 "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
-                                formData.licenseFrontFileName ? "bg-green-600" : "bg-white/10"
+                                formData.licenseFrontFileName ? "bg-green-600" : "bg-muted"
                               )}>
-                                {formData.licenseFrontFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                                {formData.licenseFrontFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-muted-foreground" />}
                               </div>
                               <div className="text-left">
-                                <p className={cn("text-xs font-medium", formData.licenseFrontFileName ? "text-green-500" : "text-gray-400")}>
+                                <p className={cn("text-xs font-medium", formData.licenseFrontFileName ? "text-green-500" : "text-muted-foreground")}>
                                   {formData.licenseFrontFileName ? "Uploaded" : "Front side"}
                                 </p>
-                                <p className="text-[11px] text-gray-600">PDF, JPG, PNG</p>
+                                <p className="text-[11px] text-muted-foreground">PDF, JPG, PNG</p>
                               </div>
                             </label>
 
@@ -584,7 +603,7 @@ export default function DriverApplicationModal() {
                                 "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-3 cursor-pointer",
                                 formData.licenseBackFileName
                                   ? "border-green-500/50 bg-green-600/5"
-                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                  : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                               )}
                             >
                               <input
@@ -595,15 +614,15 @@ export default function DriverApplicationModal() {
                               />
                               <div className={cn(
                                 "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
-                                formData.licenseBackFileName ? "bg-green-600" : "bg-white/10"
+                                formData.licenseBackFileName ? "bg-green-600" : "bg-muted"
                               )}>
-                                {formData.licenseBackFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                                {formData.licenseBackFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-muted-foreground" />}
                               </div>
                               <div className="text-left">
-                                <p className={cn("text-xs font-medium", formData.licenseBackFileName ? "text-green-500" : "text-gray-400")}>
+                                <p className={cn("text-xs font-medium", formData.licenseBackFileName ? "text-green-500" : "text-muted-foreground")}>
                                   {formData.licenseBackFileName ? "Uploaded" : "Back side"}
                                 </p>
-                                <p className="text-[11px] text-gray-600">PDF, JPG, PNG</p>
+                                <p className="text-[11px] text-muted-foreground">PDF, JPG, PNG</p>
                               </div>
                             </label>
                           </div>
@@ -611,13 +630,13 @@ export default function DriverApplicationModal() {
 
                         {/* Medical Card */}
                         <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Medical Card</label>
+                          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Medical Card</label>
                           <label
                             className={cn(
                               "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                               formData.medicalCardFileName
                                 ? "border-green-500/50 bg-green-600/5"
-                                : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                             )}
                           >
                             <input
@@ -628,22 +647,22 @@ export default function DriverApplicationModal() {
                             />
                             <div className={cn(
                               "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                              formData.medicalCardFileName ? "bg-green-600" : "bg-white/10"
+                              formData.medicalCardFileName ? "bg-green-600" : "bg-muted"
                             )}>
-                              {formData.medicalCardFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                              {formData.medicalCardFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-muted-foreground" />}
                             </div>
                             <div className="text-left">
-                              <p className={cn("text-sm font-medium", formData.medicalCardFileName ? "text-green-500" : "text-gray-400")}>
+                              <p className={cn("text-sm font-medium", formData.medicalCardFileName ? "text-green-500" : "text-muted-foreground")}>
                                 {formData.medicalCardFileName ? "Uploaded" : "Choose file"}
                               </p>
-                              <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
+                              <p className="text-xs text-muted-foreground">PDF, JPG, PNG up to 10MB</p>
                             </div>
                           </label>
                         </div>
 
                         {/* Resume Upload (optional) with drag & drop */}
                         <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Resume / Document <span className="text-gray-600 normal-case">(optional)</span></label>
+                          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Resume / Document <span className="text-muted-foreground normal-case">(optional)</span></label>
                           <div
                             onClick={() => resumeInputRef.current?.click()}
                             onDragOver={(e) => {
@@ -655,20 +674,20 @@ export default function DriverApplicationModal() {
                               "w-full py-6 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                               formData.resumeFileName 
                                 ? "border-green-500/50 bg-green-600/5" 
-                                : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                             )}
                           >
                             <div className={cn(
                               "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                              formData.resumeFileName ? "bg-green-600" : "bg-white/10"
+                              formData.resumeFileName ? "bg-green-600" : "bg-muted"
                             )}>
-                              {formData.resumeFileName ? <Check className="w-5 h-5 text-white" /> : <FileText className="w-5 h-5 text-gray-400" />}
+                              {formData.resumeFileName ? <Check className="w-5 h-5 text-white" /> : <FileText className="w-5 h-5 text-muted-foreground" />}
                             </div>
                             <div className="text-left">
-                              <p className={cn("text-sm font-medium", formData.resumeFileName ? "text-green-500" : "text-gray-400")}>
+                              <p className={cn("text-sm font-medium", formData.resumeFileName ? "text-green-500" : "text-muted-foreground")}>
                                 {formData.resumeFileName ? "Uploaded" : "Attach resume (optional)"}
                               </p>
-                              <p className="text-xs text-gray-600">PDF, DOCX up to 10MB — click, or drag and drop here</p>
+                              <p className="text-xs text-muted-foreground">PDF, DOCX up to 10MB — click, or drag and drop here</p>
                             </div>
                           </div>
                           <input ref={resumeInputRef} type="file" className="hidden" accept=".pdf,.doc,.docx" onChange={handleFileChange('resumeFileName')} />
@@ -679,14 +698,14 @@ export default function DriverApplicationModal() {
                           {/* Owner Operator – Documents & Truck */}
                           {/* Driver License (Both Sides) */}
                           <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Driver License (Both Sides)</label>
+                            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Driver License (Both Sides)</label>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                               <label
                                 className={cn(
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-3 cursor-pointer",
                                   formData.licenseFrontFileName
                                     ? "border-green-500/50 bg-green-600/5"
-                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                    : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                                 )}
                               >
                                 <input
@@ -697,15 +716,15 @@ export default function DriverApplicationModal() {
                                 />
                                 <div className={cn(
                                   "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
-                                  formData.licenseFrontFileName ? "bg-green-600" : "bg-white/10"
+                                  formData.licenseFrontFileName ? "bg-green-600" : "bg-muted"
                                 )}>
-                                  {formData.licenseFrontFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                                  {formData.licenseFrontFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-muted-foreground" />}
                                 </div>
                                 <div className="text-left">
-                                  <p className={cn("text-xs font-medium", formData.licenseFrontFileName ? "text-green-500" : "text-gray-400")}>
+                                  <p className={cn("text-xs font-medium", formData.licenseFrontFileName ? "text-green-500" : "text-muted-foreground")}>
                                     {formData.licenseFrontFileName ? "Uploaded" : "Front side"}
                                   </p>
-                                  <p className="text-[11px] text-gray-600">PDF, JPG, PNG</p>
+                                  <p className="text-[11px] text-muted-foreground">PDF, JPG, PNG</p>
                                 </div>
                               </label>
 
@@ -714,7 +733,7 @@ export default function DriverApplicationModal() {
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-3 cursor-pointer",
                                   formData.licenseBackFileName
                                     ? "border-green-500/50 bg-green-600/5"
-                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                    : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                                 )}
                               >
                                 <input
@@ -725,15 +744,15 @@ export default function DriverApplicationModal() {
                                 />
                                 <div className={cn(
                                   "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
-                                  formData.licenseBackFileName ? "bg-green-600" : "bg-white/10"
+                                  formData.licenseBackFileName ? "bg-green-600" : "bg-muted"
                                 )}>
-                                  {formData.licenseBackFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                                  {formData.licenseBackFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-muted-foreground" />}
                                 </div>
                                 <div className="text-left">
-                                  <p className={cn("text-xs font-medium", formData.licenseBackFileName ? "text-green-500" : "text-gray-400")}>
+                                  <p className={cn("text-xs font-medium", formData.licenseBackFileName ? "text-green-500" : "text-muted-foreground")}>
                                     {formData.licenseBackFileName ? "Uploaded" : "Back side"}
                                   </p>
-                                  <p className="text-[11px] text-gray-600">PDF, JPG, PNG</p>
+                                  <p className="text-[11px] text-muted-foreground">PDF, JPG, PNG</p>
                                 </div>
                               </label>
                             </div>
@@ -741,13 +760,13 @@ export default function DriverApplicationModal() {
 
                           {/* Medical Card */}
                           <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Medical Card</label>
+                            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Medical Card</label>
                             <label
                               className={cn(
                                 "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                                 formData.medicalCardFileName
                                   ? "border-green-500/50 bg-green-600/5"
-                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                  : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                               )}
                             >
                               <input
@@ -758,28 +777,28 @@ export default function DriverApplicationModal() {
                               />
                               <div className={cn(
                                 "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                                formData.medicalCardFileName ? "bg-green-600" : "bg-white/10"
+                                formData.medicalCardFileName ? "bg-green-600" : "bg-muted"
                               )}>
-                                {formData.medicalCardFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                                {formData.medicalCardFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-muted-foreground" />}
                               </div>
                               <div className="text-left">
-                                <p className={cn("text-sm font-medium", formData.medicalCardFileName ? "text-green-500" : "text-gray-400")}>
+                                <p className={cn("text-sm font-medium", formData.medicalCardFileName ? "text-green-500" : "text-muted-foreground")}>
                                   {formData.medicalCardFileName ? "Uploaded" : "Choose file"}
                                 </p>
-                                <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
+                                <p className="text-xs text-muted-foreground">PDF, JPG, PNG up to 10MB</p>
                               </div>
                             </label>
                           </div>
 
                           {/* Annual truck inspection */}
                           <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Annual truck inspection</label>
+                            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Annual truck inspection</label>
                             <label
                               className={cn(
                                 "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                                 formData.annualInspectionFileName
                                   ? "border-green-500/50 bg-green-600/5"
-                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                  : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                               )}
                             >
                               <input
@@ -790,23 +809,23 @@ export default function DriverApplicationModal() {
                               />
                               <div className={cn(
                                 "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                                formData.annualInspectionFileName ? "bg-green-600" : "bg-white/10"
+                                formData.annualInspectionFileName ? "bg-green-600" : "bg-muted"
                               )}>
-                                {formData.annualInspectionFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                                {formData.annualInspectionFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-muted-foreground" />}
                               </div>
                               <div className="text-left">
-                                <p className={cn("text-sm font-medium", formData.annualInspectionFileName ? "text-white" : "text-gray-400")}>
+                                <p className={cn("text-sm font-medium", formData.annualInspectionFileName ? "text-emerald-600" : "text-muted-foreground")}>
                                   {formData.annualInspectionFileName ? "Uploaded" : "Choose file"}
                                 </p>
-                                <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
+                                <p className="text-xs text-muted-foreground">PDF, JPG, PNG up to 10MB</p>
                               </div>
                             </label>
                           </div>
 
                           {/* Truck pictures */}
                           <div className="space-y-2">
-                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                              Please upload truck pictures <span className="normal-case text-gray-500">(engine, under engine, tires)</span>
+                            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                              Please upload truck pictures <span className="normal-case text-muted-foreground">(engine, under engine, tires)</span>
                             </label>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                               {/* Engine */}
@@ -815,10 +834,10 @@ export default function DriverApplicationModal() {
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
                                   formData.truckEngineFileName
                                     ? "border-green-500/50 bg-green-600/5"
-                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                    : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                                 )}
                               >
-                                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Engine</span>
+                                <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Engine</span>
                                 <input
                                   type="file"
                                   className="hidden"
@@ -828,11 +847,11 @@ export default function DriverApplicationModal() {
                                 <div className="flex items-center gap-2">
                                   <div className={cn(
                                     "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
-                                    formData.truckEngineFileName ? "bg-green-600" : "bg-white/10"
+                                    formData.truckEngineFileName ? "bg-green-600" : "bg-muted"
                                   )}>
-                                    {formData.truckEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
+                                    {formData.truckEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-muted-foreground" />}
                                   </div>
-                                  <p className={cn("text-xs font-medium truncate", formData.truckEngineFileName ? "text-green-500" : "text-gray-400")}>
+                                  <p className={cn("text-xs font-medium truncate", formData.truckEngineFileName ? "text-green-500" : "text-muted-foreground")}>
                                     {formData.truckEngineFileName ? "Uploaded" : "Choose file"}
                                   </p>
                                 </div>
@@ -844,10 +863,10 @@ export default function DriverApplicationModal() {
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
                                   formData.truckUnderEngineFileName
                                     ? "border-green-500/50 bg-green-600/5"
-                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                    : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                                 )}
                               >
-                                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Under engine</span>
+                                <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Under engine</span>
                                 <input
                                   type="file"
                                   className="hidden"
@@ -857,11 +876,11 @@ export default function DriverApplicationModal() {
                                 <div className="flex items-center gap-2">
                                   <div className={cn(
                                     "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
-                                    formData.truckUnderEngineFileName ? "bg-green-600" : "bg-white/10"
+                                    formData.truckUnderEngineFileName ? "bg-green-600" : "bg-muted"
                                   )}>
-                                    {formData.truckUnderEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
+                                    {formData.truckUnderEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-muted-foreground" />}
                                   </div>
-                                  <p className={cn("text-xs font-medium truncate", formData.truckUnderEngineFileName ? "text-green-500" : "text-gray-400")}>
+                                  <p className={cn("text-xs font-medium truncate", formData.truckUnderEngineFileName ? "text-green-500" : "text-muted-foreground")}>
                                     {formData.truckUnderEngineFileName ? "Uploaded" : "Choose file"}
                                   </p>
                                 </div>
@@ -873,10 +892,10 @@ export default function DriverApplicationModal() {
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
                                   formData.truckTiresFileName
                                     ? "border-green-500/50 bg-green-600/5"
-                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                    : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                                 )}
                               >
-                                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Tires</span>
+                                <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Tires</span>
                                 <input
                                   type="file"
                                   className="hidden"
@@ -886,11 +905,11 @@ export default function DriverApplicationModal() {
                                 <div className="flex items-center gap-2">
                                   <div className={cn(
                                     "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
-                                    formData.truckTiresFileName ? "bg-green-600" : "bg-white/10"
+                                    formData.truckTiresFileName ? "bg-green-600" : "bg-muted"
                                   )}>
-                                    {formData.truckTiresFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
+                                    {formData.truckTiresFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-muted-foreground" />}
                                   </div>
-                                  <p className={cn("text-xs font-medium truncate", formData.truckTiresFileName ? "text-green-500" : "text-gray-400")}>
+                                  <p className={cn("text-xs font-medium truncate", formData.truckTiresFileName ? "text-green-500" : "text-muted-foreground")}>
                                     {formData.truckTiresFileName ? "Uploaded" : "Choose file"}
                                   </p>
                                 </div>
@@ -900,7 +919,7 @@ export default function DriverApplicationModal() {
 
                           {/* Simple optional resume for Owner Operator with drag & drop */}
                           <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Resume / Work History <span className="text-gray-600 normal-case">(optional)</span></label>
+                            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Resume / Work History <span className="text-muted-foreground normal-case">(optional)</span></label>
                             <div
                               onClick={() => resumeInputRef.current?.click()}
                               onDragOver={(e) => {
@@ -912,20 +931,20 @@ export default function DriverApplicationModal() {
                                 "w-full py-6 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                                 formData.resumeFileName 
                                   ? "border-red-500/50 bg-red-600/5" 
-                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                  : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                               )}
                             >
                               <div className={cn(
                                 "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                                formData.resumeFileName ? "bg-red-600" : "bg-white/10"
+                                formData.resumeFileName ? "bg-red-600" : "bg-muted"
                               )}>
-                                {formData.resumeFileName ? <Check className="w-5 h-5 text-white" /> : <FileText className="w-5 h-5 text-gray-400" />}
+                                {formData.resumeFileName ? <Check className="w-5 h-5 text-white" /> : <FileText className="w-5 h-5 text-muted-foreground" />}
                               </div>
                               <div className="text-left">
-                                <p className={cn("text-sm font-medium", formData.resumeFileName ? "text-white" : "text-gray-400")}>
+                                <p className={cn("text-sm font-medium", formData.resumeFileName ? "text-emerald-600" : "text-muted-foreground")}>
                                   {formData.resumeFileName || "Attach resume (optional)"}
                                 </p>
-                                <p className="text-xs text-gray-600">PDF, DOCX up to 10MB — click, or drag and drop here</p>
+                                <p className="text-xs text-muted-foreground">PDF, DOCX up to 10MB — click, or drag and drop here</p>
                               </div>
                             </div>
                             <input ref={resumeInputRef} type="file" className="hidden" accept=".pdf,.doc,.docx" onChange={handleFileChange('resumeFileName')} />
@@ -935,13 +954,13 @@ export default function DriverApplicationModal() {
                         <div className="space-y-5">
                           {/* Investor – Documents & Truck */}
                           <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Registration Card (CAP Card)</label>
+                            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Registration Card (CAP Card)</label>
                             <label
                               className={cn(
                                 "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                                 formData.registrationCardFileName
                                   ? "border-green-500/50 bg-green-600/5"
-                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                  : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                               )}
                             >
                               <input
@@ -952,28 +971,28 @@ export default function DriverApplicationModal() {
                               />
                               <div className={cn(
                                 "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                                formData.registrationCardFileName ? "bg-green-600" : "bg-white/10"
+                                formData.registrationCardFileName ? "bg-green-600" : "bg-muted"
                               )}>
-                                {formData.registrationCardFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                                {formData.registrationCardFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-muted-foreground" />}
                               </div>
                               <div className="text-left">
-                                <p className={cn("text-sm font-medium", formData.registrationCardFileName ? "text-white" : "text-gray-400")}>
+                                <p className={cn("text-sm font-medium", formData.registrationCardFileName ? "text-emerald-600" : "text-muted-foreground")}>
                                   {formData.registrationCardFileName ? "Uploaded" : "Choose file"}
                                 </p>
-                                <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
+                                <p className="text-xs text-muted-foreground">PDF, JPG, PNG up to 10MB</p>
                               </div>
                             </label>
                           </div>
 
                           {/* Annual truck inspection */}
                           <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Annual truck inspection</label>
+                            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Annual truck inspection</label>
                             <label
                               className={cn(
                                 "w-full py-4 px-5 rounded-xl border border-dashed transition-all duration-300 flex items-center gap-4 cursor-pointer",
                                 formData.annualInspectionFileName
                                   ? "border-green-500/50 bg-green-600/5"
-                                  : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                  : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                               )}
                             >
                               <input
@@ -984,23 +1003,23 @@ export default function DriverApplicationModal() {
                               />
                               <div className={cn(
                                 "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                                formData.annualInspectionFileName ? "bg-green-600" : "bg-white/10"
+                                formData.annualInspectionFileName ? "bg-green-600" : "bg-muted"
                               )}>
-                                {formData.annualInspectionFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-gray-400" />}
+                                {formData.annualInspectionFileName ? <Check className="w-5 h-5 text-white" /> : <Upload className="w-5 h-5 text-muted-foreground" />}
                               </div>
                               <div className="text-left">
-                                <p className={cn("text-sm font-medium", formData.annualInspectionFileName ? "text-green-500" : "text-gray-400")}>
+                                <p className={cn("text-sm font-medium", formData.annualInspectionFileName ? "text-green-500" : "text-muted-foreground")}>
                                   {formData.annualInspectionFileName ? "Uploaded" : "Choose file"}
                                 </p>
-                                <p className="text-xs text-gray-600">PDF, JPG, PNG up to 10MB</p>
+                                <p className="text-xs text-muted-foreground">PDF, JPG, PNG up to 10MB</p>
                               </div>
                             </label>
                           </div>
 
                           {/* Truck pictures – engine / under engine / tires */}
                           <div className="space-y-2">
-                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                              Please upload truck pictures <span className="normal-case text-gray-500">(engine, under engine, tires)</span>
+                            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                              Please upload truck pictures <span className="normal-case text-muted-foreground">(engine, under engine, tires)</span>
                             </label>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                               {/* Engine */}
@@ -1009,10 +1028,10 @@ export default function DriverApplicationModal() {
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
                                   formData.truckEngineFileName
                                     ? "border-green-500/50 bg-green-600/5"
-                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                    : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                                 )}
                               >
-                                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Engine</span>
+                                <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Engine</span>
                                 <input
                                   type="file"
                                   className="hidden"
@@ -1022,11 +1041,11 @@ export default function DriverApplicationModal() {
                                 <div className="flex items-center gap-2">
                                   <div className={cn(
                                     "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
-                                    formData.truckEngineFileName ? "bg-green-600" : "bg-white/10"
+                                    formData.truckEngineFileName ? "bg-green-600" : "bg-muted"
                                   )}>
-                                    {formData.truckEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
+                                    {formData.truckEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-muted-foreground" />}
                                   </div>
-                                  <p className={cn("text-xs font-medium truncate", formData.truckEngineFileName ? "text-green-500" : "text-gray-400")}>
+                                  <p className={cn("text-xs font-medium truncate", formData.truckEngineFileName ? "text-green-500" : "text-muted-foreground")}>
                                     {formData.truckEngineFileName ? "Uploaded" : "Choose file"}
                                   </p>
                                 </div>
@@ -1038,10 +1057,10 @@ export default function DriverApplicationModal() {
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
                                   formData.truckUnderEngineFileName
                                     ? "border-green-500/50 bg-green-600/5"
-                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                    : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                                 )}
                               >
-                                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Under engine</span>
+                                <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Under engine</span>
                                 <input
                                   type="file"
                                   className="hidden"
@@ -1051,11 +1070,11 @@ export default function DriverApplicationModal() {
                                 <div className="flex items-center gap-2">
                                   <div className={cn(
                                     "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
-                                    formData.truckUnderEngineFileName ? "bg-green-600" : "bg-white/10"
+                                    formData.truckUnderEngineFileName ? "bg-green-600" : "bg-muted"
                                   )}>
-                                    {formData.truckUnderEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
+                                    {formData.truckUnderEngineFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-muted-foreground" />}
                                   </div>
-                                  <p className={cn("text-xs font-medium truncate", formData.truckUnderEngineFileName ? "text-green-500" : "text-gray-400")}>
+                                  <p className={cn("text-xs font-medium truncate", formData.truckUnderEngineFileName ? "text-green-500" : "text-muted-foreground")}>
                                     {formData.truckUnderEngineFileName ? "Uploaded" : "Choose file"}
                                   </p>
                                 </div>
@@ -1067,10 +1086,10 @@ export default function DriverApplicationModal() {
                                   "w-full py-3 px-4 rounded-xl border border-dashed transition-all duration-300 flex flex-col gap-1 cursor-pointer",
                                   formData.truckTiresFileName
                                     ? "border-green-500/50 bg-green-600/5"
-                                    : "border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5"
+                                    : "border-border bg-muted/25 hover:border-primary/35 hover:bg-muted/40"
                                 )}
                               >
-                                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Tires</span>
+                                <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Tires</span>
                                 <input
                                   type="file"
                                   className="hidden"
@@ -1080,11 +1099,11 @@ export default function DriverApplicationModal() {
                                 <div className="flex items-center gap-2">
                                   <div className={cn(
                                     "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
-                                    formData.truckTiresFileName ? "bg-green-600" : "bg-white/10"
+                                    formData.truckTiresFileName ? "bg-green-600" : "bg-muted"
                                   )}>
-                                    {formData.truckTiresFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-gray-400" />}
+                                    {formData.truckTiresFileName ? <Check className="w-4 h-4 text-white" /> : <Upload className="w-4 h-4 text-muted-foreground" />}
                                   </div>
-                                  <p className={cn("text-xs font-medium truncate", formData.truckTiresFileName ? "text-green-500" : "text-gray-400")}>
+                                  <p className={cn("text-xs font-medium truncate", formData.truckTiresFileName ? "text-green-500" : "text-muted-foreground")}>
                                     {formData.truckTiresFileName ? "Uploaded" : "Choose file"}
                                   </p>
                                 </div>
@@ -1098,74 +1117,74 @@ export default function DriverApplicationModal() {
                     {/* STEP 4: Review */}
                     {currentStep === 4 && (
                       <div className="space-y-4">
-                        <div className="relative p-5 rounded-2xl bg-white/3 border border-white/8 overflow-hidden">
+                        <div className="relative p-5 rounded-2xl bg-muted/35 border border-border overflow-hidden">
                           <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 blur-2xl pointer-events-none" />
                           <div className="relative space-y-4">
                             <div className="flex items-center justify-between">
-                              <p className="text-xs uppercase tracking-widest text-gray-500 font-bold">Applied For</p>
+                              <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold">Applied For</p>
                               <span className={cn(
                                 "text-xs font-bold px-3 py-1 rounded-full",
-                                "bg-red-600/10 border border-red-600/30 text-red-300 uppercase"
+                                "bg-red-600/10 border border-red-600/30 text-red-600 uppercase"
                               )}>
                                 {positions.find(p => p.id === formData.position)?.title || '—'}
                               </span>
                             </div>
 
-                            <div className="h-px bg-white/5" />
+                            <div className="h-px bg-border" />
 
                             <div className="grid grid-cols-2 gap-4">
                               <div>
-                                <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Name</p>
-                                <p className="text-white font-medium text-sm">{formData.firstName} {formData.lastName}</p>
+                                <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Name</p>
+                                <p className="text-foreground font-medium text-sm">{formData.firstName} {formData.lastName}</p>
                               </div>
                               <div>
-                                <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Location</p>
-                                <p className="text-white font-medium text-sm">{formData.address || '—'}</p>
+                                <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Location</p>
+                                <p className="text-foreground font-medium text-sm">{formData.address || '—'}</p>
                               </div>
                               <div>
-                                <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Email</p>
-                                <p className="text-white font-medium text-sm">{formData.email}</p>
+                                <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Email</p>
+                                <p className="text-foreground font-medium text-sm">{formData.email}</p>
                               </div>
                               <div>
-                                <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Phone</p>
-                                <p className="text-white font-medium text-sm">{formData.phone}</p>
+                                <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Phone</p>
+                                <p className="text-foreground font-medium text-sm">{formData.phone}</p>
                               </div>
                             </div>
 
-                            <div className="h-px bg-white/5" />
+                            <div className="h-px bg-border" />
 
                             {/* Position-specific summary */}
                             {formData.position === 'company-driver' && (
                               <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">CDL Type</p>
-                                  <p className="text-white font-medium text-sm">{formData.cdlType || '—'}</p>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">CDL Type</p>
+                                  <p className="text-foreground font-medium text-sm">{formData.cdlType || '—'}</p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Experience (years)</p>
-                                  <p className="text-white font-medium text-sm">{formData.yearsExperience || '—'}</p>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Experience (years)</p>
+                                  <p className="text-foreground font-medium text-sm">{formData.yearsExperience || '—'}</p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">License – Front</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.licenseFrontFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">License – Front</p>
+                                  <p className={uploadLineClass(!!formData.licenseFrontFileName)}>
                                     {formData.licenseFrontFileName || 'Not uploaded'}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">License – Back</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.licenseBackFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">License – Back</p>
+                                  <p className={uploadLineClass(!!formData.licenseBackFileName)}>
                                     {formData.licenseBackFileName || 'Not uploaded'}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Medical Card</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.medicalCardFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Medical Card</p>
+                                  <p className={uploadLineClass(!!formData.medicalCardFileName)}>
                                     {formData.medicalCardFileName || 'Not uploaded'}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Resume / Document</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.resumeFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Resume / Document</p>
+                                  <p className={uploadLineClass(!!formData.resumeFileName)}>
                                     {formData.resumeFileName || 'Not attached'}
                                   </p>
                                 </div>
@@ -1175,50 +1194,50 @@ export default function DriverApplicationModal() {
                             {formData.position === 'owner-operator' && (
                               <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">License – Front</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.licenseFrontFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">License – Front</p>
+                                  <p className={uploadLineClass(!!formData.licenseFrontFileName)}>
                                     {formData.licenseFrontFileName || 'Not uploaded'}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">License – Back</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.licenseBackFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">License – Back</p>
+                                  <p className={uploadLineClass(!!formData.licenseBackFileName)}>
                                     {formData.licenseBackFileName || 'Not uploaded'}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Medical Card</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.medicalCardFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Medical Card</p>
+                                  <p className={uploadLineClass(!!formData.medicalCardFileName)}>
                                     {formData.medicalCardFileName || 'Not uploaded'}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Annual Truck Inspection</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.annualInspectionFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Annual Truck Inspection</p>
+                                  <p className={uploadLineClass(!!formData.annualInspectionFileName)}>
                                     {formData.annualInspectionFileName || 'Not uploaded'}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Truck Photo – Engine</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.truckEngineFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Truck Photo – Engine</p>
+                                  <p className={uploadLineClass(!!formData.truckEngineFileName)}>
                                     {formData.truckEngineFileName || 'Not uploaded'}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Truck Photo – Under Engine</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.truckUnderEngineFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Truck Photo – Under Engine</p>
+                                  <p className={uploadLineClass(!!formData.truckUnderEngineFileName)}>
                                     {formData.truckUnderEngineFileName || 'Not uploaded'}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Truck Photo – Tires</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.truckTiresFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Truck Photo – Tires</p>
+                                  <p className={uploadLineClass(!!formData.truckTiresFileName)}>
                                     {formData.truckTiresFileName || 'Not uploaded'}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Resume / Work History</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.resumeFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Resume / Work History</p>
+                                  <p className={uploadLineClass(!!formData.resumeFileName)}>
                                     {formData.resumeFileName || 'Not attached'}
                                   </p>
                                 </div>
@@ -1228,32 +1247,32 @@ export default function DriverApplicationModal() {
                             {formData.position === 'investor' && (
                               <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Registration Card (CAP)</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.registrationCardFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Registration Card (CAP)</p>
+                                  <p className={uploadLineClass(!!formData.registrationCardFileName)}>
                                     {formData.registrationCardFileName || 'Not uploaded'}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Annual Truck Inspection</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.annualInspectionFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Annual Truck Inspection</p>
+                                  <p className={uploadLineClass(!!formData.annualInspectionFileName)}>
                                     {formData.annualInspectionFileName || 'Not uploaded'}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Truck Photo – Engine</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.truckEngineFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Truck Photo – Engine</p>
+                                  <p className={uploadLineClass(!!formData.truckEngineFileName)}>
                                     {formData.truckEngineFileName || 'Not uploaded'}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Truck Photo – Under Engine</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.truckUnderEngineFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Truck Photo – Under Engine</p>
+                                  <p className={uploadLineClass(!!formData.truckUnderEngineFileName)}>
                                     {formData.truckUnderEngineFileName || 'Not uploaded'}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-gray-600 font-bold mb-1">Truck Photo – Tires</p>
-                                  <p className="text-sm font-medium truncate" style={{ color: formData.truckTiresFileName ? '#86efac' : '#6b7280' }}>
+                                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Truck Photo – Tires</p>
+                                  <p className={uploadLineClass(!!formData.truckTiresFileName)}>
                                     {formData.truckTiresFileName || 'Not uploaded'}
                                   </p>
                                 </div>
@@ -1267,14 +1286,14 @@ export default function DriverApplicationModal() {
                             onClick={() => setFormData(prev => ({ ...prev, termsAccepted: !prev.termsAccepted }))}
                             className={cn(
                               "w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all",
-                              formData.termsAccepted ? "bg-red-600 border-red-600" : "border-white/20 group-hover:border-white/40"
+                              formData.termsAccepted ? "bg-red-600 border-red-600" : "border-border group-hover:border-primary/40"
                             )}
                           >
                             {formData.termsAccepted && <Check className="w-3 h-3 text-white" />}
                           </div>
-                          <p className="text-sm text-gray-400 leading-snug">
+                          <p className="text-sm text-muted-foreground leading-snug">
                             I confirm that the information provided is accurate and I agree to DELO TRANS INC's 
-                            <span className="text-red-400 hover:text-red-300 cursor-pointer"> terms & conditions</span>.
+                            <span className="text-red-600 hover:text-red-500 cursor-pointer"> terms & conditions</span>.
                           </p>
                         </label>
                       </div>
@@ -1284,12 +1303,12 @@ export default function DriverApplicationModal() {
               </div>
 
               {/* Footer */}
-              <div className="px-7 py-5 border-t border-white/5 flex items-center justify-between bg-black/20">
+              <div className="px-7 py-5 border-t border-border flex items-center justify-between bg-muted/50">
                 <button
                   onClick={handleBack}
                   className={cn(
                     "flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300",
-                    currentStep === 1 ? "opacity-0 pointer-events-none" : "text-gray-400 hover:text-white hover:bg-white/8"
+                    currentStep === 1 ? "opacity-0 pointer-events-none" : "text-muted-foreground hover:text-foreground hover:bg-muted/70"
                   )}
                 >
                   <ArrowLeft className="w-4 h-4" />
@@ -1297,7 +1316,7 @@ export default function DriverApplicationModal() {
                 </button>
 
                 <div className="flex items-center gap-3">
-                  <span className="text-xs text-gray-600 font-medium">{currentStep} / {steps.length}</span>
+                  <span className="text-xs text-muted-foreground font-medium">{currentStep} / {steps.length}</span>
                   <button
                     onClick={currentStep === steps.length ? handleSubmit : handleNext}
                     disabled={

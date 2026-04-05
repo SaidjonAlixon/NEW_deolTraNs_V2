@@ -46,7 +46,7 @@ export default function MissionVisionSection() {
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
   return (
-    <section ref={containerRef} className="relative py-24 lg:py-32 bg-[#0A0F1C] overflow-hidden">
+    <section ref={containerRef} className="relative py-24 lg:py-32 bg-app overflow-hidden">
       {/* Background Image with heavy blur */}
       <div className="absolute inset-0 z-[1] pointer-events-none opacity-40">
         <img
@@ -54,8 +54,8 @@ export default function MissionVisionSection() {
           alt="Abstract truck background"
           className="w-full h-full object-cover blur-[80px] sm:blur-[120px]"
         />
-        <div className="absolute inset-0 bg-[#0A0F1C]/60" /> {/* Dark overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0F1C] via-transparent to-[#0A0F1C]" /> {/* Vignette */}
+        <div className="absolute inset-0 bg-app/60" /> {/* Dark overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-app via-transparent to-app" /> {/* Vignette */}
       </div>
 
       {/* Background ambient glow */}
@@ -67,7 +67,7 @@ export default function MissionVisionSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-navy-800/80 backdrop-blur-md border border-white/10 mb-6 shadow-[0_0_15px_rgba(253,10,7,0.1)]"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface/80 backdrop-blur-md border border-white/10 mb-6 shadow-[0_0_15px_rgba(253,10,7,0.1)]"
           >
             <ShieldCheck className="w-4 h-4 text-orange" />
             <span className="font-mono text-xs uppercase tracking-wider text-gray-300">Who We Are</span>
@@ -101,7 +101,7 @@ export default function MissionVisionSection() {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: index * 0.15 }}
               style={{ y: index === 1 ? y1 : 0 }}
-              className="group relative bg-navy-900/60 backdrop-blur-xl rounded-2xl border border-white/10 p-8 lg:p-10 hover:bg-navy-800/80 transition-all duration-500 overflow-hidden shadow-2xl hover:shadow-[0_0_40px_rgba(253,10,7,0.1)] hover:-translate-y-2"
+              className="group relative bg-app/60 backdrop-blur-xl rounded-2xl border border-white/10 p-8 lg:p-10 hover:bg-surface/80 transition-all duration-500 overflow-hidden shadow-2xl hover:shadow-[0_0_40px_rgba(253,10,7,0.1)] hover:-translate-y-2"
             >
               {/* Subtle hover gradient */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -127,7 +127,7 @@ export default function MissionVisionSection() {
         >
           {corePrinciples.map((principle, idx) => (
             <div key={idx} className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-navy-800/80 backdrop-blur-sm shadow-md flex items-center justify-center border border-white/10">
+              <div className="w-8 h-8 rounded-full bg-surface/80 backdrop-blur-sm shadow-md flex items-center justify-center border border-white/10">
                 <principle.icon className="w-4 h-4 text-orange" />
               </div>
               <span className="text-sm lg:text-base font-semibold text-white font-heading tracking-wide uppercase">{principle.label}</span>

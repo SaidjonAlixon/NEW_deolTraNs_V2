@@ -45,7 +45,7 @@ export default function Footer() {
   return (
     <footer
       ref={sectionRef}
-      className="bg-navy-900 border-t border-white/5 pt-12 pb-8"
+      className="bg-app border-t border-white/5 pt-12 pb-8"
     >
       <div ref={containerRef} className="px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
         {/* Left Side: Logo */}
@@ -80,7 +80,7 @@ export default function Footer() {
 
           <button
             onClick={scrollToTop}
-            className="w-10 h-10 rounded-full bg-navy-800 flex items-center justify-center hover:bg-orange transition-colors group"
+            className="w-10 h-10 rounded-full bg-surface flex items-center justify-center hover:bg-orange transition-colors group"
             aria-label="Scroll to top"
           >
             <ArrowUp className="w-4 h-4 text-white group-hover:animate-bounce" />

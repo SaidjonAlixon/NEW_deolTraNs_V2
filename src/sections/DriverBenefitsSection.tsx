@@ -74,7 +74,7 @@ export default function DriverBenefitsSection() {
   const { openDriverModal } = useDriverApplication();
 
   return (
-    <section ref={containerRef} className="relative py-24 lg:py-32 bg-[#0A0F1C] overflow-hidden">
+    <section ref={containerRef} className="relative py-24 lg:py-32 bg-app overflow-hidden">
 
       {/* Abstract BG */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
@@ -102,7 +102,7 @@ export default function DriverBenefitsSection() {
         <div className="text-center mb-14 flex flex-col items-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-navy-800/80 backdrop-blur-md border border-white/10 mb-6"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface/80 backdrop-blur-md border border-white/10 mb-6"
           >
             <Award className="w-4 h-4 text-orange" />
             <span className="font-mono text-xs uppercase tracking-wider text-gray-300">Owner Operators</span>
@@ -131,7 +131,7 @@ export default function DriverBenefitsSection() {
               initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.5, delay: index * 0.08 }}
-              className="group relative bg-navy-900/60 backdrop-blur-xl rounded-2xl border border-white/10 p-7 hover:bg-navy-800/80 hover:border-white/20 transition-all duration-500 shadow-xl overflow-hidden"
+              className="group relative bg-app/60 backdrop-blur-xl rounded-2xl border border-white/10 p-7 hover:bg-surface/80 hover:border-white/20 transition-all duration-500 shadow-xl overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-5 border relative z-10 ${benefit.bg} ${benefit.border} group-hover:scale-110 transition-transform duration-500`}>
@@ -151,7 +151,7 @@ export default function DriverBenefitsSection() {
           {/* Weekly Cost */}
           <motion.div
             initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            className="bg-navy-900/60 border border-orange/20 rounded-2xl p-8"
+            className="bg-app/60 border border-orange/20 rounded-2xl p-8"
           >
             <p className="font-mono text-xs uppercase tracking-widest text-orange mb-3">Simple Weekly Cost</p>
             <p className="font-heading text-5xl font-bold text-white mb-1">$550</p>
@@ -174,7 +174,7 @@ export default function DriverBenefitsSection() {
           <motion.div
             initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="bg-navy-900/60 border border-blue-500/20 rounded-2xl p-8"
+            className="bg-app/60 border border-blue-500/20 rounded-2xl p-8"
           >
             <div className="flex items-center gap-2 mb-3">
               <Wifi className="w-4 h-4 text-blue-400" />

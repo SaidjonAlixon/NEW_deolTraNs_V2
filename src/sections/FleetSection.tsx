@@ -121,7 +121,7 @@ export default function FleetSection() {
     <section
       ref={sectionRef}
       id="fleet"
-      className="section-pinned bg-navy-900"
+      className="section-pinned bg-app"
     >
       {/* Background Image */}
       <div ref={bgRef} className="absolute inset-0 z-[1]">
@@ -130,8 +130,8 @@ export default function FleetSection() {
           alt="Why Delo Trans"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/75 to-navy-900/50" />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-navy-900/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-app/95 via-app/75 to-app/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-app via-transparent to-app/40" />
       </div>
 
       {/* ─── MOBILE LAYOUT ─── */}
@@ -157,7 +157,7 @@ export default function FleetSection() {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="stat-card bg-navy-800/80 backdrop-blur-md rounded-xl p-3 border border-white/10 text-center"
+              className="stat-card bg-surface/80 backdrop-blur-md rounded-xl p-3 border border-white/10 text-center"
             >
               <p className="font-heading text-xl font-bold text-white mb-0.5">{stat.value}</p>
               <p className="text-[10px] text-gray-light">{stat.label}</p>
@@ -204,7 +204,7 @@ export default function FleetSection() {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="stat-card bg-navy-800/80 backdrop-blur-md rounded-xl p-5 lg:p-6 border border-white/10 min-w-[140px] lg:min-w-[160px]"
+              className="stat-card bg-surface/80 backdrop-blur-md rounded-xl p-5 lg:p-6 border border-white/10 min-w-[140px] lg:min-w-[160px]"
             >
               <p className="font-heading text-2xl lg:text-3xl font-bold text-white mb-1">{stat.value}</p>
               <p className="text-xs text-gray-light">{stat.label}</p>

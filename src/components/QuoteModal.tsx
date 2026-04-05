@@ -86,12 +86,12 @@ export default function QuoteModal() {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && closeQuoteModal()}>
       <DialogPortal>
-        <DialogOverlay className="bg-navy-900/80 backdrop-blur-sm z-[2000]" />
+        <DialogOverlay className="bg-app/80 backdrop-blur-sm z-[2000]" />
         <DialogContent className="max-w-2xl w-full p-0 border-none bg-transparent shadow-none z-[2010] overflow-hidden">
-          <div className="relative bg-navy-800 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+          <div className="relative bg-surface border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
             
             {/* Header / Progress Bar */}
-            <div className="p-6 border-b border-white/5 bg-navy-900/40">
+            <div className="p-6 border-b border-white/5 bg-app/40">
               <div className="flex items-center justify-between mb-8">
                 <div>
                   <h2 className="text-2xl font-heading font-bold text-white">Request a Quote</h2>
@@ -351,7 +351,7 @@ export default function QuoteModal() {
             </div>
 
             {/* Footer / Actions */}
-            <div className="p-6 bg-navy-900/40 border-t border-white/5 flex items-center justify-between">
+            <div className="p-6 bg-app/40 border-t border-white/5 flex items-center justify-between">
               <button
                 onClick={handleBack}
                 disabled={currentStep === 1}

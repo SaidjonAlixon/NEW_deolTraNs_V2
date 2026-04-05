@@ -3,6 +3,7 @@ import { Menu, X, Phone } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import { useDriverApplication } from '../context/DriverApplicationContext';
+import ThemeModeToggle from './ThemeModeToggle';
 
 const navLinks = [
   { label: 'HOME', path: '/' },
@@ -60,11 +61,11 @@ export default function Header() {
         className="fixed top-2 lg:top-4 left-0 right-0 z-[1000] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
       >
         <div className="max-w-[1920px] mx-auto w-full px-3 lg:px-8">
-          <div className={`flex items-center justify-between relative transition-all duration-500 rounded-2xl lg:rounded-3xl ${isScrolled || location.pathname !== '/' ? 'bg-[#0f172a]/90 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] h-14 lg:h-[76px] px-4 lg:px-8' : 'bg-[#0f172a]/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none border border-white/5 lg:border-transparent h-16 lg:h-[90px] px-4 lg:px-4'}`}>
+          <div className={`grid grid-cols-[1fr_auto] lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-3 relative transition-all duration-500 rounded-2xl lg:rounded-3xl ${isScrolled || location.pathname !== '/' ? 'bg-header-bar/90 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] h-14 lg:h-[76px] px-4 lg:px-8' : 'bg-header-bar/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none border border-white/5 lg:border-transparent h-16 lg:h-[90px] px-4 lg:px-4'}`}>
             {/* Logo */}
             <Link
               to="/"
-              className="flex-shrink-0 z-50 flex items-center group relative h-full"
+              className="flex-shrink-0 z-50 flex items-center group relative h-full justify-self-start min-w-0"
               onClick={() => window.scrollTo(0, 0)}
             >
               <div className="relative h-14 lg:h-20 w-[140px] lg:w-[180px] flex items-center">
@@ -77,8 +78,8 @@ export default function Header() {
               </div>
             </Link>
 
-            {/* Desktop Navigation - Floating Pill */}
-            <nav className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center bg-white/[0.03] backdrop-blur-md border border-white/5 rounded-full p-1.5 shadow-inner shadow-white/5">
+            {/* Desktop Navigation - Floating Pill (grid center column — avoids overlap with CTAs) */}
+            <nav className="hidden lg:flex justify-self-center items-center bg-white/[0.03] backdrop-blur-md border border-white/5 rounded-full p-1.5 shadow-inner shadow-white/5 shrink-0">
               {navLinks.map((link) => {
                 const isCurrentPage = location.pathname === link.path;
 
@@ -91,8 +92,10 @@ export default function Header() {
                     {/* Hover Background Layer */}
                     <span className={`absolute inset-0 transition-opacity duration-300 rounded-full ${isCurrentPage ? 'bg-white/10 opacity-100' : 'bg-white/5 opacity-0 group-hover:opacity-100'}`} />
                     
-                    <span className={`relative text-[13px] font-bold tracking-[0.1em] transition-all duration-300 ${isCurrentPage ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-slate-300 group-hover:text-white'
-                      }`}>
+                    <span
+                      className={`header-nav-link-text relative text-[13px] font-bold tracking-[0.1em] transition-all duration-300 ${isCurrentPage ? 'header-nav-link-text--active text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'header-nav-link-text--idle text-slate-300 group-hover:text-white'
+                        }`}
+                    >
                       {link.label}
                     </span>
                     
@@ -105,30 +108,32 @@ export default function Header() {
               })}
             </nav>
 
-            {/* CTA Elements */}
-            <div className="hidden lg:flex items-center gap-5 z-10 relative">
+            {/* CTA Elements — theme toggle at far right, clear of nav */}
+            <div className="hidden lg:flex items-center justify-end gap-3 xl:gap-4 z-10 relative justify-self-end shrink-0 min-w-0">
               <a
                 href="tel:+13262207171"
-                className="flex items-center gap-2 group bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 pr-4 pl-1.5 py-1.5 rounded-full transition-all duration-300"
+                className="flex items-center gap-2 group bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 pr-4 pl-1.5 py-1.5 rounded-full transition-all duration-300 shrink-0"
               >
                 <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
                   <Phone className="w-[14px] h-[14px] text-red-500" />
                 </div>
-                <span className="text-[13px] font-semibold text-slate-200 group-hover:text-white transition-colors">
+                <span className="text-[13px] font-semibold text-slate-200 group-hover:text-white transition-colors whitespace-nowrap">
                   +1 326 220 7171
                 </span>
               </a>
               <button
                 onClick={openDriverModal}
-                className="relative overflow-hidden group bg-red-600 text-white px-7 py-3.5 rounded-full text-[13px] font-bold tracking-wider transition-all duration-300 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:-translate-y-0.5"
+                className="relative overflow-hidden group bg-red-600 text-white px-7 py-3.5 rounded-full text-[13px] font-bold tracking-wider transition-all duration-300 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:-translate-y-0.5 shrink-0"
               >
                 <span className="relative z-10">Apply Now</span>
                 <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-red-600 via-white/20 to-red-600 -translate-x-[150%] skew-x-[-20deg] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
               </button>
+              <ThemeModeToggle className="shrink-0 ml-0.5" />
             </div>
 
             {/* Mobile Menu Button Container */}
-            <div className="flex lg:hidden items-center z-[110] relative">
+            <div className="flex lg:hidden items-center gap-2 z-[110] relative justify-self-end">
+              <ThemeModeToggle className="shrink-0" />
               <button
                 className="relative p-2 text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-colors outline-none"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -142,7 +147,7 @@ export default function Header() {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 z-[999] bg-navy-900/98 backdrop-blur-xl transition-all duration-500 lg:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+        className={`header-mobile-overlay fixed inset-0 z-[999] bg-app/98 backdrop-blur-xl transition-all duration-500 lg:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
           }`}
       >
         <div className="flex flex-col items-center justify-center h-full gap-8">

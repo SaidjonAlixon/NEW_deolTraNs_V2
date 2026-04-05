@@ -38,6 +38,19 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        /** Semantic surfaces (HSL tokens from index.css — 3 themes: default / day / night) */
+        app: {
+          DEFAULT: 'hsl(var(--app) / <alpha-value>)',
+        },
+        'app-deep': {
+          DEFAULT: 'hsl(var(--app-deep) / <alpha-value>)',
+        },
+        surface: {
+          DEFAULT: 'hsl(var(--surface) / <alpha-value>)',
+        },
+        'header-bar': {
+          DEFAULT: 'hsl(var(--header-bar) / <alpha-value>)',
+        },
         navy: {
           900: '#0B0F17',
           800: '#141B2A',

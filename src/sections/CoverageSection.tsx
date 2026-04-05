@@ -153,7 +153,7 @@ export default function CoverageSection() {
     <section
       ref={sectionRef}
       id="coverage"
-      className="section-pinned bg-navy-900"
+      className="section-pinned bg-app"
     >
       {/* Background Image */}
       <div ref={bgRef} className="absolute inset-0 z-[1]">
@@ -162,8 +162,8 @@ export default function CoverageSection() {
           alt="Highway at dusk"
           className="w-full h-full object-cover img-industrial"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/70 to-navy-900/50" />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-navy-900/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-app/95 via-app/70 to-app/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-app via-transparent to-app/40" />
       </div>
 
       {/* ─── MOBILE LAYOUT ─── */}
@@ -183,7 +183,7 @@ export default function CoverageSection() {
           {routes.map((route, index) => (
             <div
               key={index}
-              className="route-card group flex items-center gap-4 p-4 bg-navy-800/70 backdrop-blur-xl rounded-xl border border-white/8 hover:border-[#fd0a07]/40 transition-all duration-300"
+              className="route-card group flex items-center gap-4 p-4 bg-surface/70 backdrop-blur-xl rounded-xl border border-white/8 hover:border-[#fd0a07]/40 transition-all duration-300"
             >
               <div className="w-10 h-10 rounded-lg bg-[#fd0a07]/10 flex items-center justify-center flex-shrink-0">
                 <route.icon className="w-5 h-5 text-[#fd0a07]" />
@@ -238,7 +238,7 @@ export default function CoverageSection() {
             {routesLeft.map((route, index) => (
               <div
                 key={`left-${index}`}
-                className="route-card group flex items-center gap-4 p-4 bg-navy-800/60 backdrop-blur-xl rounded-xl border border-white/5 hover:border-[#fd0a07]/50 hover:bg-navy-800/80 hover:shadow-[0_0_15px_rgba(253,10,7,0.3)] transition-all duration-300"
+                className="route-card group flex items-center gap-4 p-4 bg-surface/60 backdrop-blur-xl rounded-xl border border-white/5 hover:border-[#fd0a07]/50 hover:bg-surface/80 hover:shadow-[0_0_15px_rgba(253,10,7,0.3)] transition-all duration-300"
               >
                 <div className="w-10 h-10 rounded-lg bg-[#fd0a07]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#fd0a07]/20 transition-colors">
                   <route.icon className="w-5 h-5 text-[#fd0a07]" />
@@ -260,7 +260,7 @@ export default function CoverageSection() {
             {routesRight.map((route, index) => (
               <div
                 key={`right-${index}`}
-                className="route-card group flex items-center gap-4 p-4 bg-navy-800/60 backdrop-blur-xl rounded-xl border border-white/5 hover:border-[#005E99]/50 hover:bg-navy-800/80 hover:shadow-[0_0_15px_rgba(0,94,153,0.3)] transition-all duration-300"
+                className="route-card group flex items-center gap-4 p-4 bg-surface/60 backdrop-blur-xl rounded-xl border border-white/5 hover:border-[#005E99]/50 hover:bg-surface/80 hover:shadow-[0_0_15px_rgba(0,94,153,0.3)] transition-all duration-300"
               >
                 <div className="w-10 h-10 rounded-lg bg-[#005E99]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#005E99]/20 transition-colors">
                   <route.icon className="w-5 h-5 text-[#005E99]" />

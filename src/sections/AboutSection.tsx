@@ -84,7 +84,7 @@ export default function AboutSection() {
     <section
       ref={sectionRef}
       id="about"
-      className="section-pinned bg-[#0A0F1C] relative flex items-center justify-center min-h-screen pt-20"
+      className="section-pinned bg-app relative flex items-center justify-center min-h-screen pt-20"
     >
       {/* Background Image layers */}
       <div
@@ -96,8 +96,8 @@ export default function AboutSection() {
           alt="Truck in motion"
           className="w-full h-full object-cover opacity-60"
         />
-        <div className="absolute inset-0 bg-[#0A0F1C]/70 backdrop-blur-sm" /> {/* Blur and darken layer */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0F1C] via-transparent to-[#0A0F1C]" /> {/* Borders */}
+        <div className="absolute inset-0 bg-app/70 backdrop-blur-sm" /> {/* Blur and darken layer */}
+        <div className="absolute inset-0 bg-gradient-to-b from-app via-transparent to-app" /> {/* Borders */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent pointer-events-none" />
       </div>
 
@@ -179,7 +179,7 @@ export default function AboutSection() {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className={`stat-card relative group bg-navy-900/40 backdrop-blur-xl rounded-2xl border border-white/5 p-6 sm:p-8 hover:bg-navy-800/60 hover:border-white/15 transition-all duration-500 overflow-hidden shadow-2xl ${
+              className={`stat-card relative group bg-app/40 backdrop-blur-xl rounded-2xl border border-white/5 p-6 sm:p-8 hover:bg-surface/60 hover:border-white/15 transition-all duration-500 overflow-hidden shadow-2xl ${
                 index === 2 ? 'sm:col-span-2 xl:col-span-1' : '' // Make 3rd card full width on small screens if needed, otherwise normal grid
               }`}
             >
@@ -187,7 +187,7 @@ export default function AboutSection() {
               <div className="absolute -inset-px bg-gradient-to-br from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none" />
               
               <div className="relative z-10 flex flex-col md:flex-row xl:flex-col items-start gap-5">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-navy-800 to-[#0A0F1C] border border-white/10 flex items-center justify-center shadow-inner group-hover:border-blue-500/30 group-hover:scale-110 transition-all duration-500 flex-shrink-0">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-surface to-app border border-white/10 flex items-center justify-center shadow-inner group-hover:border-blue-500/30 group-hover:scale-110 transition-all duration-500 flex-shrink-0">
                   <stat.icon className="w-6 h-6 text-blue-400 group-hover:text-blue-300" />
                 </div>
                 
@@ -226,7 +226,7 @@ export default function AboutSection() {
           {/* Outer ring pulse */}
           <span className="absolute w-10 h-10 rounded-full border border-orange/40 animate-ping opacity-70" />
           {/* Icon bouncing */}
-          <div className="w-8 h-8 rounded-full bg-navy-800/90 backdrop-blur-sm border border-orange/50 flex items-center justify-center animate-bounce">
+          <div className="w-8 h-8 rounded-full bg-surface/90 backdrop-blur-sm border border-orange/50 flex items-center justify-center animate-bounce">
             <ChevronDown className="w-4 h-4 text-orange shadow-[0_0_10px_rgba(253,10,7,0.3)]" />
           </div>
         </div>

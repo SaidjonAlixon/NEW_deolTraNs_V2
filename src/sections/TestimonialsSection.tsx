@@ -65,7 +65,7 @@ function TestimonialCard({
     : 'bg-[#005E99]/10 text-[#005E99] border-[#005E99]/30';
 
   return (
-    <div className="w-[320px] sm:w-[380px] lg:w-[420px] flex-shrink-0 bg-navy-800/40 backdrop-blur-md rounded-2xl border border-white/5 p-6 sm:p-8 flex flex-col gap-5 hover:bg-navy-800/60 hover:border-white/15 transition-all duration-300 group">
+    <div className="w-[320px] sm:w-[380px] lg:w-[420px] flex-shrink-0 bg-surface/40 backdrop-blur-md rounded-2xl border border-white/5 p-6 sm:p-8 flex flex-col gap-5 hover:bg-surface/60 hover:border-white/15 transition-all duration-300 group">
       <Quote className="w-8 h-8 text-white/5 group-hover:text-white/20 transition-colors" />
       <p className="text-sm sm:text-base text-gray-300 leading-relaxed min-h-[90px] italic">
         "{testimonial.quote}"
@@ -83,7 +83,7 @@ function TestimonialCard({
             </p>
           </div>
         </div>
-        <div className="flex bg-navy-900/50 rounded-full px-2 py-1 border border-white/5">
+        <div className="flex bg-app/50 rounded-full px-2 py-1 border border-white/5">
           <Star className="w-3 h-3 fill-current text-orange" />
           <span className="text-xs font-mono ml-1 text-white">{testimonial.rating}.0</span>
         </div>
@@ -98,7 +98,7 @@ export default function TestimonialsSection() {
   const partnersDup = [...partnerTestimonials, ...partnerTestimonials, ...partnerTestimonials, ...partnerTestimonials];
 
   return (
-    <section id="testimonials" className="relative bg-[#0A0F1C] py-20 lg:py-28 overflow-hidden">
+    <section id="testimonials" className="relative bg-app py-20 lg:py-28 overflow-hidden">
       {/* Background grid replacing the red blur */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:100px_100px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none"></div>
 
@@ -140,8 +140,8 @@ export default function TestimonialsSection() {
         {/* Row 1: Drivers scrolling left */}
         <div className="relative flex overflow-hidden group">
           {/* Gradient Edge Masks */}
-          <div className="absolute inset-y-0 left-0 w-20 sm:w-40 bg-gradient-to-r from-[#0A0F1C] to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute inset-y-0 right-0 w-20 sm:w-40 bg-gradient-to-l from-[#0A0F1C] to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute inset-y-0 left-0 w-20 sm:w-40 bg-gradient-to-r from-app to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute inset-y-0 right-0 w-20 sm:w-40 bg-gradient-to-l from-app to-transparent z-10 pointer-events-none"></div>
           
           <motion.div
             className="flex gap-6 sm:gap-8 w-max pl-6 sm:pl-8"
@@ -157,8 +157,8 @@ export default function TestimonialsSection() {
 
         {/* Row 2: Partners scrolling right */}
         <div className="relative flex overflow-hidden">
-          <div className="absolute inset-y-0 left-0 w-20 sm:w-40 bg-gradient-to-r from-[#0A0F1C] to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute inset-y-0 right-0 w-20 sm:w-40 bg-gradient-to-l from-[#0A0F1C] to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute inset-y-0 left-0 w-20 sm:w-40 bg-gradient-to-r from-app to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute inset-y-0 right-0 w-20 sm:w-40 bg-gradient-to-l from-app to-transparent z-10 pointer-events-none"></div>
           
           <motion.div
             className="flex gap-6 sm:gap-8 w-max pr-6 sm:pr-8"
@@ -193,7 +193,7 @@ export default function TestimonialsSection() {
           <div className="flex items-center gap-4">
             <div className="flex -space-x-3">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="w-8 h-8 rounded-full bg-navy-800 border-2 border-[#0A0F1C] flex items-center justify-center opacity-80 overflow-hidden relative">
+                <div key={i} className="w-8 h-8 rounded-full bg-surface border-2 border-app flex items-center justify-center opacity-80 overflow-hidden relative">
                   <div className="absolute inset-0 bg-white/5" />
                   <Star className="w-3 h-3 text-white/40" />
                 </div>

@@ -62,13 +62,13 @@ export default function CareersSection() {
     <section
       ref={sectionRef}
       id="careers"
-      className="section-pinned bg-[#0A0F1C] relative flex items-center min-h-screen pt-20 overflow-hidden"
+      className="section-pinned bg-app relative flex items-center min-h-screen pt-20 overflow-hidden"
     >
       {/* Background */}
       <div ref={bgRef} className="absolute inset-0 z-[1]">
         <img src="/images/careers_driver.jpg" alt="Professional driver" className="w-full h-full object-cover opacity-40" />
-        <div className="absolute inset-0 bg-[#0A0F1C]/70 backdrop-blur-sm" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0F1C] via-transparent to-[#0A0F1C]" />
+        <div className="absolute inset-0 bg-app/70 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-gradient-to-b from-app via-transparent to-app" />
       </div>
       <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[500px] h-[500px] bg-orange/10 rounded-full blur-[120px] z-[2] pointer-events-none hidden lg:block" />
 
@@ -110,7 +110,7 @@ export default function CareersSection() {
           {ownerOpStats.map((stat, index) => (
             <div
               key={index}
-              className="benefit-item group relative bg-navy-900/60 backdrop-blur-xl rounded-2xl border border-white/5 p-5 hover:bg-navy-800/80 hover:border-orange/20 transition-all duration-500 shadow-xl overflow-hidden"
+              className="benefit-item group relative bg-app/60 backdrop-blur-xl rounded-2xl border border-white/5 p-5 hover:bg-surface/80 hover:border-orange/20 transition-all duration-500 shadow-xl overflow-hidden"
             >
               <div className="absolute -inset-px bg-gradient-to-br from-orange/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none" />
               <div className="relative z-10 flex flex-col items-start gap-3">
@@ -137,7 +137,7 @@ export default function CareersSection() {
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/70">Scroll</span>
         <div className="relative flex items-center justify-center">
           <span className="absolute w-10 h-10 rounded-full border border-orange/40 animate-ping opacity-70" />
-          <div className="w-8 h-8 rounded-full bg-navy-800/90 backdrop-blur-sm border border-orange/50 flex items-center justify-center animate-bounce">
+          <div className="w-8 h-8 rounded-full bg-surface/90 backdrop-blur-sm border border-orange/50 flex items-center justify-center animate-bounce">
             <ChevronDown className="w-4 h-4 text-orange shadow-[0_0_10px_rgba(253,10,7,0.3)]" />
           </div>
         </div>
