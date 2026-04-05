@@ -12,7 +12,7 @@ export default function About() {
     }, []);
 
     return (
-        <div className="bg-[#050810] min-h-screen">
+        <div className="bg-app min-h-screen">
             <AboutSection />
             <MissionVisionSection />
             <CompanyHistorySection />

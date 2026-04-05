@@ -67,17 +67,17 @@ export default function MissionVisionSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface/80 backdrop-blur-md border border-white/10 mb-6 shadow-[0_0_15px_rgba(253,10,7,0.1)]"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface/80 backdrop-blur-md border border-border mb-6 shadow-[0_0_15px_rgba(253,10,7,0.1)]"
           >
             <ShieldCheck className="w-4 h-4 text-orange" />
-            <span className="font-mono text-xs uppercase tracking-wider text-gray-300">Who We Are</span>
+            <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Who We Are</span>
           </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 drop-shadow-lg"
+            className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 drop-shadow-lg"
           >
             Who We <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange to-red-500">Are</span>
           </motion.h2>
@@ -86,9 +86,9 @@ export default function MissionVisionSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-gray-300 text-lg max-w-3xl mx-auto drop-shadow-md leading-relaxed"
+            className="text-muted-foreground text-lg max-w-3xl mx-auto drop-shadow-md leading-relaxed"
           >
-            Delo Trans Inc is a <span className="text-white font-semibold">100% power-only carrier</span> designed for drivers and fleet partners who treat trucking like a business. With more than <span className="text-orange font-semibold">250 power-only units operating across 48 states</span>, we focus strictly on high rate-per-mile freight and real profitability — not chasing cheap miles or wasting time.
+            Delo Trans Inc is a <span className="text-foreground font-semibold">100% power-only carrier</span> designed for drivers and fleet partners who treat trucking like a business. With more than <span className="text-orange font-semibold">250 power-only units operating across 48 states</span>, we focus strictly on high rate-per-mile freight and real profitability — not chasing cheap miles or wasting time.
           </motion.p>
         </div>
 
@@ -101,7 +101,7 @@ export default function MissionVisionSection() {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: index * 0.15 }}
               style={{ y: index === 1 ? y1 : 0 }}
-              className="group relative bg-app/60 backdrop-blur-xl rounded-2xl border border-white/10 p-8 lg:p-10 hover:bg-surface/80 transition-all duration-500 overflow-hidden shadow-2xl hover:shadow-[0_0_40px_rgba(253,10,7,0.1)] hover:-translate-y-2"
+              className="group relative bg-card/60 backdrop-blur-xl rounded-2xl border border-border p-8 lg:p-10 hover:bg-surface/90 transition-all duration-500 overflow-hidden shadow-2xl hover:shadow-[0_0_40px_rgba(253,10,7,0.1)] hover:-translate-y-2"
             >
               {/* Subtle hover gradient */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -109,8 +109,8 @@ export default function MissionVisionSection() {
               <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 border relative z-10 ${value.bg} ${value.border} shadow-lg group-hover:scale-110 transition-transform duration-500`}>
                 <value.icon className={`w-7 h-7 ${value.color}`} />
               </div>
-              <h3 className="text-2xl font-heading font-bold text-white mb-4 relative z-10">{value.title}</h3>
-              <p className="text-gray-300 leading-relaxed relative z-10 group-hover:text-white transition-colors">
+              <h3 className="text-2xl font-heading font-bold text-foreground mb-4 relative z-10">{value.title}</h3>
+              <p className="text-muted-foreground leading-relaxed relative z-10 group-hover:text-foreground transition-colors">
                 {value.description}
               </p>
             </motion.div>
@@ -123,14 +123,14 @@ export default function MissionVisionSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.6 }}
-          className="mt-20 border-t border-white/10 pt-12 flex flex-wrap justify-center gap-8 lg:gap-16 relative"
+          className="mt-20 border-t border-border pt-12 flex flex-wrap justify-center gap-8 lg:gap-16 relative"
         >
           {corePrinciples.map((principle, idx) => (
             <div key={idx} className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-surface/80 backdrop-blur-sm shadow-md flex items-center justify-center border border-white/10">
+              <div className="w-8 h-8 rounded-full bg-surface/80 backdrop-blur-sm shadow-md flex items-center justify-center border border-border">
                 <principle.icon className="w-4 h-4 text-orange" />
               </div>
-              <span className="text-sm lg:text-base font-semibold text-white font-heading tracking-wide uppercase">{principle.label}</span>
+              <span className="text-sm lg:text-base font-semibold text-foreground font-heading tracking-wide uppercase">{principle.label}</span>
             </div>
           ))}
         </motion.div>

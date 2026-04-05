@@ -93,7 +93,7 @@ export default function WorkGallerySection() {
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
 
   return (
-    <section ref={containerRef} className="relative py-24 lg:py-32 bg-[#050810] overflow-hidden">
+    <section ref={containerRef} className="relative py-24 lg:py-32 bg-app overflow-hidden">
       {/* Background HUD Overlay */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-[0.03]" 
            style={{ backgroundImage: 'linear-gradient(#ff0000 1px, transparent 1px), linear-gradient(90deg, #ff0000 1px, transparent 1px)', backgroundSize: '100px 100px' }} />
@@ -113,7 +113,7 @@ export default function WorkGallerySection() {
             <motion.h2 
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-              className="font-heading text-4xl sm:text-5xl lg:text-7xl font-black text-white mb-8 tracking-tighter"
+              className="font-heading text-4xl sm:text-5xl lg:text-7xl font-black text-foreground mb-8 tracking-tighter"
             >
               Field <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-400">Operations</span>
             </motion.h2>
@@ -122,7 +122,7 @@ export default function WorkGallerySection() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ delay: 0.1 }}
-              className="text-gray-500 text-lg leading-relaxed font-light"
+              className="text-muted-foreground text-lg leading-relaxed font-light"
             >
               Surveillance data from our active units. We provide transparent, 
               live monitoring of every asset in our technological network.
@@ -135,12 +135,12 @@ export default function WorkGallerySection() {
             className="flex-shrink-0"
           >
             <div className="relative p-1 rounded-2xl bg-gradient-to-br from-red-500/40 to-transparent">
-                <div className="px-8 py-6 rounded-[calc(1rem-1px)] bg-[#050810] backdrop-blur-3xl border border-white/5">
-                    <div className="font-mono text-[10px] uppercase text-gray-500 tracking-widest mb-2 flex items-center gap-2">
+                <div className="px-8 py-6 rounded-[calc(1rem-1px)] bg-card backdrop-blur-3xl border border-border">
+                    <div className="font-mono text-[10px] uppercase text-muted-foreground tracking-widest mb-2 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full border border-red-500 animate-ping" />
                         Network Integrity
                     </div>
-                    <div className="text-4xl font-black text-white tracking-tighter flex items-end gap-1">
+                    <div className="text-4xl font-black text-foreground tracking-tighter flex items-end gap-1">
                         99.8% <span className="text-red-500 text-sm font-mono mb-1.5">v2.4</span>
                     </div>
                     <div className="mt-4 flex gap-1">
@@ -169,7 +169,7 @@ function GalleryCard({ item, index, isInView }: { item: typeof galleryItems[0], 
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
       transition={{ duration: 0.7, delay: index * 0.12 }}
-      className="group relative h-[450px] overflow-hidden rounded-[2.5rem] border border-white/5 bg-[#0C121D] shadow-2xl"
+      className="group relative h-[450px] overflow-hidden rounded-[2.5rem] border border-border bg-card shadow-2xl"
     >
       {/* HUD Frame */}
       <div className="absolute inset-4 border border-white/10 rounded-[2rem] z-20 pointer-events-none opacity-40 group-hover:opacity-100 transition-opacity duration-500" />

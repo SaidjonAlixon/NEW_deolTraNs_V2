@@ -102,22 +102,22 @@ export default function DriverBenefitsSection() {
         <div className="text-center mb-14 flex flex-col items-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface/80 backdrop-blur-md border border-white/10 mb-6"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface/80 backdrop-blur-md border border-border mb-6"
           >
             <Award className="w-4 h-4 text-orange" />
-            <span className="font-mono text-xs uppercase tracking-wider text-gray-300">Owner Operators</span>
+            <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Owner Operators</span>
           </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4"
+            className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4"
           >
             What You <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange to-red-500">Get</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-gray-300 text-lg max-w-2xl mx-auto"
+            className="text-muted-foreground text-lg max-w-2xl mx-auto"
           >
             Everything you need to run your truck like a profitable business — not just a job.
           </motion.p>
@@ -131,14 +131,14 @@ export default function DriverBenefitsSection() {
               initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.5, delay: index * 0.08 }}
-              className="group relative bg-app/60 backdrop-blur-xl rounded-2xl border border-white/10 p-7 hover:bg-surface/80 hover:border-white/20 transition-all duration-500 shadow-xl overflow-hidden"
+              className="group relative bg-card/70 backdrop-blur-xl rounded-2xl border border-border p-7 hover:bg-surface/90 hover:border-border transition-all duration-500 shadow-xl overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-5 border relative z-10 ${benefit.bg} ${benefit.border} group-hover:scale-110 transition-transform duration-500`}>
                 <benefit.icon className={`w-6 h-6 ${benefit.color}`} />
               </div>
-              <h3 className="text-lg font-heading font-bold text-white mb-2 relative z-10">{benefit.title}</h3>
-              <p className="text-gray-400 leading-relaxed text-sm relative z-10 group-hover:text-gray-300 transition-colors">
+              <h3 className="text-lg font-heading font-bold text-foreground mb-2 relative z-10">{benefit.title}</h3>
+              <p className="text-muted-foreground leading-relaxed text-sm relative z-10 transition-colors">
                 {benefit.description}
               </p>
             </motion.div>
@@ -151,19 +151,19 @@ export default function DriverBenefitsSection() {
           {/* Weekly Cost */}
           <motion.div
             initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            className="bg-app/60 border border-orange/20 rounded-2xl p-8"
+            className="bg-card/70 border border-orange/20 rounded-2xl p-8"
           >
             <p className="font-mono text-xs uppercase tracking-widest text-orange mb-3">Simple Weekly Cost</p>
-            <p className="font-heading text-5xl font-bold text-white mb-1">$550</p>
-            <p className="text-sm text-gray-400 mb-4">Per Week — All Inclusive</p>
-            <p className="text-xs text-gray-light mb-5">Insurance and Oregon permit included.</p>
-            <div className="border-t border-white/10 pt-5">
+            <p className="font-heading text-5xl font-bold text-foreground mb-1">$550</p>
+            <p className="text-sm text-muted-foreground mb-4">Per Week — All Inclusive</p>
+            <p className="text-xs text-muted-foreground mb-5">Insurance and Oregon permit included.</p>
+            <div className="border-t border-border pt-5">
               <p className="text-xs font-mono uppercase tracking-widest text-orange mb-3">We Focus on Profitability</p>
               <div className="flex flex-col gap-2">
                 {['Less deadhead', 'Fewer unnecessary miles', 'Higher revenue per mile', 'Close attention to RPM and margins'].map((item) => (
                   <div key={item} className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-orange flex-shrink-0" />
-                    <span className="text-sm text-white/80">{item}</span>
+                    <span className="text-sm text-foreground">{item}</span>
                   </div>
                 ))}
               </div>
@@ -174,29 +174,29 @@ export default function DriverBenefitsSection() {
           <motion.div
             initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="bg-app/60 border border-blue-500/20 rounded-2xl p-8"
+            className="bg-card/70 border border-blue-500/20 rounded-2xl p-8"
           >
             <div className="flex items-center gap-2 mb-3">
               <Wifi className="w-4 h-4 text-blue-400" />
-              <p className="font-mono text-xs uppercase tracking-widest text-blue-400">Fully Remote Onboarding</p>
+              <p className="font-mono text-xs uppercase tracking-widest text-blue-600">Fully Remote Onboarding</p>
             </div>
-            <p className="font-heading text-xl font-bold text-white mb-1">Start From Anywhere</p>
-            <p className="text-sm text-gray-400 mb-5">No travel. No downtime. No wasted money.</p>
+            <p className="font-heading text-xl font-bold text-foreground mb-1">Start From Anywhere</p>
+            <p className="text-sm text-muted-foreground mb-5">No travel. No downtime. No wasted money.</p>
 
-            <p className="text-xs font-mono uppercase tracking-widest text-white/40 mb-3">Easy Digital Process</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">Easy Digital Process</p>
             <div className="flex flex-col gap-2 mb-6">
               {onboardingItems.map((item) => (
                 <div key={item} className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0" />
-                  <span className="text-sm text-white/80">{item}</span>
+                  <span className="text-sm text-foreground">{item}</span>
                 </div>
               ))}
             </div>
 
-            <p className="text-xs font-mono uppercase tracking-widest text-white/40 mb-3">Starter Package Shipped to You</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">Starter Package Shipped to You</p>
             <div className="flex flex-wrap gap-2">
               {starterPackage.map((item) => (
-                <span key={item} className="text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 rounded-full px-3 py-1">
+                <span key={item} className="text-xs text-blue-700 bg-blue-500/10 border border-blue-500/25 rounded-full px-3 py-1">
                   {item}
                 </span>
               ))}
@@ -211,14 +211,14 @@ export default function DriverBenefitsSection() {
         >
           <div className="flex items-center gap-2 mb-3">
             <ShieldCheck className="w-5 h-5 text-emerald-400" />
-            <p className="font-semibold text-white">Company-Paid Inspection Program</p>
+            <p className="font-semibold text-foreground">Company-Paid Inspection Program</p>
           </div>
-          <p className="text-sm text-gray-400 mb-4">We prioritize safety and equipment quality.</p>
+          <p className="text-sm text-muted-foreground mb-4">We prioritize safety and equipment quality.</p>
           <div className="flex flex-wrap gap-x-8 gap-y-2">
             {['Regular compliance inspections', 'Annual inspections covered by the company', 'Owner Operators reimbursed for clean inspections'].map((item) => (
               <div key={item} className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
-                <span className="text-sm text-white/80">{item}</span>
+                <span className="text-sm text-foreground">{item}</span>
               </div>
             ))}
           </div>

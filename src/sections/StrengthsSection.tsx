@@ -60,7 +60,7 @@ export default function StrengthsSection() {
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
 
   return (
-    <section ref={containerRef} className="relative py-24 lg:py-32 bg-[#050810] overflow-hidden">
+    <section ref={containerRef} className="relative py-24 lg:py-32 bg-app overflow-hidden">
       {/* High-tech Grid Background */}
       <div className="absolute inset-0 opacity-[0.15]" 
            style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #ff0000 1px, transparent 0)', backgroundSize: '40px 40px' }} />
@@ -87,7 +87,7 @@ export default function StrengthsSection() {
           <motion.h2 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
-            className="font-heading text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-6 uppercase tracking-tight"
+            className="font-heading text-4xl sm:text-5xl lg:text-7xl font-extrabold text-foreground mb-6 uppercase tracking-tight"
           >
             Tactical <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-400">Advantages</span>
           </motion.h2>
@@ -96,7 +96,7 @@ export default function StrengthsSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ delay: 0.1 }}
-            className="text-gray-400 max-w-3xl mx-auto text-lg font-light leading-relaxed"
+            className="text-muted-foreground max-w-3xl mx-auto text-lg font-light leading-relaxed"
           >
             Beyond traditional trucking—we deploy a sophisticated logistics ecosystem 
             engineered for maximum throughput and zero-latency communication.
@@ -119,7 +119,7 @@ function StrengthCard({ strength, index, isInView }: { strength: typeof strength
       initial={{ opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="group relative p-8 bg-[#0C121D]/50 border border-white/5 rounded-3xl hover:border-red-500/40 transition-all duration-700 backdrop-blur-xl overflow-hidden"
+      className="group relative p-8 bg-card/70 border border-border rounded-3xl hover:border-red-500/40 transition-all duration-700 backdrop-blur-xl overflow-hidden"
     >
       {/* Card HUD Elements */}
       <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-100 transition-opacity duration-500">
@@ -132,7 +132,7 @@ function StrengthCard({ strength, index, isInView }: { strength: typeof strength
                 <strength.icon className="w-8 h-8 text-red-500" />
             </div>
             <div className="text-right">
-                <div className="font-mono text-[9px] text-gray-500 uppercase tracking-widest mb-1">Status</div>
+                <div className="font-mono text-[9px] text-muted-foreground uppercase tracking-widest mb-1">Status</div>
                 <div className="font-mono text-[10px] text-green-500 flex items-center gap-1.5 justify-end">
                     <span className="w-1 h-1 rounded-full bg-green-500 shadow-[0_0_5px_#22c55e]" />
                     Online
@@ -140,18 +140,18 @@ function StrengthCard({ strength, index, isInView }: { strength: typeof strength
             </div>
         </div>
 
-        <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-red-500 transition-colors tracking-tight">
+        <h3 className="text-2xl font-bold text-foreground mb-4 group-hover:text-red-500 transition-colors tracking-tight">
           {strength.title}
         </h3>
         
-        <p className="text-gray-400 leading-relaxed text-sm mb-8 font-light italic border-l-2 border-red-500/20 pl-4">
+        <p className="text-muted-foreground leading-relaxed text-sm mb-8 font-light italic border-l-2 border-red-500/20 pl-4">
           "{strength.description}"
         </p>
 
-        <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-white/5">
+        <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-border">
             <div className="flex gap-2">
                 {strength.tags.map(tag => (
-                    <span key={tag} className="px-2 py-0.5 rounded bg-white/5 text-gray-500 font-mono text-[9px] uppercase border border-white/5">
+                    <span key={tag} className="px-2 py-0.5 rounded bg-muted/60 text-muted-foreground font-mono text-[9px] uppercase border border-border">
                         {tag}
                     </span>
                 ))}

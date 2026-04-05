@@ -53,7 +53,7 @@ export default function CompanyHistorySection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4"
+            className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4"
           >
             A Journey of <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Growth</span>
           </motion.h2>
@@ -62,7 +62,7 @@ export default function CompanyHistorySection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-gray-400 max-w-2xl mx-auto"
+            className="text-muted-foreground max-w-2xl mx-auto"
           >
             A quick look back at the milestones that shaped our commitment to logistics excellence.
           </motion.p>
@@ -70,7 +70,7 @@ export default function CompanyHistorySection() {
 
         <div className="relative max-w-4xl mx-auto">
           {/* Central Line */}
-          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-white/10 -translate-x-1/2 hidden md:block" />
+          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-border -translate-x-1/2 hidden md:block" />
           
           {/* Animated fill line */}
           <motion.div 
@@ -102,7 +102,7 @@ function TimelineItem({ event }: { event: typeof timelineEvents[0] }) {
 
       {/* Center Node */}
       <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-surface border-4 border-app items-center justify-center z-10 transition-colors duration-300 group-hover:bg-blue-500 group-hover:border-blue-500/30">
-        <event.icon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+        <event.icon className="w-5 h-5 text-muted-foreground group-hover:text-primary-foreground transition-colors" />
       </div>
 
       {/* Content Card */}
@@ -114,8 +114,8 @@ function TimelineItem({ event }: { event: typeof timelineEvents[0] }) {
         className="w-full md:w-5/12 ml-12 md:ml-0"
       >
         <div className={`
-          bg-surface/40 backdrop-blur-md rounded-2xl border border-white/5 p-6 lg:p-8
-          hover:bg-surface/60 hover:border-white/20 transition-all duration-300
+          bg-card/50 backdrop-blur-md rounded-2xl border border-border p-6 lg:p-8
+          hover:bg-surface/80 hover:border-border transition-all duration-300
           relative
         `}>
           {/* Mobile node (visible only on small screens) */}
@@ -127,11 +127,11 @@ function TimelineItem({ event }: { event: typeof timelineEvents[0] }) {
             <span className="font-heading text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
               {event.year}
             </span>
-            <div className="h-px flex-grow bg-white/5" />
+            <div className="h-px flex-grow bg-border" />
           </div>
           
-          <h3 className="text-xl font-heading font-bold text-white mb-2">{event.title}</h3>
-          <p className="text-gray-400 leading-relaxed text-sm lg:text-base">
+          <h3 className="text-xl font-heading font-bold text-foreground mb-2">{event.title}</h3>
+          <p className="text-muted-foreground leading-relaxed text-sm lg:text-base">
             {event.description}
           </p>
         </div>

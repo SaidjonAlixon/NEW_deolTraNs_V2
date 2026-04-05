@@ -42,7 +42,7 @@ export default function TechAdvantageSection() {
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
 
   return (
-    <section ref={containerRef} className="relative py-24 lg:py-40 bg-[#050810] border-y border-white/5 overflow-hidden">
+    <section ref={containerRef} className="relative py-24 lg:py-40 bg-app border-y border-border overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent -translate-y-1/2" />
       
@@ -68,7 +68,7 @@ export default function TechAdvantageSection() {
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-              className="text-4xl md:text-6xl font-black text-white uppercase tracking-tight leading-[0.95] mb-8"
+              className="text-4xl md:text-6xl font-black text-foreground uppercase tracking-tight leading-[0.95] mb-8"
             >
               Proprietary <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-400">Logistics OS</span>
@@ -78,7 +78,7 @@ export default function TechAdvantageSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ delay: 0.1 }}
-              className="text-gray-400 text-lg font-light mb-12 max-w-xl leading-relaxed"
+              className="text-muted-foreground text-lg font-light mb-12 max-w-xl leading-relaxed"
             >
               We don't just drive trucks; we operate a sophisticated software platform 
               designed to minimize friction and maximize transparency in the modern supply chain.
@@ -94,11 +94,11 @@ export default function TechAdvantageSection() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                         transition={{ delay: 0.2 + (i * 0.1) }}
-                        className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 backdrop-blur-3xl group hover:border-red-500/20 transition-colors"
+                        className="p-6 rounded-2xl bg-card/60 border border-border backdrop-blur-3xl group hover:border-red-500/20 transition-colors"
                     >
                         <stat.icon className="w-5 h-5 text-red-500 mb-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-                        <div className="text-2xl font-black text-white mb-1 tracking-tighter">{stat.val}</div>
-                        <div className="font-mono text-[9px] uppercase tracking-widest text-gray-500">{stat.label}</div>
+                        <div className="text-2xl font-black text-foreground mb-1 tracking-tighter">{stat.val}</div>
+                        <div className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground">{stat.label}</div>
                     </motion.div>
                 ))}
             </div>
@@ -107,7 +107,7 @@ export default function TechAdvantageSection() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 relative">
             {/* Connective Lines Decor */}
             <div className="absolute inset-0 opacity-10 pointer-events-none z-0">
-                <Layers className="w-full h-full text-white" />
+                <Layers className="w-full h-full text-foreground" />
             </div>
 
             {techFeatures.map((f, i) => (
@@ -116,15 +116,15 @@ export default function TechAdvantageSection() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
                     transition={{ delay: 0.3 + (i * 0.1) }}
-                    className="p-8 rounded-3xl bg-[#0C121D]/80 border border-white/5 backdrop-blur-xl relative group hover:z-20 hover:-translate-y-2 transition-all duration-500"
+                    className="p-8 rounded-3xl bg-card/80 border border-border backdrop-blur-xl relative group hover:z-20 hover:-translate-y-2 transition-all duration-500"
                 >
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.accent} p-px mb-6`}>
-                        <div className="w-full h-full bg-[#050810] rounded-[calc(0.75rem-1px)] flex items-center justify-center">
+                        <div className="w-full h-full bg-navy-900 rounded-[calc(0.75rem-1px)] flex items-center justify-center">
                             <f.icon className="w-5 h-5 text-white opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all" />
                         </div>
                     </div>
-                    <h3 className="text-lg font-bold text-white mb-3 group-hover:text-red-500 transition-colors">{f.title}</h3>
-                    <p className="text-sm text-gray-500 leading-relaxed font-light">{f.desc}</p>
+                    <h3 className="text-lg font-bold text-foreground mb-3 group-hover:text-red-500 transition-colors">{f.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed font-light">{f.desc}</p>
                     
                     {/* Glowing Accent */}
                     <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-gradient-to-r ${f.accent} blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
@@ -137,7 +137,7 @@ export default function TechAdvantageSection() {
       
       {/* Decorative Rotating Gear-like element using SVG */}
       <div className="absolute -bottom-20 -right-20 w-80 h-80 opacity-[0.02] pointer-events-none animate-[spin_20s_linear_infinite]">
-        <Globe className="w-full h-full text-white" />
+        <Globe className="w-full h-full text-foreground" />
       </div>
     </section>
   );

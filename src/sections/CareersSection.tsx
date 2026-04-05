@@ -82,12 +82,12 @@ export default function CareersSection() {
             Owner Operators
           </p>
 
-          <h1 ref={headlineRef} className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] tracking-tight mb-4 drop-shadow-xl">
+          <h1 ref={headlineRef} className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1] tracking-tight mb-4 drop-shadow-xl">
             If You Run Your Truck<br />Like a Business —<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange to-red-500">We're Your Partner.</span>
           </h1>
 
-          <p ref={bodyRef} className="text-base sm:text-lg text-gray-300 leading-relaxed max-w-xl mb-2">
+          <p ref={bodyRef} className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mb-2">
             High rate-per-mile freight only. Profit-focused operations. Driver-first dispatch model. Start anywhere in the U.S.
           </p>
 
@@ -110,15 +110,15 @@ export default function CareersSection() {
           {ownerOpStats.map((stat, index) => (
             <div
               key={index}
-              className="benefit-item group relative bg-app/60 backdrop-blur-xl rounded-2xl border border-white/5 p-5 hover:bg-surface/80 hover:border-orange/20 transition-all duration-500 shadow-xl overflow-hidden"
+              className="benefit-item group relative bg-card/70 backdrop-blur-xl rounded-2xl border border-border p-5 hover:bg-surface/90 hover:border-orange/20 transition-all duration-500 shadow-xl overflow-hidden"
             >
               <div className="absolute -inset-px bg-gradient-to-br from-orange/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none" />
               <div className="relative z-10 flex flex-col items-start gap-3">
                 <div className="w-10 h-10 rounded-xl bg-orange/10 border border-orange/20 flex items-center justify-center">
                   <stat.icon className="w-5 h-5 text-orange" />
                 </div>
-                <p className="font-heading text-2xl font-bold text-white">{stat.value}</p>
-                <p className="text-xs text-gray-light">{stat.label}</p>
+                <p className="font-heading text-2xl font-bold text-foreground">{stat.value}</p>
+                <p className="text-xs text-muted-foreground">{stat.label}</p>
               </div>
             </div>
           ))}
@@ -126,15 +126,15 @@ export default function CareersSection() {
           {/* Company Drivers teaser card */}
           <div className="benefit-item col-span-2 bg-blue-500/5 border border-blue-500/20 rounded-2xl p-5">
             <p className="text-xs font-mono uppercase tracking-widest text-blue-400 mb-1">Company Drivers</p>
-            <p className="text-sm font-semibold text-white mb-0.5">Drive With a Carrier That Respects Your Time</p>
-            <p className="text-xs text-gray-light">Consistent loads · Supportive dispatch · Nationwide routes</p>
+            <p className="text-sm font-semibold text-foreground mb-0.5">Drive With a Carrier That Respects Your Time</p>
+            <p className="text-xs text-muted-foreground">Consistent loads · Supportive dispatch · Nationwide routes</p>
           </div>
         </div>
       </div>
 
       {/* Scroll Down Indicator */}
       <div className="absolute bottom-28 sm:bottom-8 left-1/2 -translate-x-1/2 z-[50] flex flex-col items-center gap-2 pointer-events-none">
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/70">Scroll</span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Scroll</span>
         <div className="relative flex items-center justify-center">
           <span className="absolute w-10 h-10 rounded-full border border-orange/40 animate-ping opacity-70" />
           <div className="w-8 h-8 rounded-full bg-surface/90 backdrop-blur-sm border border-orange/50 flex items-center justify-center animate-bounce">

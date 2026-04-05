@@ -46,7 +46,7 @@ export default function ApplicationProcessSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6"
+            className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6"
           >
             Hop on <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Board.</span>
           </motion.h2>
@@ -55,7 +55,7 @@ export default function ApplicationProcessSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-gray-400 max-w-2xl mx-auto text-lg"
+            className="text-muted-foreground max-w-2xl mx-auto text-lg"
           >
             We respect your time. Our hiring process is fast, transparent, and built to get you behind the wheel without the runaround.
           </motion.p>
@@ -63,14 +63,14 @@ export default function ApplicationProcessSection() {
 
         <div className="relative max-w-5xl mx-auto">
            {/* Horizontal connecting line (Desktop) */}
-           <div className="hidden lg:block absolute top-[52px] left-12 right-12 h-px bg-white/10 z-0" />
+           <div className="hidden lg:block absolute top-[52px] left-12 right-12 h-px bg-border z-0" />
            <motion.div 
              style={{ scaleX: pathLength, originX: 0 }}
              className="hidden lg:block absolute top-[52px] left-12 right-12 h-[2px] bg-gradient-to-r from-blue-500 to-indigo-500 z-0" 
            />
 
            {/* Vertical connecting line (Mobile) */}
-           <div className="lg:hidden absolute left-12 top-12 bottom-12 w-px bg-white/10 z-0" />
+           <div className="lg:hidden absolute left-12 top-12 bottom-12 w-px bg-border z-0" />
            <motion.div 
              style={{ scaleY: pathLength, originY: 0 }}
              className="lg:hidden absolute left-12 top-12 bottom-12 w-[2px] bg-gradient-to-b from-blue-500 to-indigo-500 z-0" 
@@ -89,8 +89,8 @@ export default function ApplicationProcessSection() {
                 {/* Number & Node */}
                 <div className="flex items-center lg:flex-col lg:gap-4 mb-6">
                   <div className="w-24 h-24 rounded-full bg-surface border-4 border-app flex items-center justify-center relative shadow-xl group-hover:border-blue-500/30 group-hover:scale-110 transition-all duration-500 z-10 flex-shrink-0">
-                    <step.icon className="w-10 h-10 text-blue-400 group-hover:text-white transition-colors" />
-                    <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center border-4 border-app text-xs font-bold text-white shadow-lg">
+                    <step.icon className="w-10 h-10 text-blue-400 group-hover:text-blue-600 transition-colors" />
+                    <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center border-4 border-app text-xs font-bold text-primary-foreground shadow-lg">
                       {step.number}
                     </div>
                   </div>
@@ -98,12 +98,12 @@ export default function ApplicationProcessSection() {
                   <div className="ml-6 lg:ml-0 hidden lg:block h-8 w-px bg-transparent" /> {/* Spacing */}
                   
                   {/* Mobile title aligns next to icon */}
-                  <h3 className="lg:hidden ml-6 text-2xl font-heading font-bold text-white">{step.title}</h3>
+                  <h3 className="lg:hidden ml-6 text-2xl font-heading font-bold text-foreground">{step.title}</h3>
                 </div>
 
                 <div className="pl-30 lg:pl-0">
-                  <h3 className="hidden lg:block text-2xl font-heading font-bold text-white mb-3 group-hover:text-blue-400 transition-colors">{step.title}</h3>
-                  <p className="text-gray-400 leading-relaxed text-sm md:text-base ml-24 lg:ml-0">
+                  <h3 className="hidden lg:block text-2xl font-heading font-bold text-foreground mb-3 group-hover:text-blue-500 transition-colors">{step.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed text-sm md:text-base ml-24 lg:ml-0">
                     {step.description}
                   </p>
                 </div>

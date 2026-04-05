@@ -50,14 +50,14 @@ export default function DriverRequirementsSection() {
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 mb-6"
             >
               <Truck className="w-4 h-4 text-blue-400" />
-              <span className="font-mono text-xs uppercase tracking-wider text-blue-200">Company Drivers</span>
+              <span className="font-mono text-xs uppercase tracking-wider text-blue-500">Company Drivers</span>
             </motion.div>
 
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-5"
+              className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-5"
             >
               Drive With a Carrier That <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Respects Your Time.</span>
             </motion.h2>
@@ -66,11 +66,11 @@ export default function DriverRequirementsSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-gray-400 text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0"
+              className="text-muted-foreground text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0"
             >
               We provide consistent freight, supportive dispatch, and nationwide opportunities for professional company drivers.
               <br /><br />
-              <span className="text-white/70 italic">Drive professionally. Earn reliably. Grow confidently.</span>
+              <span className="text-foreground/80 italic">Drive professionally. Earn reliably. Grow confidently.</span>
             </motion.p>
 
             <motion.div
@@ -80,7 +80,7 @@ export default function DriverRequirementsSection() {
             >
               <button
                 onClick={openDriverModal}
-                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-surface rounded-full border border-blue-500/30 text-white font-medium hover:border-blue-400 transition-all duration-300 w-full sm:w-auto"
+                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-surface rounded-full border border-blue-500/30 text-foreground font-medium hover:border-blue-400 transition-all duration-300 w-full sm:w-auto"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
                 <span className="relative z-10 group-hover:text-blue-400 transition-colors">Apply as Company Driver</span>
@@ -90,8 +90,8 @@ export default function DriverRequirementsSection() {
           </div>
 
           <div className="w-full lg:w-7/12">
-            <div className="bg-surface/40 backdrop-blur-xl rounded-3xl border border-white/5 p-8 sm:p-10 shadow-2xl">
-              <p className="font-mono text-xs uppercase tracking-widest text-blue-400 mb-6">Why Drive With Us</p>
+            <div className="bg-card/50 backdrop-blur-xl rounded-3xl border border-border p-8 sm:p-10 shadow-2xl">
+              <p className="font-mono text-xs uppercase tracking-widest text-blue-500 mb-6">Why Drive With Us</p>
               <div className="flex flex-col gap-4">
                 {companyDriverPerks.map((perk, index) => (
                   <motion.div
@@ -99,12 +99,12 @@ export default function DriverRequirementsSection() {
                     initial={{ opacity: 0, x: 30 }}
                     animate={isInView ? { opacity: 1, x: 0 } : {}}
                     transition={{ duration: 0.4, delay: 0.2 + index * 0.08 }}
-                    className="flex items-center gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5"
+                    className="flex items-center gap-4 p-4 rounded-xl hover:bg-muted/40 transition-colors border border-transparent hover:border-border"
                   >
                     <div className="w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0">
                       <CheckCircle2 className="w-4 h-4 text-blue-400" />
                     </div>
-                    <p className="text-gray-300 font-medium">{perk}</p>
+                    <p className="text-foreground font-medium">{perk}</p>
                   </motion.div>
                 ))}
               </div>
@@ -129,7 +129,7 @@ export default function DriverRequirementsSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-5"
+              className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-5"
             >
               Reliable Capacity — <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange to-red-500">When You Need It Most.</span>
             </motion.h2>
@@ -138,7 +138,7 @@ export default function DriverRequirementsSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="text-gray-400 text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0"
+              className="text-muted-foreground text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0"
             >
               Delo Trans Inc delivers fast, dependable power-only solutions for time-sensitive and contracted freight. Partner with a carrier that values urgency, reliability, and long-term relationships.
             </motion.p>
@@ -152,13 +152,13 @@ export default function DriverRequirementsSection() {
             >
               <div className="flex items-center gap-2 mb-3">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <p className="text-sm font-semibold text-white">Safety &amp; Compliance First</p>
+                <p className="text-sm font-semibold text-foreground">Safety &amp; Compliance First</p>
               </div>
               <div className="flex flex-col gap-2">
                 {safetyItems.map((item) => (
                   <div key={item} className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
-                    <span className="text-xs text-gray-300">{item}</span>
+                    <span className="text-xs text-muted-foreground">{item}</span>
                   </div>
                 ))}
               </div>
@@ -178,7 +178,7 @@ export default function DriverRequirementsSection() {
           </div>
 
           <div className="w-full lg:w-7/12">
-            <div className="bg-surface/40 backdrop-blur-xl rounded-3xl border border-white/5 p-8 sm:p-10 shadow-2xl">
+            <div className="bg-card/50 backdrop-blur-xl rounded-3xl border border-border p-8 sm:p-10 shadow-2xl">
               <p className="font-mono text-xs uppercase tracking-widest text-orange mb-6">What You Can Expect</p>
               <div className="flex flex-col gap-4">
                 {expectations.map((req, index) => (
@@ -187,12 +187,12 @@ export default function DriverRequirementsSection() {
                     initial={{ opacity: 0, x: 30 }}
                     animate={isInView ? { opacity: 1, x: 0 } : {}}
                     transition={{ duration: 0.4, delay: 0.2 + index * 0.08 }}
-                    className="flex items-center gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5"
+                    className="flex items-center gap-4 p-4 rounded-xl hover:bg-muted/40 transition-colors border border-transparent hover:border-border"
                   >
                     <div className="w-6 h-6 rounded-full bg-orange/10 flex items-center justify-center flex-shrink-0">
                       <req.icon className="w-4 h-4 text-orange" />
                     </div>
-                    <p className="text-gray-300 font-medium">{req.text}</p>
+                    <p className="text-foreground font-medium">{req.text}</p>
                   </motion.div>
                 ))}
               </div>
