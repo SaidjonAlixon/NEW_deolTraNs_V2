@@ -30,7 +30,7 @@ const positions = [
     title: 'Company Driver',
     description: 'Drive our trucks and get paid per mile with full benefits',
     icon: Truck,
-    perks: ['Medical & Dental', 'Weekly Pay', 'Modern Fleet', 'Home Time'],
+    perks: ['Weekly Pay', 'Modern Fleet', 'Home Time'],
   },
   {
     id: 'owner-operator',

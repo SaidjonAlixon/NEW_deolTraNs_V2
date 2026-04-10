@@ -79,7 +79,7 @@ export default function Header() {
             </Link>
 
             {/* Desktop Navigation - Floating Pill (grid center column — avoids overlap with CTAs) */}
-            <nav className="hidden lg:flex justify-self-center items-center bg-white/[0.03] backdrop-blur-md border border-white/5 rounded-full p-1.5 shadow-inner shadow-white/5 shrink-0">
+            <nav className="hidden lg:flex justify-self-center items-center bg-card/60 backdrop-blur-md border border-border/20 rounded-full p-1.5 shadow-lg shrink-0">
               {navLinks.map((link) => {
                 const isCurrentPage = location.pathname === link.path;
 
@@ -93,7 +93,7 @@ export default function Header() {
                     <span className={`absolute inset-0 transition-opacity duration-300 rounded-full ${isCurrentPage ? 'bg-white/10 opacity-100' : 'bg-white/5 opacity-0 group-hover:opacity-100'}`} />
                     
                     <span
-                      className={`header-nav-link-text relative text-[13px] font-bold tracking-[0.1em] transition-all duration-300 ${isCurrentPage ? 'header-nav-link-text--active text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'header-nav-link-text--idle text-slate-300 group-hover:text-white'
+                      className={`header-nav-link-text relative text-[13px] font-bold tracking-[0.1em] transition-all duration-300 ${isCurrentPage ? 'header-nav-link-text--active text-foreground drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'header-nav-link-text--idle text-muted-foreground group-hover:text-foreground'
                         }`}
                     >
                       {link.label}
@@ -112,12 +112,12 @@ export default function Header() {
             <div className="hidden lg:flex items-center justify-end gap-3 xl:gap-4 z-10 relative justify-self-end shrink-0 min-w-0">
               <a
                 href="tel:+13262207171"
-                className="flex items-center gap-2 group bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 pr-4 pl-1.5 py-1.5 rounded-full transition-all duration-300 shrink-0"
+                className="flex items-center gap-2 group bg-card/40 hover:bg-card/60 border border-border/20 pr-4 pl-1.5 py-1.5 rounded-full transition-all duration-300 shrink-0 shadow-sm"
               >
                 <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
                   <Phone className="w-[14px] h-[14px] text-red-500" />
                 </div>
-                <span className="text-[13px] font-semibold text-slate-200 group-hover:text-white transition-colors whitespace-nowrap">
+                <span className="text-[13px] font-semibold text-foreground group-hover:text-red-600 transition-colors whitespace-nowrap">
                   +1 326 220 7171
                 </span>
               </a>
@@ -135,7 +135,7 @@ export default function Header() {
             <div className="flex lg:hidden items-center gap-2 z-[110] relative justify-self-end">
               <ThemeModeToggle className="shrink-0" />
               <button
-                className="relative p-2 text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-colors outline-none"
+                className="relative p-2 text-foreground bg-card/60 hover:bg-card/80 border border-border/40 rounded-xl transition-colors outline-none"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
                 {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

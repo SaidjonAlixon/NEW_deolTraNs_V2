@@ -130,15 +130,15 @@ export default function FleetSection() {
           alt="Why Delo Trans"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-app/95 via-app/75 to-app/50" />
-        <div className="absolute inset-0 bg-gradient-to-t from-app via-transparent to-app/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-app/98 via-app/80 to-app/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-app via-transparent to-app/60" />
       </div>
 
       {/* ─── MOBILE LAYOUT ─── */}
       <div className="lg:hidden relative z-[3] flex flex-col justify-between h-full px-5 pt-20 pb-8">
         <p ref={labelRef} className="font-mono text-xs uppercase tracking-[0.14em] text-orange mb-4">Why Delo Trans</p>
 
-        <h2 ref={headlineRef} className="font-heading text-3xl font-bold text-white leading-[1.1] mb-5">
+        <h2 ref={headlineRef} className="font-heading text-3xl font-bold text-foreground leading-[1.1] mb-5">
           The carrier that works for <span className="text-orange">you.</span>
         </h2>
 
@@ -147,7 +147,7 @@ export default function FleetSection() {
           {reasons.map((r, i) => (
             <div key={i} className="flex items-center gap-3">
               <r.icon className="w-4 h-4 text-orange flex-shrink-0" />
-              <span className="text-sm text-white/90">{r.label}</span>
+              <span className="text-sm text-foreground/90">{r.label}</span>
             </div>
           ))}
         </div>
@@ -157,10 +157,10 @@ export default function FleetSection() {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="stat-card bg-surface/80 backdrop-blur-md rounded-xl p-3 border border-white/10 text-center"
+              className="stat-card bg-card/60 backdrop-blur-md rounded-xl p-3 border border-border/20 text-center"
             >
-              <p className="font-heading text-xl font-bold text-white mb-0.5">{stat.value}</p>
-              <p className="text-[10px] text-gray-light">{stat.label}</p>
+              <p className="font-heading text-xl font-bold text-foreground mb-0.5">{stat.value}</p>
+              <p className="text-[10px] text-muted-foreground">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -182,7 +182,7 @@ export default function FleetSection() {
         </div>
 
         <div className="absolute left-[6vw] top-[16vh] w-[44vw] max-w-2xl">
-          <h2 ref={headlineRef} className="font-heading text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-[1.05]">
+          <h2 ref={headlineRef} className="font-heading text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground leading-[1.05]">
             The carrier that works <br />for <span className="text-orange">you.</span>
           </h2>
         </div>
@@ -193,7 +193,7 @@ export default function FleetSection() {
             {reasons.map((r, i) => (
               <div key={i} className="flex items-center gap-3">
                 <r.icon className="w-5 h-5 text-orange flex-shrink-0" />
-                <span className="text-base text-white/90 font-medium">{r.label}</span>
+                <span className="text-base text-foreground font-medium">{r.label}</span>
               </div>
             ))}
           </div>
@@ -204,10 +204,10 @@ export default function FleetSection() {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="stat-card bg-surface/80 backdrop-blur-md rounded-xl p-5 lg:p-6 border border-white/10 min-w-[140px] lg:min-w-[160px]"
+              className="stat-card bg-card/60 backdrop-blur-md rounded-xl p-5 lg:p-6 border border-border/20 min-w-[140px] lg:min-w-[160px]"
             >
-              <p className="font-heading text-2xl lg:text-3xl font-bold text-white mb-1">{stat.value}</p>
-              <p className="text-xs text-gray-light">{stat.label}</p>
+              <p className="font-heading text-2xl lg:text-3xl font-bold text-foreground mb-1">{stat.value}</p>
+              <p className="text-xs text-muted-foreground">{stat.label}</p>
             </div>
           ))}
         </div>

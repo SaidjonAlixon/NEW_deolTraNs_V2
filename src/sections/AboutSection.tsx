@@ -96,7 +96,7 @@ export default function AboutSection() {
           alt="Truck in motion"
           className="w-full h-full object-cover opacity-60"
         />
-        <div className="absolute inset-0 bg-app/70 backdrop-blur-sm" /> {/* Blur and darken layer */}
+        <div className="absolute inset-0 bg-app/80 lg:bg-app/70 backdrop-blur-sm" /> {/* Blur and text-contrast layer */}
         <div className="absolute inset-0 bg-gradient-to-b from-app via-transparent to-app" /> {/* Borders */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent pointer-events-none" />
       </div>
