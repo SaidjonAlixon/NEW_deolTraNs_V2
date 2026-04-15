@@ -24,6 +24,41 @@ export default function AboutSection() {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
+      // 1. Entrance Animation (Immediate)
+      const entranceTl = gsap.timeline();
+
+      entranceTl.fromTo(
+        [labelRef.current, headlineRef.current],
+        { y: '30px', opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
+        0.2
+      );
+
+      entranceTl.fromTo(
+        bodyRef.current,
+        { y: '20px', opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
+        0.4
+      );
+
+      const statCards = statsRef.current?.querySelectorAll('.stat-card');
+      if (statCards) {
+        entranceTl.fromTo(
+          statCards,
+          { y: '30px', opacity: 0, scale: 0.95 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.1, ease: 'power3.out' },
+          0.5
+        );
+      }
+
+      entranceTl.fromTo(
+        ctaRef.current,
+        { y: '15px', opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' },
+        0.8
+      );
+
+      // 2. Scroll-based Effects (Scrubbed)
       const scrollTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -34,7 +69,6 @@ export default function AboutSection() {
         },
       });
 
-      // ENTRANCE via Scroll
       scrollTl.fromTo(
         bgRef.current,
         { scale: 1.15, filter: 'blur(0px)' },
@@ -42,39 +76,7 @@ export default function AboutSection() {
         0
       );
 
-      scrollTl.fromTo(
-        [labelRef.current, headlineRef.current],
-        { y: '10vh', opacity: 0 },
-        { y: 0, opacity: 1, ease: 'power2.out' },
-        0.1
-      );
-
-      scrollTl.fromTo(
-        bodyRef.current,
-        { y: '5vh', opacity: 0 },
-        { y: 0, opacity: 1, ease: 'power2.out' },
-        0.2
-      );
-
-      const statCards = statsRef.current?.querySelectorAll('.stat-card');
-      if (statCards) {
-        scrollTl.fromTo(
-          statCards,
-          { y: '10vh', opacity: 0, scale: 0.95 },
-          { y: 0, opacity: 1, scale: 1, stagger: 0.1, ease: 'power2.out' },
-          0.3
-        );
-      }
-
-      scrollTl.fromTo(
-        ctaRef.current,
-        { y: '4vh', opacity: 0 },
-        { y: 0, opacity: 1, ease: 'power2.out' },
-        0.5
-      );
-
       // No EXIT animation — content stays visible while scrolling
-
     }, sectionRef);
 
     return () => ctx.revert();

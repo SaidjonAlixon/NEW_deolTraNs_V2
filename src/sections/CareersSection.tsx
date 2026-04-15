@@ -25,6 +25,29 @@ export default function CareersSection() {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
+      // 1. Entrance Animation (Immediate)
+      const entranceTl = gsap.timeline();
+
+      entranceTl.fromTo([labelRef.current, headlineRef.current],
+        { y: '30px', opacity: 0 }, 
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, 0.2);
+
+      entranceTl.fromTo(bodyRef.current,
+        { y: '20px', opacity: 0 }, 
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, 0.4);
+
+      const items = benefitsRef.current?.querySelectorAll('.benefit-item');
+      if (items) {
+        entranceTl.fromTo(items,
+          { y: '20px', opacity: 0, scale: 0.95 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.1, ease: 'power3.out' }, 0.5);
+      }
+
+      entranceTl.fromTo(ctaRef.current,
+        { y: '15px', opacity: 0 }, 
+        { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 0.8);
+
+      // 2. Scroll-based Effects (Scrubbed)
       const scrollTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -38,22 +61,8 @@ export default function CareersSection() {
       scrollTl.fromTo(bgRef.current,
         { scale: 1.15 }, { scale: 1, ease: 'none' }, 0);
 
-      scrollTl.fromTo([labelRef.current, headlineRef.current],
-        { y: '10vh', opacity: 0 }, { y: 0, opacity: 1, ease: 'power2.out' }, 0.1);
-
-      scrollTl.fromTo(bodyRef.current,
-        { y: '5vh', opacity: 0 }, { y: 0, opacity: 1, ease: 'power2.out' }, 0.2);
-
-      const items = benefitsRef.current?.querySelectorAll('.benefit-item');
-      if (items) {
-        scrollTl.fromTo(items,
-          { y: '5vh', opacity: 0, scale: 0.95 },
-          { y: 0, opacity: 1, scale: 1, stagger: 0.05, ease: 'power2.out' }, 0.3);
-      }
-
-      scrollTl.fromTo(ctaRef.current,
-        { y: '4vh', opacity: 0 }, { y: 0, opacity: 1, ease: 'power2.out' }, 0.5);
-
+      // We can also add a subtle fade out of content as we scroll deep if desired, 
+      // but the requirement was to make it appear without waiting for scroll.
     }, sectionRef);
     return () => ctx.revert();
   }, []);
