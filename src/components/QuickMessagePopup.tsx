@@ -113,81 +113,81 @@ export default function QuickMessagePopup() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 14, scale: 0.97 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-lg rounded-3xl border border-white/10 bg-gradient-to-b from-[#061326]/95 via-[#081a33]/95 to-[#050d1d]/95 p-6 sm:p-7 shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
+            className="relative w-full max-w-lg rounded-3xl border border-slate-300/90 bg-gradient-to-b from-white/95 via-slate-50/95 to-slate-100/95 p-6 sm:p-7 shadow-[0_30px_70px_rgba(15,23,42,0.25)] dark:border-white/10 dark:from-[#061326]/95 dark:via-[#081a33]/95 dark:to-[#050d1d]/95 dark:shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
           >
             <button
               type="button"
               aria-label="Close quick message popup"
               onClick={onClose}
-              className="absolute right-4 top-4 h-9 w-9 rounded-full border border-white/15 bg-white/5 text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
+              className="absolute right-4 top-4 h-9 w-9 rounded-full border border-slate-300 bg-white text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10 dark:hover:text-white"
             >
               <X className="mx-auto h-4 w-4" />
             </button>
 
             <div className="mb-6 flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center">
-                <MessageCircle className="h-5 w-5 text-blue-300" />
+              <div className="h-10 w-10 rounded-xl bg-blue-100 border border-blue-300 flex items-center justify-center dark:bg-blue-500/15 dark:border-blue-500/30">
+                <MessageCircle className="h-5 w-5 text-blue-700 dark:text-blue-300" />
               </div>
               <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-blue-200/80 font-mono">Quick Contact</p>
-                <h3 className="text-2xl font-heading font-bold text-white">Send Us a Fast Message</h3>
+                <p className="text-xs uppercase tracking-[0.18em] text-blue-700/90 font-mono dark:text-blue-200/80">Quick Contact</p>
+                <h3 className="text-2xl font-heading font-bold text-slate-900 dark:text-white">Send Us a Fast Message</h3>
               </div>
             </div>
 
             <form onSubmit={onSubmit} className="space-y-4">
               <div>
-                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.14em] text-gray-300">Full Name</label>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-gray-300">Full Name</label>
                 <input
                   name="name"
                   value={formData.name}
                   onChange={onChange}
                   placeholder="John Doe"
-                  className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-white placeholder:text-gray-500 outline-none transition-colors focus:border-blue-400"
+                  className="w-full rounded-xl border border-slate-300 bg-white/95 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 dark:border-white/10 dark:bg-black/20 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-blue-400"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.14em] text-gray-300">Phone Number</label>
+                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-gray-300">Phone Number</label>
                   <input
                     name="phone"
                     value={formData.phone}
                     onChange={onChange}
                     placeholder="+1 (555) 000-0000"
-                    className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-white placeholder:text-gray-500 outline-none transition-colors focus:border-blue-400"
+                    className="w-full rounded-xl border border-slate-300 bg-white/95 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 dark:border-white/10 dark:bg-black/20 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-blue-400"
                   />
                 </div>
                 <div>
-                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.14em] text-gray-300">Email</label>
+                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-gray-300">Email</label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={onChange}
                     placeholder="name@company.com"
-                    className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-white placeholder:text-gray-500 outline-none transition-colors focus:border-blue-400"
+                    className="w-full rounded-xl border border-slate-300 bg-white/95 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 dark:border-white/10 dark:bg-black/20 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-blue-400"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.14em] text-gray-300">Comment</label>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-gray-300">Comment</label>
                 <textarea
                   name="message"
                   value={formData.message}
                   onChange={onChange}
                   rows={4}
                   placeholder="How can we help you today?"
-                  className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-white placeholder:text-gray-500 outline-none transition-colors focus:border-blue-400 resize-none"
+                  className="w-full rounded-xl border border-slate-300 bg-white/95 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 resize-none dark:border-white/10 dark:bg-black/20 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-blue-400"
                   required
                 />
               </div>
 
               {feedback ? (
-                <p className="text-sm text-gray-200/90">{feedback}</p>
+                <p className="text-sm text-slate-700 dark:text-gray-200/90">{feedback}</p>
               ) : (
-                <p className="text-xs text-gray-400">Enter at least phone or email so our team can reply.</p>
+                <p className="text-xs text-slate-500 dark:text-gray-400">Enter at least phone or email so our team can reply.</p>
               )}
 
               <button
