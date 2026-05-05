@@ -40,6 +40,7 @@ interface QuoteBody {
 interface ContactBody {
   name?: string;
   email?: string;
+  phone?: string;
   company?: string;
   message?: string;
 }
@@ -134,7 +135,7 @@ function formatQuoteMessage(body: QuoteBody): string {
 }
 
 function formatContactMessage(body: ContactBody): string {
-  const { name, email, company, message } = body;
+  const { name, email, phone, company, message } = body;
   const safe = (v: string | undefined) => (v ? escapeHtml(String(v)) : '-');
   const emailHtml = email ? `<a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>` : '-';
 
@@ -143,6 +144,7 @@ function formatContactMessage(body: ContactBody): string {
     '',
     `Name: ${safe(name)}`,
     `Email: ${emailHtml}`,
+    `Phone: ${safe(phone)}`,
     `Company: ${safe(company)}`,
     '',
     `Message: ${safe(message)}`,
@@ -294,12 +296,12 @@ export async function contactHandler(
     }
 
     const body = getJsonBody<ContactBody>(req);
-    const { name, email, message } = body;
+    const { name, email, phone, message } = body;
 
-    if (!name || !email || !message) {
+    if (!name || !message || (!email && !phone)) {
       return sendJson(res, 400, {
         success: false,
-        message: 'Name, email, and message are required',
+        message: 'Name, message, and at least one contact method (email or phone) are required',
       });
     }
 

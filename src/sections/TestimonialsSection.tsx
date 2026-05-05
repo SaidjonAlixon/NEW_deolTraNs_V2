@@ -186,7 +186,7 @@ export default function TestimonialsSection() {
               <Truck className="w-4 h-4 text-orange" />
             </div>
             <p className="text-sm text-gray-400">
-              Trusted by leading teams across <span className="text-white font-medium">Central Asia & USA</span>
+              Trusted by leading teams across <span className="text-white font-medium">USA</span>
             </p>
           </div>
           
