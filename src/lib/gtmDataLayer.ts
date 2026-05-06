@@ -55,6 +55,24 @@ export function pushDriverFormSubmit(formLocation: string, driverType: string): 
   });
 }
 
+export function pushApplyStep1Submit(formLocation: string, driverType: string): void {
+  pushToDataLayer({
+    event: 'apply_step1_submit',
+    form_name: 'driver_application_apply_page',
+    form_location: formLocation,
+    driver_type: driverType,
+  });
+}
+
+export function pushApplyStep2Submit(formLocation: string, driverType: string): void {
+  pushToDataLayer({
+    event: 'apply_step2_submit',
+    form_name: 'driver_application_apply_page',
+    form_location: formLocation,
+    driver_type: driverType,
+  });
+}
+
 export function pushPhoneClick(clickLocation: string, phoneNumber: string): void {
   pushToDataLayer({
     event: 'phone_click',

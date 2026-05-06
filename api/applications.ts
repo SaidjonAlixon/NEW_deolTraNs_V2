@@ -10,6 +10,10 @@ interface DocumentItem {
 }
 
 interface ApplicationBody {
+  flow?: 'apply_step1' | 'apply_step2' | 'apply_step2_skipped';
+  leadId?: string;
+  sourceUrl?: string;
+  submittedAt?: string;
   position?: string;
   name?: string;
   phone?: string;
@@ -25,6 +29,13 @@ interface ApplicationBody {
   message?: string;
   /** @deprecated Use documents. */
   files?: string[];
+  cdlClass?: string;
+  driverType?: string;
+  yearsExperience?: string;
+  state?: string;
+  sapProgram?: string;
+  duiDwi?: string;
+  comments?: string;
 }
 
 interface QuoteBody {
@@ -107,6 +118,44 @@ function formatDriverApplicationMessage(body: ApplicationBody): string {
     for (const d of docs) {
       lines.push(`📎 ${escapeHtml(d.label)}: ${d.url}`);
     }
+  }
+
+  return lines.join('\n');
+}
+
+function formatApplyFlowMessage(body: ApplicationBody): string {
+  const safe = (v: string | undefined) => (v ? escapeHtml(String(v)) : '-');
+  const flow = body.flow || 'apply_step1';
+  const headline =
+    flow === 'apply_step1'
+      ? '📝 New Apply Form — Step 1'
+      : flow === 'apply_step2'
+        ? '📝 Apply Form — Step 2 Completed'
+        : '📝 Apply Form — Step 2 Skipped';
+
+  const lines: string[] = [
+    headline,
+    '',
+    `Lead ID: ${safe(body.leadId)}`,
+    `Source URL: ${safe(body.sourceUrl)}`,
+    `Submitted At: ${safe(body.submittedAt)}`,
+  ];
+
+  if (flow === 'apply_step1') {
+    lines.push('');
+    lines.push(`Name: ${safe(body.name)}`);
+    lines.push(`Phone: ${safe(body.phone)}`);
+    lines.push(`CDL Class: ${safe(body.cdlClass)}`);
+    lines.push(`Driver Type: ${safe(body.driverType)}`);
+  }
+
+  if (flow === 'apply_step2') {
+    lines.push('');
+    lines.push(`Years of Experience: ${safe(body.yearsExperience)}`);
+    lines.push(`State: ${safe(body.state)}`);
+    lines.push(`SAP Program: ${safe(body.sapProgram)}`);
+    lines.push(`DUI or DWI (last 3 years): ${safe(body.duiDwi)}`);
+    lines.push(`Comments: ${safe(body.comments)}`);
   }
 
   return lines.join('\n');
@@ -212,20 +261,51 @@ export async function applicationsHandler(
     }
 
     const body = getJsonBody<ApplicationBody>(req);
-    const { fullText } = body;
+    const { fullText, flow } = body;
 
     // Legacy: accept preformatted fullText
     const text = fullText
       ? fullText
-      : formatDriverApplicationMessage(body);
+      : flow
+        ? formatApplyFlowMessage(body)
+        : formatDriverApplicationMessage(body);
 
     // Validate: need either fullText or structured fields
-    if (!fullText) {
+    if (!fullText && !flow) {
       const { name, phone } = body;
       if (!name || !phone) {
         return sendJson(res, 400, {
           success: false,
           message: 'Name and phone are required',
+        });
+      }
+    }
+
+    if (flow === 'apply_step1') {
+      const { leadId, name, phone, cdlClass, driverType } = body;
+      if (!leadId || !name || !phone || !cdlClass || !driverType) {
+        return sendJson(res, 400, {
+          success: false,
+          message: 'Step 1 requires leadId, name, phone, cdlClass, and driverType',
+        });
+      }
+    }
+
+    if (flow === 'apply_step2') {
+      const { leadId, yearsExperience, state, sapProgram, duiDwi } = body;
+      if (!leadId || !yearsExperience || !state || !sapProgram || !duiDwi) {
+        return sendJson(res, 400, {
+          success: false,
+          message: 'Step 2 requires leadId, yearsExperience, state, sapProgram, and duiDwi',
+        });
+      }
+    }
+
+    if (flow === 'apply_step2_skipped') {
+      if (!body.leadId) {
+        return sendJson(res, 400, {
+          success: false,
+          message: 'Skipped step 2 requires leadId',
         });
       }
     }
@@ -240,7 +320,7 @@ export async function applicationsHandler(
       });
     }
 
-    return sendJson(res, 200, { success: true });
+    return sendJson(res, 200, { success: true, leadId: body.leadId });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Internal server error';
     console.error('applicationsHandler error:', err);

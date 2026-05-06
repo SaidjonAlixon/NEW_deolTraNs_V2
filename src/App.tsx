@@ -13,6 +13,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Drivers from './pages/Drivers';
 import Contact from './pages/Contact';
+import Apply from './pages/Apply';
 import ApplicationForm from './components/ApplicationForm';
 
 // Import Context/Modal
@@ -35,6 +36,8 @@ function ScrollToTop() {
 
 function App() {
   const mainRef = useRef<HTMLDivElement>(null);
+  const { pathname } = useLocation();
+  const isApplyPage = pathname === '/apply';
 
   return (
     <DriverApplicationProvider>
@@ -44,12 +47,11 @@ function App() {
         {/* Grain overlay */}
         <div className="grain-overlay" />
 
-        {/* Header */}
-        <Header />
+        {!isApplyPage ? <Header /> : null}
 
         {/* Global Modal */}
-        <DriverApplicationModal />
-        <QuickMessagePopup />
+        {!isApplyPage ? <DriverApplicationModal /> : null}
+        {!isApplyPage ? <QuickMessagePopup /> : null}
 
         {/* Main content */}
         <main className="relative">
@@ -58,14 +60,16 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/drivers" element={<Drivers />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/apply" element={<Apply />} />
             <Route path="/test-upload" element={<ApplicationForm />} />
           </Routes>
         </main>
 
-        {/* Footer */}
-        <div className="relative z-[120]">
-          <Footer />
-        </div>
+        {!isApplyPage ? (
+          <div className="relative z-[120]">
+            <Footer />
+          </div>
+        ) : null}
       </div>
     </DriverApplicationProvider>
   );
