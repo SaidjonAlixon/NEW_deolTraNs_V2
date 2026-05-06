@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { MessageCircle } from 'lucide-react';
 import {
   gtmFormLocationFromPathname,
   pushApplyStep1Submit,
@@ -473,16 +472,6 @@ export default function Apply() {
         )}
       </div>
 
-      <a
-        href="https://wa.me/13262207171"
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Chat on WhatsApp"
-        className="fixed bottom-4 right-4 z-[2100] inline-flex min-h-12 items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-sm font-bold text-white shadow-lg"
-      >
-        <MessageCircle className="h-5 w-5" />
-        WhatsApp
-      </a>
     </div>
   );
 }
