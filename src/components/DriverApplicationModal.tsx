@@ -48,7 +48,79 @@ const positions = [
   },
 ];
 
-const cdlTypes = ['Class A CDL', 'Class B CDL', 'No CDL (Applying for Training)'];
+const cdlTypes = ['Class A', 'Class B', 'No CDL'];
+
+type ValidationErrors = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  cdlType?: string;
+};
+
+function formatUSPhone(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 10);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
+function isValidEmail(email: string): boolean {
+  const value = email.trim();
+  if (!value) return false;
+  if (/\s/.test(value)) return false;
+  if (!value.includes('@')) return false;
+
+  const parts = value.split('@');
+  if (parts.length !== 2) return false;
+
+  const [localPart, domainPart] = parts;
+  if (!localPart || !domainPart) return false;
+
+  // Require a domain extension such as .com, .net, .org, etc.
+  if (!/^[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(domainPart)) return false;
+
+  return true;
+}
+
+function validateContactField(field: keyof ValidationErrors, value: string): string {
+  const v = value.trim();
+
+  if (field === 'firstName' || field === 'lastName') {
+    if (!v) return 'This field is required';
+    if (v.length < 2) return 'Minimum 2 characters required';
+    if (!/^[A-Za-z]+$/.test(v)) return 'Letters only. Numbers and symbols are not allowed';
+    return '';
+  }
+
+  if (field === 'email') {
+    if (!v) return 'This field is required';
+    if (!isValidEmail(v)) return 'Please enter a valid email address';
+    return '';
+  }
+
+  if (field === 'phone') {
+    const digits = v.replace(/\D/g, '');
+    if (!v) return 'This field is required';
+    if (digits.length !== 10) return 'Phone number must contain exactly 10 digits';
+    if (!/^\(\d{3}\)\s\d{3}-\d{4}$/.test(v)) return 'Use US format: (XXX) XXX-XXXX';
+    return '';
+  }
+
+  if (field === 'address') {
+    if (!v) return 'This field is required';
+    if (v.length < 5) return 'Home address must be at least 5 characters';
+    return '';
+  }
+
+  if (field === 'cdlType') {
+    if (!v) return 'This field is required';
+    return '';
+  }
+
+  return '';
+}
 
 function uploadLineClass(done: boolean) {
   return cn('text-sm font-medium truncate', done ? 'text-emerald-600' : 'text-muted-foreground');
@@ -87,6 +159,7 @@ export default function DriverApplicationModal() {
   const resumeInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
+  const [errors, setErrors] = useState<ValidationErrors>({});
 
   useEffect(() => {
     if (!isOpen) {
@@ -94,6 +167,7 @@ export default function DriverApplicationModal() {
         setCurrentStep(1);
         setDirection(0);
         setFormData({ ...initialFormData });
+        setErrors({});
       }, 300);
     }
   }, [isOpen]);
@@ -103,18 +177,21 @@ export default function DriverApplicationModal() {
     pushDriverFormOpenOnce(openSessionId, formLocation);
   }, [isOpen, openSessionId, formLocation]);
 
-  const canProceedStep2 = () =>
-    formData.firstName?.trim() &&
-    formData.lastName?.trim() &&
-    formData.email?.trim() &&
-    formData.phone?.trim() &&
-    formData.address?.trim();
+  const canProceedStep2 = () => {
+    const firstNameError = validateContactField('firstName', formData.firstName || '');
+    const lastNameError = validateContactField('lastName', formData.lastName || '');
+    const emailError = validateContactField('email', formData.email || '');
+    const phoneError = validateContactField('phone', formData.phone || '');
+    const addressError = validateContactField('address', formData.address || '');
+
+    return !firstNameError && !lastNameError && !emailError && !phoneError && !addressError;
+  };
 
   const isUploaded = (val: string | undefined) => !!(val && typeof val === 'string' && val.startsWith('http'));
 
   const canProceedStep3 = () => {
     if (formData.position === 'company-driver') {
-      return !!formData.cdlType &&
+      return !validateContactField('cdlType', formData.cdlType || '') &&
         isUploaded(formData.licenseFrontFileName) &&
         isUploaded(formData.licenseBackFileName) &&
         isUploaded(formData.medicalCardFileName);
@@ -139,8 +216,31 @@ export default function DriverApplicationModal() {
   };
 
   const handleNext = () => {
-    if (currentStep === 2 && !canProceedStep2()) return;
-    if (currentStep === 3 && !canProceedStep3()) return;
+    if (currentStep === 2) {
+      const nextErrors: ValidationErrors = {
+        ...errors,
+        firstName: validateContactField('firstName', formData.firstName || ''),
+        lastName: validateContactField('lastName', formData.lastName || ''),
+        email: validateContactField('email', formData.email || ''),
+        phone: validateContactField('phone', formData.phone || ''),
+        address: validateContactField('address', formData.address || ''),
+      };
+      setErrors(nextErrors);
+      if (!canProceedStep2()) return;
+    }
+
+    if (currentStep === 3) {
+      const nextErrors: ValidationErrors = {
+        ...errors,
+        cdlType:
+          formData.position === 'company-driver'
+            ? validateContactField('cdlType', formData.cdlType || '')
+            : '',
+      };
+      setErrors(nextErrors);
+      if (!canProceedStep3()) return;
+    }
+
     if (currentStep < steps.length) {
       setDirection(1);
       setCurrentStep(prev => prev + 1);
@@ -245,7 +345,25 @@ export default function DriverApplicationModal() {
     if (type === 'checkbox') {
       setFormData(prev => ({ ...prev, [name]: (e.target as HTMLInputElement).checked }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      const normalizedValue = name === 'phone' ? formatUSPhone(value) : value;
+      setFormData(prev => ({ ...prev, [name]: normalizedValue }));
+
+      const fieldMap: Record<string, keyof ValidationErrors> = {
+        firstName: 'firstName',
+        lastName: 'lastName',
+        email: 'email',
+        phone: 'phone',
+        address: 'address',
+        cdlType: 'cdlType',
+      };
+
+      const fieldKey = fieldMap[name];
+      if (fieldKey) {
+        setErrors(prev => ({
+          ...prev,
+          [fieldKey]: validateContactField(fieldKey, normalizedValue),
+        }));
+      }
     }
   };
 
@@ -469,9 +587,13 @@ export default function DriverApplicationModal() {
                                 value={formData.firstName}
                                 onChange={handleInputChange}
                                 placeholder="John"
-                                className="w-full bg-muted/50 border border-input rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 focus:bg-muted/75 transition-all placeholder:text-muted-foreground/80"
+                                className={cn(
+                                  "w-full bg-muted/50 border rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 focus:bg-muted/75 transition-all placeholder:text-muted-foreground/80",
+                                  errors.firstName ? "border-red-500" : "border-input"
+                                )}
                               />
                             </div>
+                            {errors.firstName ? <p className="text-xs text-red-500">{errors.firstName}</p> : null}
                           </div>
                           <div className="space-y-1.5">
                             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Last Name</label>
@@ -482,9 +604,13 @@ export default function DriverApplicationModal() {
                                 value={formData.lastName}
                                 onChange={handleInputChange}
                                 placeholder="Doe"
-                                className="w-full bg-muted/50 border border-input rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 focus:bg-muted/75 transition-all placeholder:text-muted-foreground/80"
+                                className={cn(
+                                  "w-full bg-muted/50 border rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 focus:bg-muted/75 transition-all placeholder:text-muted-foreground/80",
+                                  errors.lastName ? "border-red-500" : "border-input"
+                                )}
                               />
                             </div>
+                            {errors.lastName ? <p className="text-xs text-red-500">{errors.lastName}</p> : null}
                           </div>
                         </div>
                         <div className="space-y-1.5">
@@ -497,9 +623,13 @@ export default function DriverApplicationModal() {
                               value={formData.email}
                               onChange={handleInputChange}
                               placeholder="john@example.com"
-                              className="w-full bg-muted/50 border border-input rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 transition-all placeholder:text-muted-foreground/80"
+                              className={cn(
+                                "w-full bg-muted/50 border rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 transition-all placeholder:text-muted-foreground/80",
+                                errors.email ? "border-red-500" : "border-input"
+                              )}
                             />
                           </div>
+                          {errors.email ? <p className="text-xs text-red-500">{errors.email}</p> : null}
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Phone Number</label>
@@ -509,10 +639,14 @@ export default function DriverApplicationModal() {
                               name="phone"
                               value={formData.phone}
                               onChange={handleInputChange}
-                              placeholder="+1 (555) 000-0000"
-                              className="w-full bg-muted/50 border border-input rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 transition-all placeholder:text-muted-foreground/80"
+                              placeholder="(555) 000-0000"
+                              className={cn(
+                                "w-full bg-muted/50 border rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 transition-all placeholder:text-muted-foreground/80",
+                                errors.phone ? "border-red-500" : "border-input"
+                              )}
                             />
                           </div>
+                          {errors.phone ? <p className="text-xs text-red-500">{errors.phone}</p> : null}
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Home Address</label>
@@ -523,9 +657,13 @@ export default function DriverApplicationModal() {
                               value={formData.address}
                               onChange={handleInputChange}
                               placeholder="City, State, ZIP"
-                              className="w-full bg-muted/50 border border-input rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 transition-all placeholder:text-muted-foreground/80"
+                              className={cn(
+                                "w-full bg-muted/50 border rounded-xl pl-10 pr-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 transition-all placeholder:text-muted-foreground/80",
+                                errors.address ? "border-red-500" : "border-input"
+                              )}
                             />
                           </div>
+                          {errors.address ? <p className="text-xs text-red-500">{errors.address}</p> : null}
                         </div>
                       </div>
                     )}
@@ -542,7 +680,10 @@ export default function DriverApplicationModal() {
                               name="cdlType"
                               value={formData.cdlType}
                               onChange={handleInputChange}
-                              className="w-full bg-muted/50 border border-input rounded-xl px-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 transition-all appearance-none cursor-pointer"
+                              className={cn(
+                                "w-full bg-muted/50 border rounded-xl px-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 transition-all appearance-none cursor-pointer",
+                                errors.cdlType ? "border-red-500" : "border-input"
+                              )}
                             >
                               <option value="" disabled className="bg-app">Select CDL Type...</option>
                               {cdlTypes.map(type => (
@@ -551,6 +692,7 @@ export default function DriverApplicationModal() {
                             </select>
                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                           </div>
+                          {errors.cdlType ? <p className="text-xs text-red-500">{errors.cdlType}</p> : null}
                         </div>
 
                         {/* Years experience (numeric) */}

@@ -9,6 +9,13 @@ type FormState = {
   message: string;
 };
 
+type FormErrors = {
+  name?: string;
+  email?: string;
+  phone?: string;
+  message?: string;
+};
+
 const initialForm: FormState = {
   name: '',
   email: '',
@@ -16,10 +23,56 @@ const initialForm: FormState = {
   message: '',
 };
 
+function formatUSPhone(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 10);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
+function isValidEmail(email: string): boolean {
+  const value = email.trim();
+  if (!value) return false;
+  if (/\s/.test(value)) return false;
+  if (!value.includes('@')) return false;
+  const parts = value.split('@');
+  if (parts.length !== 2) return false;
+  const [local, domain] = parts;
+  if (!local || !domain) return false;
+  return /^[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(domain);
+}
+
+function validateName(value: string): string {
+  const v = value.trim();
+  if (!v) return 'This field is required';
+  if (/\d/.test(v)) return 'Name cannot contain numbers';
+  const words = v.split(/\s+/).filter(Boolean);
+  if (words.length < 2) return 'Please enter your first and last name';
+  if (!/^[A-Za-z\s'-]+$/.test(v)) return 'Name can contain only letters';
+  return '';
+}
+
+function validatePhone(value: string): string {
+  const v = value.trim();
+  if (!v) return '';
+  const digits = v.replace(/\D/g, '');
+  if (digits.length !== 10) return 'Phone number must contain exactly 10 digits';
+  if (!/^\(\d{3}\)\s\d{3}-\d{4}$/.test(v)) return 'Use US format: (XXX) XXX-XXXX';
+  return '';
+}
+
+function validateEmail(value: string): string {
+  const v = value.trim();
+  if (!v) return '';
+  if (!isValidEmail(v)) return 'Please enter a valid email address';
+  return '';
+}
+
 export default function QuickMessagePopup() {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormState>(initialForm);
+  const [errors, setErrors] = useState<FormErrors>({});
   const [feedback, setFeedback] = useState<string>('');
 
   useEffect(() => {
@@ -44,19 +97,51 @@ export default function QuickMessagePopup() {
   }, []);
 
   const canSubmit = useMemo(() => {
-    return formData.name.trim().length > 1 && formData.message.trim().length >= 3 && (formData.email.trim() || formData.phone.trim());
+    const nameError = validateName(formData.name);
+    const phoneError = validatePhone(formData.phone);
+    const emailError = validateEmail(formData.email);
+    const messageError = formData.message.trim().length >= 3 ? '' : 'Message must be at least 3 characters';
+    const hasContact = Boolean(formData.email.trim() || formData.phone.trim());
+    const contactValid = hasContact && !phoneError && !emailError;
+
+    return !nameError && !messageError && contactValid;
   }, [formData]);
 
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const normalizedValue = name === 'phone' ? formatUSPhone(value) : value;
+    setFormData((prev) => ({ ...prev, [name]: normalizedValue }));
     if (feedback) setFeedback('');
+
+    setErrors((prev) => {
+      const next: FormErrors = { ...prev };
+      if (name === 'name') next.name = validateName(normalizedValue);
+      if (name === 'phone') next.phone = validatePhone(normalizedValue);
+      if (name === 'email') next.email = validateEmail(normalizedValue);
+      if (name === 'message') {
+        next.message = normalizedValue.trim().length >= 3 ? '' : 'Message must be at least 3 characters';
+      }
+      return next;
+    });
   };
 
   const onClose = () => setOpen(false);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    const nextErrors: FormErrors = {
+      name: validateName(formData.name),
+      phone: validatePhone(formData.phone),
+      email: validateEmail(formData.email),
+      message: formData.message.trim().length >= 3 ? '' : 'Message must be at least 3 characters',
+    };
+    setErrors(nextErrors);
+
+    if (!formData.email.trim() && !formData.phone.trim()) {
+      setFeedback('Enter at least phone or email so our team can reply.');
+      return;
+    }
+
     if (isSubmitting || !canSubmit) return;
 
     setIsSubmitting(true);
@@ -82,6 +167,7 @@ export default function QuickMessagePopup() {
 
       setFeedback('Message sent. Our team will contact you shortly.');
       setFormData(initialForm);
+      setErrors({});
       window.setTimeout(() => setOpen(false), 1200);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Message could not be sent';
@@ -142,9 +228,10 @@ export default function QuickMessagePopup() {
                   value={formData.name}
                   onChange={onChange}
                   placeholder="John Doe"
-                  className="w-full rounded-xl border border-slate-300 bg-white/95 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 dark:border-white/10 dark:bg-black/20 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-blue-400"
+                  className={`w-full rounded-xl border bg-white/95 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 dark:bg-black/20 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-blue-400 ${errors.name ? 'border-red-500 dark:border-red-400' : 'border-slate-300 dark:border-white/10'}`}
                   required
                 />
+                {errors.name ? <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.name}</p> : null}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -154,9 +241,10 @@ export default function QuickMessagePopup() {
                     name="phone"
                     value={formData.phone}
                     onChange={onChange}
-                    placeholder="+1 (555) 000-0000"
-                    className="w-full rounded-xl border border-slate-300 bg-white/95 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 dark:border-white/10 dark:bg-black/20 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-blue-400"
+                    placeholder="(555) 000-0000"
+                    className={`w-full rounded-xl border bg-white/95 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 dark:bg-black/20 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-blue-400 ${errors.phone ? 'border-red-500 dark:border-red-400' : 'border-slate-300 dark:border-white/10'}`}
                   />
+                  {errors.phone ? <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.phone}</p> : null}
                 </div>
                 <div>
                   <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-gray-300">Email</label>
@@ -166,8 +254,9 @@ export default function QuickMessagePopup() {
                     value={formData.email}
                     onChange={onChange}
                     placeholder="name@company.com"
-                    className="w-full rounded-xl border border-slate-300 bg-white/95 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 dark:border-white/10 dark:bg-black/20 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-blue-400"
+                    className={`w-full rounded-xl border bg-white/95 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 dark:bg-black/20 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-blue-400 ${errors.email ? 'border-red-500 dark:border-red-400' : 'border-slate-300 dark:border-white/10'}`}
                   />
+                  {errors.email ? <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.email}</p> : null}
                 </div>
               </div>
 
@@ -179,9 +268,10 @@ export default function QuickMessagePopup() {
                   onChange={onChange}
                   rows={4}
                   placeholder="How can we help you today?"
-                  className="w-full rounded-xl border border-slate-300 bg-white/95 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 resize-none dark:border-white/10 dark:bg-black/20 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-blue-400"
+                  className={`w-full rounded-xl border bg-white/95 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 resize-none dark:bg-black/20 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-blue-400 ${errors.message ? 'border-red-500 dark:border-red-400' : 'border-slate-300 dark:border-white/10'}`}
                   required
                 />
+                {errors.message ? <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.message}</p> : null}
               </div>
 
               {feedback ? (
