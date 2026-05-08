@@ -20,7 +20,6 @@ import ApplicationForm from './components/ApplicationForm';
 import { DriverApplicationProvider } from './context/DriverApplicationContext';
 import DriverApplicationModal from './components/DriverApplicationModal';
 import TelLinkDataLayerTracking from './components/TelLinkDataLayerTracking';
-import QuickMessagePopup from './components/QuickMessagePopup';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -51,7 +50,6 @@ function App() {
 
         {/* Global Modal */}
         {!isApplyPage ? <DriverApplicationModal /> : null}
-        {!isApplyPage ? <QuickMessagePopup /> : null}
 
         {/* Main content */}
         <main className="relative">
