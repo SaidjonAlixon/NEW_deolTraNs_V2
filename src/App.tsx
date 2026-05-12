@@ -14,11 +14,11 @@ import About from './pages/About';
 import Drivers from './pages/Drivers';
 import Contact from './pages/Contact';
 import Apply from './pages/Apply';
+import Application from './pages/Application';
 import ApplicationForm from './components/ApplicationForm';
 
-// Import Context/Modal
+// Import Context (driver application form at `/application` uses this provider)
 import { DriverApplicationProvider } from './context/DriverApplicationContext';
-import DriverApplicationModal from './components/DriverApplicationModal';
 import TelLinkDataLayerTracking from './components/TelLinkDataLayerTracking';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -36,7 +36,7 @@ function ScrollToTop() {
 function App() {
   const mainRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
-  const isApplyPage = pathname === '/apply';
+  const isApplyPage = pathname === '/apply' || pathname === '/application';
 
   return (
     <DriverApplicationProvider>
@@ -48,9 +48,6 @@ function App() {
 
         {!isApplyPage ? <Header /> : null}
 
-        {/* Global Modal */}
-        {!isApplyPage ? <DriverApplicationModal /> : null}
-
         {/* Main content */}
         <main className="relative">
           <Routes>
@@ -59,6 +56,7 @@ function App() {
             <Route path="/drivers" element={<Drivers />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/apply" element={<Apply />} />
+            <Route path="/application" element={<Application />} />
             <Route path="/test-upload" element={<ApplicationForm />} />
           </Routes>
         </main>

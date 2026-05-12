@@ -2,7 +2,7 @@ import { useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Truck, DollarSign, Headphones, CheckCircle2, Users, MapPin, Wifi } from 'lucide-react';
-import { useDriverApplication } from '../context/DriverApplicationContext';
+import { useNavigate } from 'react-router-dom';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,7 +30,7 @@ export default function FleetSection() {
   const bodyRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLButtonElement>(null);
-  const { openDriverModal } = useDriverApplication();
+  const navigate = useNavigate();
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -167,7 +167,7 @@ export default function FleetSection() {
 
         <button
           ref={ctaRef}
-          onClick={openDriverModal}
+          onClick={() => navigate('/apply')}
           className="btn-primary inline-flex items-center justify-center gap-2 w-full"
         >
           Apply Now
@@ -216,7 +216,7 @@ export default function FleetSection() {
         <div className="absolute left-[6vw] top-[88vh]">
           <button
             ref={ctaRef}
-            onClick={openDriverModal}
+            onClick={() => navigate('/apply')}
             className="btn-primary inline-flex items-center gap-2"
           >
             Apply Now

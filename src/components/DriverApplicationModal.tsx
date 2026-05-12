@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Check, ArrowRight, ArrowLeft, 
@@ -150,8 +150,14 @@ const initialFormData = {
   termsAccepted: false,
 };
 
-export default function DriverApplicationModal() {
+export type DriverApplicationModalProps = {
+  /** Full-page layout at `/application` (no dialog shell). */
+  embedded?: boolean;
+};
+
+export default function DriverApplicationModal({ embedded = false }: DriverApplicationModalProps) {
   const { isOpen, openSessionId, closeDriverModal } = useDriverApplication();
+  const navigate = useNavigate();
   const { pathname } = useLocation();
   const formLocation = gtmFormLocationFromPathname(pathname);
   const [currentStep, setCurrentStep] = useState(1);
@@ -162,6 +168,7 @@ export default function DriverApplicationModal() {
   const [errors, setErrors] = useState<ValidationErrors>({});
 
   useEffect(() => {
+    if (embedded) return;
     if (!isOpen) {
       setTimeout(() => {
         setCurrentStep(1);
@@ -170,12 +177,18 @@ export default function DriverApplicationModal() {
         setErrors({});
       }, 300);
     }
-  }, [isOpen]);
+  }, [isOpen, embedded]);
 
   useEffect(() => {
+    if (embedded) return;
     if (!isOpen || openSessionId < 1) return;
     pushDriverFormOpenOnce(openSessionId, formLocation);
-  }, [isOpen, openSessionId, formLocation]);
+  }, [isOpen, openSessionId, formLocation, embedded]);
+
+  useEffect(() => {
+    if (!embedded) return;
+    pushDriverFormOpenOnce(1_000_000, formLocation);
+  }, [embedded, formLocation]);
 
   const canProceedStep2 = () => {
     const firstNameError = validateContactField('firstName', formData.firstName || '');
@@ -331,7 +344,11 @@ export default function DriverApplicationModal() {
       }
 
       pushDriverFormSubmit(formLocation, gtmDriverTypeFromPosition(formData.position));
-      closeDriverModal();
+      if (embedded) {
+        navigate('/');
+      } else {
+        closeDriverModal();
+      }
     } catch (error) {
       console.error('Failed to submit driver application', error);
       alert('Application could not be sent. Please try again.');
@@ -430,17 +447,13 @@ export default function DriverApplicationModal() {
     exit: (direction: number) => ({ x: direction < 0 ? 60 : -60, opacity: 0 }),
   };
 
-  return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && closeDriverModal()}>
-      <DialogPortal>
-        {/* Backdrop */}
-        <DialogOverlay className="z-[2000] bg-black/55 backdrop-blur-md" />
-        
-        <DialogContent 
-          showCloseButton={false}
-          className="z-[2010] max-w-xl w-full p-0 border-none bg-transparent shadow-none overflow-hidden"
-        >
-          <div className="driver-app-modal relative rounded-3xl overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.4)] flex flex-col max-h-[92vh] border border-border/70 bg-card text-foreground">
+  const modalCardClassName = cn(
+    'driver-app-modal relative rounded-3xl overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.4)] flex flex-col border border-border/70 text-foreground',
+    embedded ? 'max-h-[min(92vh,900px)] bg-[#1a1d23]' : 'max-h-[92vh] bg-card'
+  );
+
+  const modalBody = (
+          <div className={modalCardClassName}>
             
             {/* Animated gradient border */}
             <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-red-600/20 via-transparent to-blue-600/15 z-0 pointer-events-none" />
@@ -468,7 +481,8 @@ export default function DriverApplicationModal() {
                     </p>
                   </div>
                   <button 
-                    onClick={closeDriverModal}
+                    type="button"
+                    onClick={() => (embedded ? navigate('/') : closeDriverModal())}
                     className="shrink-0 w-9 h-9 rounded-full bg-muted/60 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted hover:border-border transition-all mt-1"
                   >
                     <X className="w-4 h-4" />
@@ -1481,6 +1495,21 @@ export default function DriverApplicationModal() {
               </div>
             </div>
           </div>
+  );
+
+  if (embedded) {
+    return <div className="mx-auto w-full max-w-xl">{modalBody}</div>;
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && closeDriverModal()}>
+      <DialogPortal>
+        <DialogOverlay className="z-[2000] bg-black/55 backdrop-blur-md" />
+        <DialogContent
+          showCloseButton={false}
+          className="z-[2010] max-w-xl w-full overflow-hidden border-none bg-transparent p-0 shadow-none"
+        >
+          {modalBody}
         </DialogContent>
       </DialogPortal>
     </Dialog>

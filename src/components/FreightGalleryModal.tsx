@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ArrowRight, Camera } from 'lucide-react';
-import { useDriverApplication } from '../context/DriverApplicationContext';
+import { useNavigate } from 'react-router-dom';
 
 interface GalleryImage {
   url: string;
@@ -16,11 +16,11 @@ interface FreightGalleryModalProps {
 }
 
 export default function FreightGalleryModal({ isOpen, onClose, title, images }: FreightGalleryModalProps) {
-  const { openDriverModal } = useDriverApplication();
+  const navigate = useNavigate();
 
   const handleApplyNow = () => {
     onClose();
-    openDriverModal();
+    navigate('/apply');
   };
 
   return (

@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { CircleDollarSign, Fuel, Calendar, Map, Headphones, ShieldCheck, Package, Wifi, Award } from 'lucide-react';
-import { useDriverApplication } from '../context/DriverApplicationContext';
+import { useNavigate } from 'react-router-dom';
 
 const ownerOpBenefits = [
   {
@@ -71,7 +71,7 @@ export default function DriverBenefitsSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start end', 'end start'] });
   const pathLength = useTransform(scrollYProgress, [0, 1], [0, 1.5]);
-  const { openDriverModal } = useDriverApplication();
+  const navigate = useNavigate();
 
   return (
     <section ref={containerRef} className="relative py-24 lg:py-32 bg-app overflow-hidden">
@@ -227,7 +227,7 @@ export default function DriverBenefitsSection() {
         {/* CTA */}
         <div className="text-center">
           <button
-            onClick={openDriverModal}
+            onClick={() => navigate('/apply')}
             className="btn-primary inline-flex items-center gap-2 px-10 py-4 text-base"
           >
             Apply Now

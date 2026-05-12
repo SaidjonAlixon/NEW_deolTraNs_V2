@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Menu, X, Phone } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
-import { useDriverApplication } from '../context/DriverApplicationContext';
 import ThemeModeToggle from './ThemeModeToggle';
 
 const navLinks = [
@@ -17,7 +16,7 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const logoRef = useRef<HTMLImageElement>(null);
   const location = useLocation();
-  const { openDriverModal } = useDriverApplication();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -122,7 +121,8 @@ export default function Header() {
                 </span>
               </a>
               <button
-                onClick={openDriverModal}
+                type="button"
+                onClick={() => navigate('/apply')}
                 className="relative overflow-hidden group bg-red-600 text-white px-7 py-3.5 rounded-full text-[13px] font-bold tracking-wider transition-all duration-300 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:-translate-y-0.5 shrink-0"
               >
                 <span className="relative z-10">Apply Now</span>
@@ -165,7 +165,11 @@ export default function Header() {
             </Link>
           ))}
           <button
-            onClick={() => { setIsMobileMenuOpen(false); openDriverModal(); }}
+            type="button"
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              navigate('/apply');
+            }}
             className="btn-primary mt-8"
           >
             Apply Now
