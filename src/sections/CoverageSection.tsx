@@ -2,7 +2,7 @@ import { useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, MapPin, Globe, Route } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useDriverApplication } from '../context/DriverApplicationContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -58,7 +58,7 @@ export default function CoverageSection() {
   const bodyRef = useRef<HTMLParagraphElement>(null);
   const routesRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLButtonElement>(null);
-  const navigate = useNavigate();
+  const { openDriverModal } = useDriverApplication();
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -202,7 +202,7 @@ export default function CoverageSection() {
 
         <button
           ref={ctaRef}
-          onClick={() => navigate('/apply')}
+          onClick={() => openDriverModal()}
           className="btn-primary inline-flex items-center justify-center gap-2 w-full !bg-[#fd0a07] hover:!bg-red-700"
         >
           Apply Now
@@ -282,7 +282,7 @@ export default function CoverageSection() {
         <div className="absolute left-[6vw] top-[85vh]">
           <button
             ref={ctaRef}
-            onClick={() => navigate('/apply')}
+            onClick={() => openDriverModal()}
             className="btn-primary inline-flex items-center gap-2 !bg-[#fd0a07] hover:!bg-red-700 hover:!shadow-[0_0_20px_rgba(253,10,7,0.5)]"
           >
             Apply Now

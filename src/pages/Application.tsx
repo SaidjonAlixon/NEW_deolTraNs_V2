@@ -1,15 +1,16 @@
-import { useEffect } from 'react';
-import DriverApplicationModal from '../components/DriverApplicationModal';
+import { useLayoutEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDriverApplication } from '../context/DriverApplicationContext';
 
+/** `/application` bookmark: open the driver form as an overlay, then replace URL with `/`. */
 export default function Application() {
-  useEffect(() => {
-    document.title = 'Driver Application | DELO TRANS INC';
-    window.scrollTo(0, 0);
-  }, []);
+  const navigate = useNavigate();
+  const { openDriverModal } = useDriverApplication();
 
-  return (
-    <div className="flex min-h-screen w-full flex-col items-center px-4 py-8 sm:py-12">
-      <DriverApplicationModal embedded />
-    </div>
-  );
+  useLayoutEffect(() => {
+    openDriverModal();
+    navigate('/', { replace: true });
+  }, [navigate, openDriverModal]);
+
+  return null;
 }

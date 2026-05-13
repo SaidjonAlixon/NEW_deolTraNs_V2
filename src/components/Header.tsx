@@ -123,10 +123,9 @@ export default function Header() {
               <button
                 type="button"
                 onClick={() => navigate('/apply')}
-                className="relative overflow-hidden group bg-red-600 text-white px-7 py-3.5 rounded-full text-[13px] font-bold tracking-wider transition-all duration-300 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:-translate-y-0.5 shrink-0"
+                className="relative shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-sky-600 via-teal-600 to-emerald-700 px-7 py-3.5 text-[13px] font-bold tracking-wide text-white shadow-lg transition-[filter] duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 focus-visible:ring-offset-2 focus-visible:ring-offset-header-bar animate-cta-breathe"
               >
-                <span className="relative z-10">Apply Now</span>
-                <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-red-600 via-white/20 to-red-600 -translate-x-[150%] skew-x-[-20deg] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
+                <span className="relative z-10">Get in touch</span>
               </button>
               <ThemeModeToggle className="shrink-0 ml-0.5" />
             </div>
@@ -170,9 +169,9 @@ export default function Header() {
               setIsMobileMenuOpen(false);
               navigate('/apply');
             }}
-            className="btn-primary mt-8"
+            className="mt-8 rounded-full bg-gradient-to-br from-sky-600 via-teal-600 to-emerald-700 px-10 py-4 text-[15px] font-bold tracking-wide text-white shadow-lg transition-[filter] duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 animate-cta-breathe"
           >
-            Apply Now
+            Get in touch
           </button>
         </div>
       </div>

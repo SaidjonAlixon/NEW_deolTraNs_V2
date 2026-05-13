@@ -2,7 +2,7 @@ import { useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, DollarSign, Truck, MapPin, ChevronDown } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useDriverApplication } from '../context/DriverApplicationContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,7 +21,7 @@ export default function CareersSection() {
   const bodyRef = useRef<HTMLParagraphElement>(null);
   const benefitsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
+  const { openDriverModal } = useDriverApplication();
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -103,7 +103,7 @@ export default function CareersSection() {
           <div ref={ctaRef} className="mt-6 flex flex-wrap gap-3">
             <button
               type="button"
-              onClick={() => navigate('/apply')}
+              onClick={() => openDriverModal()}
               className="group relative inline-flex items-center gap-3 px-8 py-4 bg-orange text-white rounded-full font-medium hover:bg-red-600 transition-all duration-300 shadow-[0_0_20px_rgba(253,10,7,0.3)]"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />

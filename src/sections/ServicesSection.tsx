@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Thermometer, Truck, Layers, LayoutGrid, Zap, RefreshCw, ArrowRight, MapPin, Shield, Phone, ExternalLink } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useDriverApplication } from '../context/DriverApplicationContext';
 import FreightGalleryModal from '../components/FreightGalleryModal';
 
 const freightTypes = [
@@ -119,7 +119,7 @@ const fadeUp = (delay = 0) => ({
 
 export default function ServicesSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const navigate = useNavigate();
+  const { openDriverModal } = useDriverApplication();
   
   const [selectedFreight, setSelectedFreight] = useState<typeof freightTypes[0] | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -231,7 +231,7 @@ export default function ServicesSection() {
             {/* CTA */}
             <motion.div {...fadeUp(0.2)}>
               <button 
-                onClick={() => navigate('/apply')} 
+                onClick={() => openDriverModal()} 
                 className="group px-8 py-4 bg-orange text-white rounded-xl font-bold flex items-center gap-3 hover:bg-orange-dark transition-all shadow-[0_10px_30px_rgba(255,107,38,0.3)] hover:shadow-orange/40"
               >
                 Apply Now

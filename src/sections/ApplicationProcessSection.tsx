@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { MousePointerClick, FileSearch, Route } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useDriverApplication } from '../context/DriverApplicationContext';
 
 const steps = [
   {
@@ -32,7 +32,7 @@ export default function ApplicationProcessSection() {
   });
 
   const pathLength = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  const navigate = useNavigate();
+  const { openDriverModal } = useDriverApplication();
 
   return (
     <section ref={containerRef} className="relative py-24 lg:py-32 bg-app overflow-hidden">
@@ -122,7 +122,7 @@ export default function ApplicationProcessSection() {
         >
             <button
               type="button"
-              onClick={() => navigate('/apply')}
+              onClick={() => openDriverModal()}
               className="group relative inline-flex items-center justify-center gap-3 px-10 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full text-white font-medium transition-all duration-300 shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(37,99,235,0.6)] hover:-translate-y-1 overflow-hidden"
             >
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out rounded-full" />

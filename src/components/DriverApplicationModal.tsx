@@ -151,7 +151,7 @@ const initialFormData = {
 };
 
 export type DriverApplicationModalProps = {
-  /** Full-page layout at `/application` (no dialog shell). */
+  /** Legacy: render form inline without dialog (unused; global modal is default). */
   embedded?: boolean;
 };
 

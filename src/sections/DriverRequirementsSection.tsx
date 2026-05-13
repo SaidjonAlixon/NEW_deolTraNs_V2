@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { CheckCircle2, ShieldCheck, Truck, Phone, ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useDriverApplication } from '../context/DriverApplicationContext';
 
 const expectations = [
   { text: 'Fast truck availability', icon: Truck },
@@ -30,7 +30,7 @@ const companyDriverPerks = [
 export default function DriverRequirementsSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: '-100px' });
-  const navigate = useNavigate();
+  const { openDriverModal } = useDriverApplication();
 
   return (
     <section ref={containerRef} className="relative py-24 lg:py-32 bg-app overflow-hidden">
@@ -79,7 +79,7 @@ export default function DriverRequirementsSection() {
               transition={{ duration: 0.5, delay: 0.3 }}
             >
               <button
-                onClick={() => navigate('/apply')}
+                onClick={() => openDriverModal()}
                 className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-surface rounded-full border border-blue-500/30 text-foreground font-medium hover:border-blue-400 transition-all duration-300 w-full sm:w-auto"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
@@ -168,7 +168,7 @@ export default function DriverRequirementsSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.5 }}
-              onClick={() => navigate('/apply')}
+              onClick={() => openDriverModal()}
               className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-orange text-white rounded-full font-medium hover:bg-red-600 transition-all duration-300 w-full sm:w-auto shadow-[0_0_20px_rgba(253,10,7,0.2)]"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />

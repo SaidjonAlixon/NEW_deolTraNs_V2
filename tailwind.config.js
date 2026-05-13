@@ -107,6 +107,19 @@ module.exports = {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
         },
+        /** Navbar CTA — soft pulse + expanding teal ring */
+        "cta-breathe": {
+          "0%, 100%": {
+            transform: "scale(1)",
+            boxShadow:
+              "0 8px 22px rgba(13, 148, 136, 0.38), 0 0 0 0 rgba(45, 212, 191, 0.5)",
+          },
+          "45%": {
+            transform: "scale(1.045)",
+            boxShadow:
+              "0 14px 34px rgba(14, 165, 233, 0.45), 0 0 0 10px rgba(45, 212, 191, 0)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -114,6 +127,7 @@ module.exports = {
         "caret-blink": "caret-blink 1.25s ease-out infinite",
         "pulse-slow": "pulse-slow 3s ease-in-out infinite",
         "float": "float 4s ease-in-out infinite",
+        "cta-breathe": "cta-breathe 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite",
       },
     },
   },

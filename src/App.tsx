@@ -16,8 +16,9 @@ import Contact from './pages/Contact';
 import Apply from './pages/Apply';
 import Application from './pages/Application';
 import ApplicationForm from './components/ApplicationForm';
+import DriverApplicationModal from './components/DriverApplicationModal';
 
-// Import Context (driver application form at `/application` uses this provider)
+// Import Context (global driver application modal)
 import { DriverApplicationProvider } from './context/DriverApplicationContext';
 import TelLinkDataLayerTracking from './components/TelLinkDataLayerTracking';
 
@@ -36,7 +37,7 @@ function ScrollToTop() {
 function App() {
   const mainRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
-  const isApplyPage = pathname === '/apply' || pathname === '/application';
+  const isApplyPage = pathname === '/apply';
 
   return (
     <DriverApplicationProvider>
@@ -66,6 +67,8 @@ function App() {
             <Footer />
           </div>
         ) : null}
+
+        <DriverApplicationModal />
       </div>
     </DriverApplicationProvider>
   );

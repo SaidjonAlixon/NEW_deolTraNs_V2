@@ -2,7 +2,7 @@ import { useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Activity, Globe, Award, ChevronDown } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useDriverApplication } from '../context/DriverApplicationContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,7 +20,7 @@ export default function AboutSection() {
   const bodyRef = useRef<HTMLParagraphElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
+  const { openDriverModal } = useDriverApplication();
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -160,7 +160,7 @@ export default function AboutSection() {
 
             <div className="hidden xl:block">
               <button
-                onClick={() => navigate('/apply')}
+                onClick={() => openDriverModal()}
                 className="group relative inline-flex items-center gap-3 px-8 py-4 bg-card/60 backdrop-blur-md rounded-full border border-border text-foreground font-medium hover:bg-muted/50 hover:border-orange/30 transition-all duration-300"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-orange/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
@@ -208,7 +208,7 @@ export default function AboutSection() {
           {/* Mobile CTA */}
           <div className="sm:col-span-2 xl:hidden flex justify-center mt-4 stat-card">
               <button
-                onClick={() => navigate('/apply')}
+                onClick={() => openDriverModal()}
                 className="group relative inline-flex items-center gap-3 px-8 py-4 bg-card/60 backdrop-blur-md rounded-full border border-border text-foreground font-medium hover:bg-muted/50 hover:border-orange/30 transition-all duration-300 w-full justify-center"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-orange/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />

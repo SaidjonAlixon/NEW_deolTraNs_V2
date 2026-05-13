@@ -2,14 +2,14 @@ import { useEffect, useRef, useLayoutEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Globe, MapPin, ChevronDown } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useDriverApplication } from '../context/DriverApplicationContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
+  const { openDriverModal } = useDriverApplication();
   const headlineRef = useRef<HTMLDivElement>(null);
   const cardARef = useRef<HTMLDivElement>(null);
   const cardBRef = useRef<HTMLDivElement>(null);
@@ -253,7 +253,7 @@ export default function HeroSection() {
         {/* CTA */}
         <div className="flex gap-3">
           <button
-            onClick={() => navigate('/apply')}
+            onClick={() => openDriverModal()}
             className="btn-primary flex items-center gap-2 flex-1 justify-center"
           >
             Apply Now
@@ -385,7 +385,7 @@ export default function HeroSection() {
           ref={ctaRef}
           className="absolute left-[62vw] top-[78vh] flex items-center gap-4 z-20"
         >
-          <button onClick={() => navigate('/apply')} className="btn-primary flex items-center gap-2">
+          <button onClick={() => openDriverModal()} className="btn-primary flex items-center gap-2">
             Apply Now
             <ArrowRight className="w-4 h-4" />
           </button>

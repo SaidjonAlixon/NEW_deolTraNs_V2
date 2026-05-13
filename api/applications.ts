@@ -128,7 +128,7 @@ function formatApplyFlowMessage(body: ApplicationBody): string {
   const flow = body.flow || 'apply_step1';
   const headline =
     flow === 'apply_step1'
-      ? '📝 New Apply Form — Step 1'
+      ? '📝 New Apply Form'
       : flow === 'apply_step2'
         ? '📝 Apply Form — Step 2 Completed'
         : '📝 Apply Form — Step 2 Skipped';
@@ -145,8 +145,10 @@ function formatApplyFlowMessage(body: ApplicationBody): string {
     lines.push('');
     lines.push(`Name: ${safe(body.name)}`);
     lines.push(`Phone: ${safe(body.phone)}`);
-    lines.push(`CDL Class: ${safe(body.cdlClass)}`);
     lines.push(`Driver Type: ${safe(body.driverType)}`);
+    if (body.comments && String(body.comments).trim()) {
+      lines.push(`Message: ${safe(body.comments)}`);
+    }
   }
 
   if (flow === 'apply_step2') {
@@ -282,11 +284,11 @@ export async function applicationsHandler(
     }
 
     if (flow === 'apply_step1') {
-      const { leadId, name, phone, cdlClass, driverType } = body;
-      if (!leadId || !name || !phone || !cdlClass || !driverType) {
+      const { leadId, name, phone, driverType } = body;
+      if (!leadId || !name || !phone || !driverType) {
         return sendJson(res, 400, {
           success: false,
-          message: 'Step 1 requires leadId, name, phone, cdlClass, and driverType',
+          message: 'Step 1 requires leadId, name, phone, and driverType',
         });
       }
     }
