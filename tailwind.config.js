@@ -107,6 +107,40 @@ module.exports = {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
         },
+        /** Hero Apply Now — red pulse + expanding ring */
+        "hero-apply-pulse": {
+          "0%, 100%": {
+            transform: "scale(1)",
+            boxShadow:
+              "0 6px 26px rgba(253, 10, 7, 0.5), 0 0 0 0 rgba(253, 10, 7, 0.45)",
+          },
+          "55%": {
+            transform: "scale(1.04)",
+            boxShadow:
+              "0 14px 40px rgba(253, 10, 7, 0.65), 0 0 0 14px rgba(253, 10, 7, 0)",
+          },
+        },
+        "hero-arrow-nudge": {
+          "0%, 100%": { transform: "translateX(0)" },
+          "50%": { transform: "translateX(5px)" },
+        },
+        /** Hero Get in touch — warm gradient shift + glow */
+        "hero-get-in-touch": {
+          "0%, 100%": {
+            backgroundPosition: "0% 50%",
+            boxShadow:
+              "0 6px 28px rgba(234, 88, 12, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
+          },
+          "50%": {
+            backgroundPosition: "100% 50%",
+            boxShadow:
+              "0 14px 42px rgba(253, 10, 7, 0.5), 0 0 28px rgba(251, 191, 36, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.28)",
+          },
+        },
+        "hero-shine-sweep": {
+          "0%": { backgroundPosition: "200% 0" },
+          "100%": { backgroundPosition: "-200% 0" },
+        },
         /** Navbar CTA — soft pulse + expanding teal ring */
         "cta-breathe": {
           "0%, 100%": {
@@ -127,6 +161,10 @@ module.exports = {
         "caret-blink": "caret-blink 1.25s ease-out infinite",
         "pulse-slow": "pulse-slow 3s ease-in-out infinite",
         "float": "float 4s ease-in-out infinite",
+        "hero-apply-pulse": "hero-apply-pulse 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite",
+        "hero-arrow-nudge": "hero-arrow-nudge 1.5s ease-in-out infinite",
+        "hero-get-in-touch": "hero-get-in-touch 3.2s ease-in-out infinite",
+        "hero-shine-sweep": "hero-shine-sweep 2.6s ease-in-out infinite",
         "cta-breathe": "cta-breathe 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite",
       },
     },

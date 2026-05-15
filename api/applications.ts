@@ -142,9 +142,14 @@ function formatApplyFlowMessage(body: ApplicationBody): string {
   ];
 
   if (flow === 'apply_step1') {
+    const emailTrim = body.email ? String(body.email).trim() : '';
+    const emailLine = emailTrim
+      ? `<a href="mailto:${escapeHtml(emailTrim)}">${escapeHtml(emailTrim)}</a>`
+      : '-';
     lines.push('');
     lines.push(`Name: ${safe(body.name)}`);
     lines.push(`Phone: ${safe(body.phone)}`);
+    lines.push(`Email: ${emailLine}`);
     lines.push(`Driver Type: ${safe(body.driverType)}`);
     if (body.comments && String(body.comments).trim()) {
       lines.push(`Message: ${safe(body.comments)}`);
@@ -284,11 +289,18 @@ export async function applicationsHandler(
     }
 
     if (flow === 'apply_step1') {
-      const { leadId, name, phone, driverType } = body;
-      if (!leadId || !name || !phone || !driverType) {
+      const { leadId, name, phone, email, driverType } = body;
+      if (!leadId || !name || !phone || !email || !driverType) {
         return sendJson(res, 400, {
           success: false,
-          message: 'Step 1 requires leadId, name, phone, and driverType',
+          message: 'Step 1 requires leadId, name, phone, email, and driverType',
+        });
+      }
+      const emailTrim = String(email).trim();
+      if (!emailTrim.includes('@') || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrim)) {
+        return sendJson(res, 400, {
+          success: false,
+          message: 'Please enter a valid email address',
         });
       }
     }

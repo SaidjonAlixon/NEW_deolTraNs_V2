@@ -49,6 +49,17 @@ function App() {
 
         {!isApplyPage ? <Header /> : null}
 
+        {isApplyPage ? (
+          <div
+            className="fixed inset-0 z-[10040] overflow-hidden pointer-events-none select-none"
+            aria-hidden
+          >
+            <div className="h-full w-full scale-[1.02] blur-[5px] brightness-[0.88]">
+              <Home />
+            </div>
+          </div>
+        ) : null}
+
         {/* Main content */}
         <main className="relative">
           <Routes>

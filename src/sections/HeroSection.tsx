@@ -1,4 +1,5 @@
 import { useEffect, useRef, useLayoutEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Globe, MapPin, ChevronDown } from 'lucide-react';
@@ -6,7 +7,14 @@ import { useDriverApplication } from '../context/DriverApplicationContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const heroApplyNowBtnClass =
+  'hero-apply-now-btn group relative overflow-hidden rounded-full font-bold tracking-wide text-white transition-colors duration-300 hover:bg-[#d60906] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 animate-hero-apply-pulse';
+
+const getInTouchBtnClass =
+  'hero-get-in-touch-btn relative overflow-hidden rounded-full border border-amber-300/30 font-bold tracking-wide text-white shadow-lg transition-transform duration-300 hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 animate-hero-get-in-touch';
+
 export default function HeroSection() {
+  const navigate = useNavigate();
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const { openDriverModal } = useDriverApplication();
@@ -253,17 +261,19 @@ export default function HeroSection() {
         {/* CTA */}
         <div className="flex gap-3">
           <button
+            type="button"
             onClick={() => openDriverModal()}
-            className="btn-primary flex items-center gap-2 flex-1 justify-center"
+            className={`${heroApplyNowBtnClass} flex flex-1 items-center justify-center gap-2 px-5 py-3 text-sm`}
           >
-            Apply Now
-            <ArrowRight className="w-4 h-4" />
+            <span className="relative z-10">Apply Now</span>
+            <ArrowRight className="relative z-10 h-4 w-4 animate-hero-arrow-nudge" />
           </button>
           <button
-            onClick={() => scrollToSection('#services')}
-            className="btn-secondary"
+            type="button"
+            onClick={() => navigate('/apply')}
+            className={`${getInTouchBtnClass} flex flex-1 items-center justify-center px-5 py-3 text-sm`}
           >
-            Learn More
+            <span className="relative z-10">Get in touch</span>
           </button>
         </div>
         {/* Scroll Indicator (Mobile) */}
@@ -385,12 +395,20 @@ export default function HeroSection() {
           ref={ctaRef}
           className="absolute left-[62vw] top-[78vh] flex items-center gap-4 z-20"
         >
-          <button onClick={() => openDriverModal()} className="btn-primary flex items-center gap-2">
-            Apply Now
-            <ArrowRight className="w-4 h-4" />
+          <button
+            type="button"
+            onClick={() => openDriverModal()}
+            className={`${heroApplyNowBtnClass} flex shrink-0 items-center gap-2 px-7 py-3.5 text-[13px]`}
+          >
+            <span className="relative z-10">Apply Now</span>
+            <ArrowRight className="relative z-10 h-4 w-4 animate-hero-arrow-nudge" />
           </button>
-          <button onClick={() => scrollToSection('#services')} className="btn-secondary">
-            Learn More
+          <button
+            type="button"
+            onClick={() => navigate('/apply')}
+            className={`${getInTouchBtnClass} shrink-0 px-7 py-3.5 text-[13px]`}
+          >
+            <span className="relative z-10">Get in touch</span>
           </button>
         </div>
 
