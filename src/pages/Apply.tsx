@@ -88,7 +88,7 @@ export default function Apply() {
   const formLocation = useMemo(() => gtmFormLocationFromPathname('/apply'), []);
 
   useEffect(() => {
-    document.title = 'Apply to Drive with Delo Trans';
+    document.title = 'Get in touch to Drive — Delo Trans';
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     return () => {
@@ -223,7 +223,7 @@ export default function Apply() {
                       id="apply-dialog-title"
                       className="font-heading text-2xl font-extrabold leading-tight text-foreground"
                     >
-                      Apply to Drive
+                      Get in touch to Drive
                     </h1>
                     <p className="mt-0.5 text-sm text-muted-foreground">
                       {step === 1
@@ -431,8 +431,7 @@ export default function Apply() {
               </div>
 
               {step === 1 && (
-                <div className="flex items-center justify-between border-t border-border bg-muted/50 px-7 py-5">
-                  <span className="text-xs font-medium text-muted-foreground">1 / 2</span>
+                <div className="flex items-center justify-end border-t border-border bg-muted/50 px-7 py-5">
                   <button
                     type="button"
                     onClick={submit}
