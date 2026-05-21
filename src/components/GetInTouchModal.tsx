@@ -224,8 +224,8 @@ export default function GetInTouchModal() {
                     </h1>
                     <p className="mt-0.5 text-sm text-muted-foreground">
                       {step === 1
-                        ? 'Step 1 of 2 ??? Your details'
-                        : 'Step 2 of 2 ??? Confirmation'}
+                        ? 'Step 1 of 2 — Your details'
+                        : 'Step 2 of 2 — Confirmation'}
                     </p>
                   </div>
                   <button
@@ -307,7 +307,7 @@ export default function GetInTouchModal() {
                       className="space-y-4"
                     >
                       <p className="mb-5 text-sm text-muted-foreground">
-                        Short form ??? tell us how to reach you. Our team will follow up shortly.
+                        Short form — tell us how to reach you. Our team will follow up shortly.
                       </p>
 
                       <div>
@@ -440,7 +440,7 @@ export default function GetInTouchModal() {
                       'disabled:pointer-events-none disabled:opacity-40'
                     )}
                   >
-                    {isSubmitting ? 'Sending???' : 'Submit Application'}
+                    {isSubmitting ? 'Sending…' : 'Submit Application'}
                     <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
