@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Menu, X, Phone } from 'lucide-react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import ThemeModeToggle from './ThemeModeToggle';
+import { useDriverApplication } from '../context/DriverApplicationContext';
 
 const navLinks = [
   { label: 'HOME', path: '/' },
@@ -16,7 +17,7 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const logoRef = useRef<HTMLImageElement>(null);
   const location = useLocation();
-  const navigate = useNavigate();
+  const { openQuickContactModal } = useDriverApplication();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -122,7 +123,7 @@ export default function Header() {
               </a>
               <button
                 type="button"
-                onClick={() => navigate('/apply')}
+                onClick={() => openQuickContactModal()}
                 className="relative shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-sky-600 via-teal-600 to-emerald-700 px-7 py-3.5 text-[13px] font-bold tracking-wide text-white shadow-lg transition-[filter] duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 focus-visible:ring-offset-2 focus-visible:ring-offset-header-bar animate-cta-breathe"
               >
                 <span className="relative z-10">Get in touch</span>
@@ -167,7 +168,7 @@ export default function Header() {
             type="button"
             onClick={() => {
               setIsMobileMenuOpen(false);
-              navigate('/apply');
+              openQuickContactModal();
             }}
             className="mt-8 rounded-full bg-gradient-to-br from-sky-600 via-teal-600 to-emerald-700 px-10 py-4 text-[15px] font-bold tracking-wide text-white shadow-lg transition-[filter] duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 animate-cta-breathe"
           >

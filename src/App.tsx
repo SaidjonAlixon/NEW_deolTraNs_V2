@@ -17,6 +17,7 @@ import Apply from './pages/Apply';
 import Application from './pages/Application';
 import ApplicationForm from './components/ApplicationForm';
 import DriverApplicationModal from './components/DriverApplicationModal';
+import GetInTouchModal from './components/GetInTouchModal';
 
 // Import Context (global driver application modal)
 import { DriverApplicationProvider } from './context/DriverApplicationContext';
@@ -80,6 +81,7 @@ function App() {
         ) : null}
 
         <DriverApplicationModal />
+        <GetInTouchModal />
       </div>
     </DriverApplicationProvider>
   );

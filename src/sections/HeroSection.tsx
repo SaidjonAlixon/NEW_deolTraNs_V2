@@ -17,7 +17,7 @@ export default function HeroSection() {
   const navigate = useNavigate();
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
-  const { openDriverModal } = useDriverApplication();
+  const { openQuickContactModal } = useDriverApplication();
   const headlineRef = useRef<HTMLDivElement>(null);
   const cardARef = useRef<HTMLDivElement>(null);
   const cardBRef = useRef<HTMLDivElement>(null);
@@ -262,7 +262,7 @@ export default function HeroSection() {
         <div className="flex gap-3">
           <button
             type="button"
-            onClick={() => openDriverModal()}
+            onClick={() => navigate('/apply')}
             className={`${heroApplyNowBtnClass} flex flex-1 items-center justify-center gap-2 px-5 py-3 text-sm`}
           >
             <span className="relative z-10">Apply Now</span>
@@ -270,7 +270,7 @@ export default function HeroSection() {
           </button>
           <button
             type="button"
-            onClick={() => navigate('/apply')}
+            onClick={() => openQuickContactModal()}
             className={`${getInTouchBtnClass} flex flex-1 items-center justify-center px-5 py-3 text-sm`}
           >
             <span className="relative z-10">Get in touch</span>
@@ -397,7 +397,7 @@ export default function HeroSection() {
         >
           <button
             type="button"
-            onClick={() => openDriverModal()}
+            onClick={() => navigate('/apply')}
             className={`${heroApplyNowBtnClass} flex shrink-0 items-center gap-2 px-7 py-3.5 text-[13px]`}
           >
             <span className="relative z-10">Apply Now</span>
@@ -405,7 +405,7 @@ export default function HeroSection() {
           </button>
           <button
             type="button"
-            onClick={() => navigate('/apply')}
+            onClick={() => openQuickContactModal()}
             className={`${getInTouchBtnClass} shrink-0 px-7 py-3.5 text-[13px]`}
           >
             <span className="relative z-10">Get in touch</span>

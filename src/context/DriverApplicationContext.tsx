@@ -6,6 +6,9 @@ interface DriverApplicationContextType {
   openSessionId: number;
   openDriverModal: () => void;
   closeDriverModal: () => void;
+  isQuickContactOpen: boolean;
+  openQuickContactModal: () => void;
+  closeQuickContactModal: () => void;
 }
 
 const DriverApplicationContext = createContext<DriverApplicationContextType | undefined>(undefined);
@@ -13,14 +16,33 @@ const DriverApplicationContext = createContext<DriverApplicationContextType | un
 export function DriverApplicationProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [openSessionId, setOpenSessionId] = useState(0);
+  const [isQuickContactOpen, setIsQuickContactOpen] = useState(false);
+
   const openDriverModal = () => {
+    setIsQuickContactOpen(false);
     setOpenSessionId((n) => n + 1);
     setIsOpen(true);
   };
   const closeDriverModal = () => setIsOpen(false);
 
+  const openQuickContactModal = () => {
+    setIsOpen(false);
+    setIsQuickContactOpen(true);
+  };
+  const closeQuickContactModal = () => setIsQuickContactOpen(false);
+
   return (
-    <DriverApplicationContext.Provider value={{ isOpen, openSessionId, openDriverModal, closeDriverModal }}>
+    <DriverApplicationContext.Provider
+      value={{
+        isOpen,
+        openSessionId,
+        openDriverModal,
+        closeDriverModal,
+        isQuickContactOpen,
+        openQuickContactModal,
+        closeQuickContactModal,
+      }}
+    >
       {children}
     </DriverApplicationContext.Provider>
   );
