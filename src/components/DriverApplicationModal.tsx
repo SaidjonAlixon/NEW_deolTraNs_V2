@@ -13,6 +13,12 @@ import {
   pushDriverFormOpenOnce,
   pushDriverFormSubmit,
 } from '../lib/gtmDataLayer';
+import {
+  AD_SOURCE_KEYS,
+  getAdSourceValues,
+  HEAR_ABOUT_OPTIONS,
+  type AdSourceValues,
+} from '../lib/adSource';
 import { cn } from '../lib/utils';
 import { Dialog, DialogContent, DialogOverlay, DialogPortal } from './ui/dialog';
 import { upload } from '@vercel/blob/client';
@@ -56,6 +62,7 @@ type ValidationErrors = {
   email?: string;
   phone?: string;
   address?: string;
+  hearAboutUs?: string;
   cdlType?: string;
 };
 
@@ -114,6 +121,11 @@ function validateContactField(field: keyof ValidationErrors, value: string): str
     return '';
   }
 
+  if (field === 'hearAboutUs') {
+    if (!v) return 'This field is required';
+    return '';
+  }
+
   if (field === 'cdlType') {
     if (!v) return 'This field is required';
     return '';
@@ -126,6 +138,13 @@ function uploadLineClass(done: boolean) {
   return cn('text-sm font-medium truncate', done ? 'text-emerald-600' : 'text-muted-foreground');
 }
 
+const emptyAdSource: AdSourceValues = {
+  utm_source: '',
+  utm_medium: '',
+  utm_campaign: '',
+  gclid: '',
+};
+
 const initialFormData = {
   position: '',
   firstName: '',
@@ -133,6 +152,11 @@ const initialFormData = {
   email: '',
   phone: '',
   address: '',
+  hearAboutUs: '',
+  utm_source: '',
+  utm_medium: '',
+  utm_campaign: '',
+  gclid: '',
   cdlType: '',
   yearsExperience: '',
   ssnNumber: '',
@@ -167,15 +191,28 @@ export default function DriverApplicationModal({ embedded = false }: DriverAppli
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState<ValidationErrors>({});
 
+  const hydrateAdSource = () => {
+    const saved = getAdSourceValues();
+    setFormData((prev) => ({
+      ...prev,
+      utm_source: prev.utm_source || saved.utm_source,
+      utm_medium: prev.utm_medium || saved.utm_medium,
+      utm_campaign: prev.utm_campaign || saved.utm_campaign,
+      gclid: prev.gclid || saved.gclid,
+    }));
+  };
+
   useEffect(() => {
     if (embedded) return;
     if (!isOpen) {
       setTimeout(() => {
         setCurrentStep(1);
         setDirection(0);
-        setFormData({ ...initialFormData });
+        setFormData({ ...initialFormData, ...emptyAdSource });
         setErrors({});
       }, 300);
+    } else {
+      hydrateAdSource();
     }
   }, [isOpen, embedded]);
 
@@ -187,6 +224,7 @@ export default function DriverApplicationModal({ embedded = false }: DriverAppli
 
   useEffect(() => {
     if (!embedded) return;
+    hydrateAdSource();
     pushDriverFormOpenOnce(1_000_000, formLocation);
   }, [embedded, formLocation]);
 
@@ -196,8 +234,16 @@ export default function DriverApplicationModal({ embedded = false }: DriverAppli
     const emailError = validateContactField('email', formData.email || '');
     const phoneError = validateContactField('phone', formData.phone || '');
     const addressError = validateContactField('address', formData.address || '');
+    const hearAboutError = validateContactField('hearAboutUs', formData.hearAboutUs || '');
 
-    return !firstNameError && !lastNameError && !emailError && !phoneError && !addressError;
+    return (
+      !firstNameError &&
+      !lastNameError &&
+      !emailError &&
+      !phoneError &&
+      !addressError &&
+      !hearAboutError
+    );
   };
 
   const isUploaded = (val: string | undefined) => !!(val && typeof val === 'string' && val.startsWith('http'));
@@ -237,6 +283,7 @@ export default function DriverApplicationModal({ embedded = false }: DriverAppli
         email: validateContactField('email', formData.email || ''),
         phone: validateContactField('phone', formData.phone || ''),
         address: validateContactField('address', formData.address || ''),
+        hearAboutUs: validateContactField('hearAboutUs', formData.hearAboutUs || ''),
       };
       setErrors(nextErrors);
       if (!canProceedStep2()) return;
@@ -313,6 +360,13 @@ export default function DriverApplicationModal({ embedded = false }: DriverAppli
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 12000); // 12s client timeout
 
+      const adSource = {
+        utm_source: formData.utm_source || '',
+        utm_medium: formData.utm_medium || '',
+        utm_campaign: formData.utm_campaign || '',
+        gclid: formData.gclid || '',
+      };
+
       const res = await fetch('/api/applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -322,6 +376,8 @@ export default function DriverApplicationModal({ embedded = false }: DriverAppli
           phone: formData.phone || '',
           email: formData.email || '',
           address: formData.address || '',
+          hearAboutUs: formData.hearAboutUs || '',
+          ...adSource,
           experience: formData.yearsExperience ? `${formData.yearsExperience} years` : '',
           cdlType: formData.cdlType || '',
           ssn: formData.ssnNumber || '',
@@ -371,6 +427,7 @@ export default function DriverApplicationModal({ embedded = false }: DriverAppli
         email: 'email',
         phone: 'phone',
         address: 'address',
+        hearAboutUs: 'hearAboutUs',
         cdlType: 'cdlType',
       };
 
@@ -679,6 +736,39 @@ export default function DriverApplicationModal({ embedded = false }: DriverAppli
                           </div>
                           {errors.address ? <p className="text-xs text-red-500">{errors.address}</p> : null}
                         </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                            How did you hear about us? <span className="text-red-500">*</span>
+                          </label>
+                          <div className="relative">
+                            <select
+                              name="hearAboutUs"
+                              value={formData.hearAboutUs}
+                              onChange={handleInputChange}
+                              required
+                              className={cn(
+                                "w-full bg-muted/50 border rounded-xl px-4 py-3 text-foreground text-sm focus:outline-none focus:border-primary/55 transition-all appearance-none cursor-pointer",
+                                errors.hearAboutUs ? "border-red-500" : "border-input",
+                                !formData.hearAboutUs && "text-muted-foreground"
+                              )}
+                            >
+                              <option value="" disabled className="bg-app">
+                                Select an option...
+                              </option>
+                              {HEAR_ABOUT_OPTIONS.map((option) => (
+                                <option key={option} value={option} className="bg-app text-foreground">
+                                  {option}
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                          </div>
+                          {errors.hearAboutUs ? <p className="text-xs text-red-500">{errors.hearAboutUs}</p> : null}
+                        </div>
+                        {/* Hidden ad-source fields (filled from URL / 30-day localStorage) */}
+                        {AD_SOURCE_KEYS.map((key) => (
+                          <input key={key} type="hidden" name={key} value={formData[key] || ''} readOnly />
+                        ))}
                       </div>
                     )}
 
@@ -1304,6 +1394,10 @@ export default function DriverApplicationModal({ embedded = false }: DriverAppli
                               <div>
                                 <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Phone</p>
                                 <p className="text-foreground font-medium text-sm">{formData.phone}</p>
+                              </div>
+                              <div className="col-span-2">
+                                <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">How did you hear about us?</p>
+                                <p className="text-foreground font-medium text-sm">{formData.hearAboutUs || '—'}</p>
                               </div>
                             </div>
 

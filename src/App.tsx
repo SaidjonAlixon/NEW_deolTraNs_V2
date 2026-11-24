@@ -22,6 +22,7 @@ import GetInTouchModal from './components/GetInTouchModal';
 // Import Context (global driver application modal)
 import { DriverApplicationProvider } from './context/DriverApplicationContext';
 import TelLinkDataLayerTracking from './components/TelLinkDataLayerTracking';
+import { captureAdSourceFromUrl } from './lib/adSource';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -35,6 +36,17 @@ function ScrollToTop() {
   return null;
 }
 
+/** Persist Google Ads UTM / gclid from the URL for up to 30 days. */
+function AdSourceCapture() {
+  const { search } = useLocation();
+
+  useEffect(() => {
+    captureAdSourceFromUrl(search);
+  }, [search]);
+
+  return null;
+}
+
 function App() {
   const mainRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
@@ -44,6 +56,7 @@ function App() {
     <DriverApplicationProvider>
       <div ref={mainRef} className="relative bg-app min-h-screen">
         <ScrollToTop />
+        <AdSourceCapture />
         <TelLinkDataLayerTracking />
         {/* Grain overlay */}
         <div className="grain-overlay" />

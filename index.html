@@ -49,6 +49,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-WT3ZWP8F');</script>
   <!-- End Google Tag Manager -->
+
+  <!--
+    Google Ads website call tracking (PixelCo / Gleb)
+    Replace AW-XXXXXXXXX and XXXXXXXXXXX with the real conversion ID + label from Gleb.
+    phone_conversion_number must match the visible site number character-for-character.
+  -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-XXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-XXXXXXXXX');
+    // Website call tracking: shows the Google number to visitors from ads
+    gtag('config', 'AW-XXXXXXXXX/XXXXXXXXXXX', {
+      'phone_conversion_number': '+1 326 220 7171'
+    });
+  </script>
 </head>
 
 <body>

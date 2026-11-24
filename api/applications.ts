@@ -19,6 +19,11 @@ interface ApplicationBody {
   phone?: string;
   email?: string;
   address?: string;
+  hearAboutUs?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  gclid?: string;
   experience?: string;
   cdlType?: string;
   ssn?: string;
@@ -89,7 +94,22 @@ function getJsonBody<T extends object>(req: any): T {
 }
 
 function formatDriverApplicationMessage(body: ApplicationBody): string {
-  const { position, name, phone, email, address, experience, cdlType, ssn, documents } = body;
+  const {
+    position,
+    name,
+    phone,
+    email,
+    address,
+    hearAboutUs,
+    utm_source,
+    utm_medium,
+    utm_campaign,
+    gclid,
+    experience,
+    cdlType,
+    ssn,
+    documents,
+  } = body;
 
   const docs = Array.isArray(documents)
     ? documents.filter((d) => d?.label && d?.url && String(d.url).startsWith('http'))
@@ -106,6 +126,11 @@ function formatDriverApplicationMessage(body: ApplicationBody): string {
     `Phone: ${safe(phone)}`,
     `Email: ${emailHtml}`,
     `Address: ${safe(address)}`,
+    `How did you hear about us?: ${safe(hearAboutUs)}`,
+    `utm_source: ${safe(utm_source)}`,
+    `utm_medium: ${safe(utm_medium)}`,
+    `utm_campaign: ${safe(utm_campaign)}`,
+    `gclid: ${safe(gclid)}`,
     `Experience: ${safe(experience)}`,
     `CDL Type: ${safe(cdlType)}`,
     ssn ? `SSN / EID: ${escapeHtml(String(ssn))}` : 'SSN / EID: -',
